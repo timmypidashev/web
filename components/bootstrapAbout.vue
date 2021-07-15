@@ -6,7 +6,7 @@
         order-md="2"
         class="d-flex align-items-center justify-content-center"
       >
-        <b-img fluid src="~assets/john-doe.jpeg" alt="John Doe" class="img" />
+        <b-img fluid src="~assets/timmy.jpeg" alt="Timmy" class="img" />
       </b-col>
 
       <b-col md="8" order-md="1">
