@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div>
+      <logo />
       <h1 class="title">
         Timothy Pidashev
       </h1>
@@ -9,9 +10,8 @@
       </h2>
       <div class="links">
         <a
-          href="https://github.com/timothypidashev"
+          href="https://discord.gg/34RqygKbtX"
           target="_blank"
-          rel="noopener"
           class="button--green"
         >
           Github
@@ -19,7 +19,6 @@
         <a
           href="https://discord.gg/34RqygKbtX"
           target="_blank"
-          rel="noopener"
           class="button--grey"
         >
           Discord
