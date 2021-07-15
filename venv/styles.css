@@ -5,8 +5,8 @@
 }
 
 html {
-    background-color: #E9CBAF;
-    color: #6C3D4C;
+    background-color: #FB93DA;
+    color: #404082;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
     font-size: 1vh;
@@ -34,11 +34,11 @@ html {
 }
 
 .pink__colored {
-    color: #F18080;
+    color: #D26BB9;
 }
 
 .orange__highlight {
-    background-color: #F9A875;
+    background-color: #D26BB9;
     border-radius: 20px;
     line-height: 1.5;
     padding-right: 0.9vw;
