@@ -1,8 +1,8 @@
 {
-  "name": "nuxtjs",
+  "name": "Timothy Pidashev",
   "version": "1.0.0",
-  "description": "My astonishing Nuxt.js project",
-  "author": "msweeneydev",
+  "description": "My portfolio website",
+  "author": "timothypidashev",
   "private": true,
   "scripts": {
     "dev": "nuxt",
@@ -10,6 +10,7 @@
     "start": "nuxt start"
   },
   "dependencies": {
+    "bootstrap-vue": "^2.21.2",
     "core-js": "^3.15.0",
     "nuxt": "^2.15.7"
   },
