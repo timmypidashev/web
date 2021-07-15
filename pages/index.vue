@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div>
-      <logo />
+      <Background />
       <h1 class="title">
         Timothy Pidashev
       </h1>
@@ -10,20 +10,20 @@
       </h2>
       <div class="links">
         <a
-          href="https://nuxtjs.org/"
+          href="https://github.com/timothypidashev"
           target="_blank"
           rel="noopener"
           class="button--green"
         >
-          Documentation
+          Github
         </a>
         <a
-          href="https://github.com/timothypidashev"
+          href="https://discord.gg/34RqygKbtX"
           target="_blank"
           rel="noopener"
           class="button--grey"
         >
-          GitHub
+          Discord
         </a>
       </div>
     </div>
