@@ -11,12 +11,10 @@
 
       <b-col md="8" order-md="1">
         <b-container>
-          <h2 class="display-4">John Doe</h2>
+          <h2 class="display-4">Timothy Pidashev</h2>
 
           <p class="lead">
-            I am also known as joker, <del>shadow</del> king, and
-            &#647;n&#477;sp&#592;&#654;.<br />I hate the hierarchy, so I broke
-            it.
+            A 16-year-old on an epic journey to become a software developer! 
           </p>
         </b-container>
       </b-col>
