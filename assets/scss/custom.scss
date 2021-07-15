@@ -1,13 +1,17 @@
-$theme-colors: (
-  'primary': #145bea,
-  'secondary': #833bec,
-  'success': #1ce1ac,
-  'info': #ff7d50,
-  'warning': #ffbe0b,
-  'danger': #ff007f,
-  'light': #c0ccda,
-  'dark': #001738,
-);
+$primary: #145bea;
+$secondary: #833bec;
+$uccess: #1ce1ac;
+$info: #ff7d50;
+$warning: #ffbe0b;
+$danger: #ff007f;
+$light: #c0ccda;
+$dark: #001738;
+
+$link-hover-decoration: none;
+$border-radius: 0;
+$font-family-sans-serif: "Fira Sans", sans-serif;
+$font-family-monospace: "Fira Mono", monospace;
+$font-weight-bold: 600;
 
 @import '~/node_modules/bootstrap/scss/bootstrap.scss';
 
@@ -32,11 +36,11 @@ $theme-colors: (
 @import "~/node_modules/bootstrap/scss/breadcrumb";
 // @import "~bootstrap/scss/pagination";
 // @import "~bootstrap/scss/badge";
-@import "~/node_modules/bootstrap/scss/jumbotron";
+// @import "~/node_modules/bootstrap/scss/jumbotron";
 // @import "~bootstrap/scss/alert";
 // @import "~bootstrap/scss/progress";
 // @import "~bootstrap/scss/media";
-@import "~/node_modules/bootstrap/scss/list-group";
+// @import "~/node_modules/bootstrap/scss/list-group";
 // @import "~bootstrap/scss/close";
 // @import "~bootstrap/scss/toasts";
 // @import "~bootstrap/scss/modal";
@@ -44,5 +48,10 @@ $theme-colors: (
 // @import "~bootstrap/scss/popover";
 // @import "~bootstrap/scss/carousel";
 // @import "~bootstrap/scss/spinners";
-@import "~/node_modules/bootstrap/scss/utilities";
+// @import "~/node_modules/bootstrap/scss/utilities";
 // @import "~bootstrap/scss/print";
+
+::selection {
+  background-color: $primary;
+  color: #fff;
+}
