@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BootstrapNav />
-    <BootstrapAbout />
+    <NavBar />
+    <About />
   </div>
 </template>

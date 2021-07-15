@@ -8,7 +8,7 @@
         width="30"
         height="30"
       />
-      <span class="font-weight-bold">Unordinary</span>
+      <span class="font-weight-bold"></span>
     </b-navbar-brand>
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
