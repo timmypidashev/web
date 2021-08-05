@@ -1,10 +1,8 @@
-from flask import Flask
+from flask import Flask, render_template, request
 
+app = Flask(__name__, template_folder = "templates", static_url_path="/static")
 
-app = Flask(__name__)
-
-
+#home page
 @app.route("/")
-def home():
-    return app.send_static_file("index.html")
-
+def index():
+    return render_template("index.html")
