@@ -4,6 +4,87 @@
     box-sizing: border-box;
 }
 
+/* Navbar */
+.header {
+    overflow: hidden;
+    background-color: #FB93DA;
+    padding: 20px 10px;
+  }
+  
+  .header a {
+    float: left;
+    color: #404082;
+    text-shadow: 3px 2px 2px rgba(199, 130, 59, 0.15);
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px; 
+    line-height: 25px;
+    border-radius: 4px;
+  }
+  
+  .header a.logo {
+    font-size: 25px;
+    font-weight: bold;
+  }
+  
+  .header a:hover {
+    background-color: #D26BB9;
+    color: black;
+  }
+  
+  .header a.active {
+    background-color: #404082;
+    color: white;
+  }
+  
+  .header-right {
+    float: right;
+  }
+
+/* Overlay */
+.overlay {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.9);
+    overflow-x: hidden;
+    transition: 0.5s;
+  }
+  
+  .overlay-content {
+    position: relative;
+    top: 25%;
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  .overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+  }
+  
+  .overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+  }
+
+/* Style */
 html {
     background-color: #FB93DA;
     color: #404082;
