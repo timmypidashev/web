@@ -100,6 +100,7 @@ html {
     /* Hide scrollbar for Chrome, Safari and Opera */
     .html::-webkit-scrollbar {
         display: none;
+        background: transparent;  /* Optional: just make scrollbar invisible */
     }
 
 #end__of__page {
