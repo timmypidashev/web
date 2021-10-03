@@ -7,13 +7,13 @@
 /* Navbar */
 .header {
     overflow: hidden;
-    background-color: #FB93DA;
+    background-color: #333333;
     padding: 20px 10px;
   }
   
   .header a {
     float: left;
-    color: #404082;
+    color: #BBBBBB;
     text-shadow: 3px 2px 2px rgba(199, 130, 59, 0.15);
     text-align: center;
     padding: 12px;
@@ -25,17 +25,17 @@
   
   .header a.logo {
     font-size: 25px;
-    font-weight: bold;
+    font-weight: bold;  
   }
   
   .header a:hover {
-    background-color: #D26BB9;
+    background-color: #BBBBBB;
     color: black;
   }
   
   .header a.active {
-    background-color: #404082;
-    color: white;
+    background-color: #BBBBBB;
+    color: black;
   }
   
   .header-right {
@@ -86,8 +86,8 @@
 
 /* Style */
 html {
-    background-color: #FB93DA;
-    color: #404082;
+    background-color: #333333;
+    color: #BBBBBB;
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
     font-size: 1vh;
@@ -121,12 +121,8 @@ html {
     align-items: center;
 }
 
-.pink__colored {
-    color: #D26BB9;
-}
-
-.orange__highlight {
-    background-color: #D26BB9;
+.highlight {
+    background-color: #EEEEEE;
     border-radius: 20px;
     line-height: 1.5;
     padding-right: 0.9vw;
