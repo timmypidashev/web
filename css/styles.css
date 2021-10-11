@@ -9,6 +9,7 @@
     overflow: hidden;
     background-color: #333333;
     padding: 20px 10px;
+    transition: all 0.2s ease-in-out;
   }
   
   .header a {
@@ -29,8 +30,8 @@
   }
   
   .header a:hover {
-    background-color: #BBBBBB;
-    color: black;
+    transform: scale(1.1);
+    cursor: pointer;
   }
   
   .header a.active {
