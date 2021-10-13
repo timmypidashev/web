@@ -21,6 +21,7 @@
     font-size: 18px; 
     line-height: 25px;
     border-radius: 4px;
+    transition: all 0.2s ease-in-out;
   }
   
   .header a.logo {
@@ -29,8 +30,8 @@
   }
   
   .header a:hover {
-    background-color: #BBBBBB;
-    color: black;
+    transform: scale(1.1);
+    cursor: pointer;
   }
   
   .header a.active {
