@@ -9,6 +9,7 @@
     overflow: hidden;
     background-color: #333333;
     padding: 20px 10px;
+    transition: all 0.2s ease-in-out;
   }
   
   .header a {
@@ -169,8 +170,8 @@ html {
 /* blog */
 .blog {
     background: grey;
-    width: 300px;
-    height: 300px;
+    width: 900px;
+    height: 1800px;
     border: 150px;
     border-radius: 20px;
     line-height: 1.5;
