@@ -168,10 +168,22 @@ html {
 }
 
 /* blog */
+
+.blog_row {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
 .blog {
     background: grey;
-    width: 900px;
-    height: 1800px;
+    width: 250px;
+    height: 250px;
     border: 150px;
     border-radius: 20px;
     line-height: 1.5;
@@ -180,11 +192,12 @@ html {
     font-weight: 520;
     text-shadow: none;
     box-shadow: 3px 2px 2px rgba(199, 130, 59, 0.15);
+    transition: all 0.2s ease-in-out;
   }
 
-  .blog__header {
-    font-size: 12vw;
-    font-weight: 400;
+  .blog:hover {
+    transform: scale(1.1);
+    cursor: pointer;
   }
 
 @media only screen and (max-width: 1024px) {
