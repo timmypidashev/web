@@ -200,6 +200,12 @@ html {
     cursor: pointer;
   }
 
+  .blog__image {
+    margin-left: 2vw;
+    margin-right: 2vw;
+    width: 10vw;
+  } 
+
 @media only screen and (max-width: 1024px) {
     .hero__header {
         font-size: 12vw;
