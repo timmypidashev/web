@@ -154,7 +154,7 @@ form{
 		// bottom: -160px;
 		// make the squares spawn from the bottom of the screen determined by the height of the screen
 		// bottom: calc(-100% + 100px);
-		bottom: calc(100% - 1000px);
+		bottom: calc(100% - 1100px);
 		
 		-webkit-animation: square 25s infinite;
 		animation:         square 25s infinite;
@@ -246,13 +246,12 @@ form{
 
 @-webkit-keyframes square {
   0%   { transform: translateY(0); }
-  100% { transform: translateY(-10000px) rotate(600deg); }
+  100% { transform: translateY(-700px) rotate(600deg); }
+  100% { transform: translateY(-1100px) rotate(600deg); }
 }
 @keyframes square {
   0%   { transform: translateY(0); }
-  90% { transform: translateY(-1000px) rotate(600deg); }
-	//   add fade after the animation
-
+  90% { transform: translateY(-1100px) rotate(600deg); }
 }
 
 // animation for square to fade out
