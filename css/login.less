@@ -145,15 +145,16 @@ form{
 	z-index: 1;
 	
 	li{
-		position: relative;
+		position: absolute;
 		// list-style: none;
 		display: block;
 		width: 40px;
 		height: 40px;
 		background-color: fade(white, 15%);
 		// bottom: -160px;
-		// make bottom the edge of the screen
-		bottom: -600px;
+		// make the squares spawn from the bottom of the screen determined by the height of the screen
+		// bottom: calc(-100% + 100px);
+		bottom: calc(100% - 1000px);
 		
 		-webkit-animation: square 25s infinite;
 		animation:         square 25s infinite;
@@ -240,21 +241,26 @@ form{
 	}
 }
 
+// add sqaure animation that moves from bottom up and rotates then fades with steps
+
+
 @-webkit-keyframes square {
   0%   { transform: translateY(0); }
   100% { transform: translateY(-10000px) rotate(600deg); }
 }
 @keyframes square {
   0%   { transform: translateY(0); }
-  100% { transform: translateY(-1000px) rotate(600deg); }
+  90% { transform: translateY(-1000px) rotate(600deg); }
+	//   add fade after the animation
+
 }
 
 // animation for square to fade out
-@-webkit-keyframes fade {
-  0%   { opacity: 1; }
-  100% { opacity: 0; }
-}
-@keyframes fade {
-  0%   { opacity: 1; }
-  100% { opacity: 0; }
-}
+// @-webkit-keyframes fade {
+//   0%   { opacity: 1; }
+//   100% { opacity: 0; }
+// }
+// @keyframes fade {
+//   0%   { opacity: 1; }
+//   100% { opacity: 0; }
+// }
