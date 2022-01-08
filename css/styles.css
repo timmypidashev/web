@@ -168,7 +168,6 @@ html {
 }
 
 /* blog */
-
 .blog_row {
     display: inline-flex;
     flex-direction: row;
@@ -274,6 +273,11 @@ html {
   cursor: pointer;
   outline: none;
 }
+
+.login-form:hover {
+  background-color: #3a3a3a;
+}
+
 
 @media only screen and (max-width: 1024px) {
     .hero__header {
