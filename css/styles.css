@@ -143,6 +143,11 @@ html {
     font-weight: 400;
 }
 
+.normal__header {
+    font-size: 1vw;
+    font-weight: 400;
+}
+
 .divider__line {
     height: 4vw;
 }
