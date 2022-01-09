@@ -44,12 +44,14 @@
             duration: 800
         });
     </script>
-    <script src="js/python/login.js"></script>
     <script>
-         $("#login-button").click(function(event){
+        $("#login-button").click(function(event){
+            
             // check if username and password are filled in
             if($("#username").val() == "student" && $("#password").val() == "student.23264"){
                 // if the username and password are correct, redirect to the admin page
+                $('form').fadeOut(500);
+                $('.wrapper').addClass('form-success');
                 setTimeout(function() { // delay the location.replace for one second for login animation
                     location.replace('assignments.html');
                 }, 1000);
@@ -57,23 +59,7 @@
                 // if the username and password are incorrect, add a shake animation to the form
                 $(".wrapper").addClass("form-error");
             }
-                
-		    event.preventDefault();
-	 
-            $('form').fadeOut(500);
-            $('.wrapper').addClass('form-success');
         });
     </script>
-    <!-- <script>
-        function validate() {
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-            if (username == "" || password == "") {
-                alert("Please fill in all fields");
-            } else {
-                login(username, password);
-            }
-        }
-    </script> -->
 </body>
 </html>
