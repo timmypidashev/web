@@ -11,9 +11,23 @@
 <body> 
     <div class="wrapper">
         <div class="container">
-            <h1 class="hero__header" data-aos="zoom-out">Assignments</h1>
+            <h1 class="hero__header" data-aos="zoom-out">Lesson 1</h1>
             <div class="assignment">
-                <button data-aos="zoom-in">Test</button>
+                <button data-aos="zoom-in" id="1.1">Warmup</button>
+                <button data-aos="zoom-in" id="1.2">Classwork</button>
+                <button data-aos="zoom-in" id="1.3">Assignment</button>
+            </div>
+            <h1 class="hero__header" data-aos="zoom-out">Lesson 2</h1>
+            <div class="assignment">
+                <button data-aos="zoom-in" id="2.1">Warmup</button>
+                <button data-aos="zoom-in" id="2.2">Classwork</button>
+                <button data-aos="zoom-in" id="2.3">Assignment</button>
+            </div>
+            <h1 class="hero__header" data-aos="zoom-out">Lesson 3</h1>
+            <div class="assignment">
+                <button data-aos="zoom-in" id="3.1">Warmup</button>
+                <button data-aos="zoom-in" id="3.2">Classwork</button>
+                <button data-aos="zoom-in" id="3.3">Assignment</button>
             </div>
         </div>
     </div>
@@ -26,6 +40,16 @@
             anchorPlacement: 'top-bottom',
             offset: 0,
             duration: 800
+        });
+    </script>
+    <script>
+        const assignments = document.querySelectorAll('.assignment button');
+        assignments.forEach(assignment => {
+            assignment.addEventListener('click', (e) => {
+                const lesson = e.target.id.split(':')[0];
+                const assignment = e.target.id.split(':')[1];
+                window.location.href = `python/assignments/${lesson}.html`;
+            });
         });
     </script>
 </body>

@@ -51,12 +51,36 @@ background: linear-gradient(to bottom right, #333333 0%, #333333 100%);
 	// width: 100%;
 	// height: 400px;
 	// margin-top: -200px;
-	overflow: hidden;
+	overflow: visible;
 
     &.form-success{
 		.container{
 			h1{
 				transform: translateY(85px);
+			}
+		}
+	}
+
+	&.form-error{
+		.container{
+			.assignment{
+				button{
+					animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+					@keyframes shake {
+						10%, 90% {
+							transform: translate3d(-1px, 0, 0);
+						}
+						20%, 80% {
+							transform: translate3d(2px, 0, 0);
+						}
+						30%, 50%, 70% {
+							transform: translate3d(-4px, 0, 0);
+						}
+						40%, 60% {
+							transform: translate3d(4px, 0, 0);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -100,9 +124,14 @@ background: linear-gradient(to bottom right, #333333 0%, #333333 100%);
 		cursor: pointer;
 		font-size: 18px;
 		transition-duration: 0.25s;
+		margin-bottom: 20px;
 		
 		&:hover{
-			background-color: rgb(245, 247, 249);
+			// add a shadow
+			box-shadow: 0px 5px 10px rgba(0,0,0,0.25);
+
+			// change the background color
+			background: #53e3a6;
 		}
 	}
 }
