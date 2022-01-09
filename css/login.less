@@ -61,6 +61,30 @@ background: linear-gradient(to bottom right, #333333 0%, #333333 100%);
 			}
 		}
 	}
+
+	// add shake 
+	&.form-error{
+		// add animation to container
+		.container{
+			h1{
+				animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+				@keyframes shake {
+					10%, 90% {
+						transform: translate3d(-1px, 0, 0);
+					}
+					20%, 80% {
+						transform: translate3d(2px, 0, 0);
+					}
+					30%, 50%, 70% {
+						transform: translate3d(-4px, 0, 0);
+					}
+					40%, 60% {
+						transform: translate3d(4px, 0, 0);
+					}
+				}
+			}
+		}
+	}
 }
 
 .container{
@@ -134,6 +158,23 @@ form{
 	}
 }
 
+// // fade the form on success
+// .form-success{
+// 	.container{
+// 		h1{
+// 			transform: translateY(0px);
+// 		}
+// 	}
+// }
+
+// // form error shake animation
+// .form-error{
+// 	.container{
+// 		h1{
+// 			animation: formError 0.5s;
+// 		}
+// 	}
+// }
 
 .bg-bubbles{
 	position: absolute;
@@ -254,12 +295,15 @@ form{
   90% { transform: translateY(-1100px) rotate(600deg); }
 }
 
-// animation for square to fade out
-// @-webkit-keyframes fade {
-//   0%   { opacity: 1; }
-//   100% { opacity: 0; }
-// }
-// @keyframes fade {
-//   0%   { opacity: 1; }
-//   100% { opacity: 0; }
-// }
+// form error shake animation
+@-webkit-keyframes formError {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-10px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(-5deg); }
+}
+@keyframes formError {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-10px) rotate(5deg); }
+  100% { transform: translateY(0) rotate(-5deg); }
+}
+
