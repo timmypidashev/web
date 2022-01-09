@@ -13,21 +13,63 @@
         <div class="container">
             <h1 class="hero__header" data-aos="zoom-out">Lesson 1</h1>
             <div class="assignment">
-                <button data-aos="zoom-in" id="1.1">Warmup</button>
-                <button data-aos="zoom-in" id="1.2">Classwork</button>
-                <button data-aos="zoom-in" id="1.3">Assignment</button>
+                <a href="https://timmypidashev.com/python/assignments/1.1">
+                    <button data-aos="zoom-in" id="1.1">Warmup</button>
+                </a>
+                <a href="https://timmypidashev.com/python/assignments/1.2">
+                    <button data-aos="zoom-in" id="1.2">Classwork</button>
+                </a>
+                <a href="https://timmypidashev.com/python/assignments/1.3">
+                    <button data-aos="zoom-in" id="1.3">Assignment</button>
+                </a>
             </div>
             <h1 class="hero__header" data-aos="zoom-out">Lesson 2</h1>
             <div class="assignment">
-                <button data-aos="zoom-in" id="2.1">Warmup</button>
-                <button data-aos="zoom-in" id="2.2">Classwork</button>
-                <button data-aos="zoom-in" id="2.3">Assignment</button>
+                <a href="https://timmypidashev.com/python/assignments/2.1">
+                    <button data-aos="zoom-in" id="2.1">Warmup</button>
+                </a>
+                <a href="https://timmypidashev.com/python/assignments/2.2">
+                    <button data-aos="zoom-in" id="2.2">Classwork</button>
+                </a>
+                <a href="https://timmypidashev.com/python/assignments/2.3">
+                    <button data-aos="zoom-in" id="2.3">Assignment</button>
+                </a>
             </div>
             <h1 class="hero__header" data-aos="zoom-out">Lesson 3</h1>
             <div class="assignment">
-                <button data-aos="zoom-in" id="3.1">Warmup</button>
-                <button data-aos="zoom-in" id="3.2">Classwork</button>
-                <button data-aos="zoom-in" id="3.3">Assignment</button>
+                <a href="https://timmypidashev.com/python/assignments/3.1">
+                    <button data-aos="zoom-in" id="3.1">Warmup</button>
+                </a>
+                <a href="https://timmypidashev.com/python/assignments/3.2">
+                    <button data-aos="zoom-in" id="3.2">Classwork</button>
+                </a>
+                <a href="https://timmypidashev.com/python/assignments/3.3">
+                    <button data-aos="zoom-in" id="3.3">Assignment</button>
+                </a>
+            </div>
+            <h1 class="hero__header" data-aos="zoom-out">Lesson 4</h1>
+            <div class="assignment">
+                <a href="https://timmypidashev.com/python/assignments/4.1">
+                    <button data-aos="zoom-in" id="4.1">Warmup</button>
+                </a>
+                <a href="https://timmypidashev.com/python/assignments/4.2">
+                    <button data-aos="zoom-in" id="4.2">Classwork</button>
+                </a>
+                <a href="https://timmypidashev.com/python/assignments/4.3">
+                    <button data-aos="zoom-in" id="4.3">Assignment</button>
+                </a>
+            </div> 
+            <h1 class="hero__header" data-aos="zoom-out">Lesson 5</h1>
+            <div class="assignment">
+                <a href="https://timmypidashev.com/python/assignments/5.1">
+                    <button data-aos="zoom-in" id="5.1">Warmup</button>
+                </a>
+                <a href="https://timmypidashev.com/python/assignments/5.2">
+                    <button data-aos="zoom-in" id="5.2">Classwork</button>
+                </a>
+                <a href="https://timmypidashev.com/python/assignments/5.3">
+                    <button data-aos="zoom-in" id="5.3">Assignment</button>
+                </a>
             </div>
         </div>
     </div>
@@ -40,16 +82,6 @@
             anchorPlacement: 'top-bottom',
             offset: 0,
             duration: 800
-        });
-    </script>
-    <script>
-        const assignments = document.querySelectorAll('.assignment button');
-        assignments.forEach(assignment => {
-            assignment.addEventListener('click', (e) => {
-                const lesson = e.target.id.split(':')[0];
-                const assignment = e.target.id.split(':')[1];
-                window.location.href = `python/assignments/${lesson}.html`;
-            });
         });
     </script>
 </body>
