@@ -1,0 +1,7 @@
+#!/bin/bash
+
+
+# Set the build arguments as environment variables
+export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+export GIT_COMMIT=$(git rev-parse --short HEAD)
+

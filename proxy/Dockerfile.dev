@@ -1,0 +1,48 @@
+# Caddy base image
+ARG ALPINE_VERSION=3.18
+ARG GO_VERSION=1.21.3
+ARG CADDY_VERSION=v2.7.5
+
+FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS builder
+RUN apk add -q --progress --update --no-cache git ca-certificates tzdata
+RUN mkdir -p /caddydir/data && \
+    chmod -R 700 /caddydir
+ENV GO111MODULE=on \
+    CGO_ENABLED=0
+
+RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+WORKDIR /caddy
+ARG PLUGINS=
+RUN for plugin in $(echo $PLUGINS | tr "," " "); do withFlags="$withFlags --with $plugin"; done && \
+    xcaddy build ${CADDY_VERSION} ${withFlags}
+
+# Proxy base image
+FROM scratch
+
+LABEL \
+    com.timmypidashev.image.authors="pidashev.tim@gmail.com" \
+    com.timmypidashev.license="MIT" \
+    com.timmypidashev.image.url="https://github.com/timmypidashev/web" \
+    com.timmpidashev.image.source="https://github.com/timmypidashev/web" \
+    com.timmpidashev.image.title="proxy" \
+    com.timmpidashev.image.description="Caddy reverse proxy" \
+    com.timmypidashev.image.source="https://github.com/timmypidashev/web"
+
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+
+EXPOSE 8080 8443 2015
+ENV HOME=/caddydir \
+    CADDYPATH=/caddydir/data \
+    TZ=America/Los_Angeles
+
+COPY --from=builder --chown=1000 /caddydir /caddydir
+
+VOLUME ["/caddydir"]
+ENTRYPOINT ["/caddy"]
+USER 1000
+
+# see https://caddyserver.com/docs/cli
+COPY --chown=1000 Caddyfile.dev /caddydir/Caddyfile.dev
+COPY --from=builder --chown=1000 /caddy/caddy /caddy
+CMD ["run","--config","/caddydir/Caddyfile.dev"]
