@@ -1,0 +1,9 @@
+# The following version number is incremented whenever 
+#a local package or service in this repository recieves a version bump!
+
+[global]
+version = "1.0.1"
+
+[containers]
+
+[packages]

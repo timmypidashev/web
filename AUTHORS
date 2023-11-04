@@ -1,0 +1,8 @@
+# This is the list of FHCC this repositories significant contributors.
+#
+# This does not necessarily list everyone who has contributed code,
+# especially since most of the code is written in the many packages
+# this repository relies on. This list only shows the direct
+# code contributions that make this project tick, not its dependencies!
+
+Timothy Pidashev (timmypidashev) <pidashev.tim@gmail.com>
