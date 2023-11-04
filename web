@@ -1,7 +1,50 @@
 #!/bin/bash
 
+# Commandline args
+environment="$1"
+action="$2"
 
 # Set the build arguments as environment variables
 export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 export GIT_COMMIT=$(git rev-parse --short HEAD)
 
+
+
+case $environment in
+    dev)
+        if [ "$action" == "build" ];
+        then
+            echo "dev build"
+        
+        elif [ "$action" == "run" ];
+        then
+            echo "dev run"
+        
+        else
+            echo "Invalid action. Use 'build' or 'run'."
+            exit 1
+        fi
+        ;;
+
+    prod)
+        if [ "$action" == "build" ];
+        then
+            echo "prod build"
+        
+        elif [ "$action" == "run" ];
+        then
+            echo "prod run"
+
+        elif [ "$action" == "push" ];
+        then
+            echo "prod push"
+        
+        else
+            echo "Invalid action. Use 'build', 'run', or 'push'"
+            exit 1
+        fi
+        ;;
+    *)
+        echo "Invalid environment. Use 'dev' or 'prod'"
+        ;;
+esac
