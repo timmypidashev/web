@@ -1,0 +1,12 @@
+version: '3'
+
+
+services:
+  dns:
+    container_name: dns
+    build:
+      context: ./dns
+      dockerfile: Dockerfile.dev
+      args:
+        - BUILD_DATE=${BUILD_DATE}
+        - GIT_COMMIT=${GIT_COMMIT}
