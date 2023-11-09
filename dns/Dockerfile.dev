@@ -1,4 +1,12 @@
 # CoreDNS base image
 ARG ALPINE_VERSION=3.18
 ARG GO_VERSION=1.21.3
-ARG COREDNS_VERSION=v2.7.5
+ARG COREDNS_VERSION=v1.11.1
+
+FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS builder
+RUN apk add -q --progress --update --no-cache git ca-certificates libcap2-bin
+
+ENV GO111MODULE=on \
+    CGO_ENABLED=0
+
+go install github.com/coredns/coredns/tree/v1.11.1

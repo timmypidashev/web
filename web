@@ -10,6 +10,36 @@ export GIT_COMMIT=$(git rev-parse --short HEAD)
 
 
 case $action in
+    help)
+        echo "timmypidashev.com | deploy script"
+        echo "Environments:"
+        echo "    * dev"
+        echo "        - development environment, builds include local https, debug mode, and hot reloading"
+        echo ""
+        echo "    * prod"
+        echo "        - production environment, builds include optimizations and are ready to roll"
+        echo ""
+        echo "Actions:"
+        echo "    * build"
+        echo "        - builds either the entire stack without cache or select container"
+        echo "        - example: '{action} {environment}' or '{action} {container} {environment}'"
+        echo ""
+        echo "    * run"
+        echo "        - runs the entire stack with caching enabled"
+        echo "        - example: '{action} {environment}'"
+        echo "        - Note: individual containers cannot run on their own"
+        echo ""
+        echo "    * bump"
+        echo "        - bumps a containers version and the project version"
+        echo "        - example: '{action} {container}'"
+        echo ""
+        echo "    * push"
+        echo "        - pushes an image to ghcr.io"
+        echo "        - example: '{action} {container}"
+        echo "        - Note: only production images are pushed"
+        exit 1
+        ;;
+
     build)
         if [ "$environment" == "dev" ];
         then
@@ -39,6 +69,15 @@ case $action in
             exit 1
         fi
         ;;
+
+    bump)
+        "bump pkg"
+        ;;
+
+    push)
+        "push pkg"
+        ;;
+
     *)
         echo "Invalid action. Use 'build', 'run', or 'push'!"
         ;;
