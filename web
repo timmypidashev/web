@@ -4,10 +4,23 @@
 action="$1"
 environment="$2"
 
-# Set the build arguments as environment variables
-export BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-export GIT_COMMIT=$(git rev-parse --short HEAD)
+# Pulls project version from version.toml
+project_version() {
+    local version=$(awk -F'[" ]+' '/^\[project\]/{getline; print $3}' "version.toml")
+    echo "v$version"
+}
 
+# Pulls container version from version.toml
+container_version() {
+    local container="$1"
+    local version=$(awk -F'[" ]+' -v container="$container" '/^\[containers\]/{block=$1} block == "[containers]" && $1 == container {getline; print $3}' "version.toml")
+    echo "v$version"
+}
+
+# Set the build arguments as environment variables
+BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+GIT_COMMIT=$(git rev-parse --short HEAD)
+PROJECT_VERSION=$(project_version)
 
 case $action in
     help)
@@ -21,8 +34,8 @@ case $action in
         echo ""
         echo "Actions:"
         echo "    * build"
-        echo "        - builds either the entire stack without cache or select container"
-        echo "        - example: '{action} {environment}' or '{action} {container} {environment}'"
+        echo "        - builds the entire stack without cache"
+        echo "        - example: '{action} {environment}' or '{action} {environment}"
         echo ""
         echo "    * run"
         echo "        - runs the entire stack with caching enabled"
@@ -43,7 +56,12 @@ case $action in
     build)
         if [ "$environment" == "dev" ];
         then
-            echo "build dev"
+            docker compose --file compose.dev.yml build \
+                --build-arg BUILD_DATE=$BUILD_DATE \
+                --build-arg GIT_COMMIT=$GIT_COMMIT \
+                --build-arg PROJECT_VERSION="$PROJECT_VERSION" \
+                --build-arg DNS_VERSION=$(container_version "dns") \
+                --build-arg PROXY_VERSION=$(container_version "proxy") \
         
         elif [ "$environment" == "prod" ];
         then

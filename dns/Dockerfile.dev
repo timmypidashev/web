@@ -1,3 +1,11 @@
+# Imported args
+ARG BUILD_DATE
+ARG GIT_COMMIT
+ARG DNS_VERSION
+
+# Print the values of the build arguments
+RUN echo "DNS_VERSION=$DNS_VERSION"
+
 # CoreDNS base image
 ARG ALPINE_VERSION=3.18
 ARG GO_VERSION=1.21.3

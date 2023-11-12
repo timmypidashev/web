@@ -8,5 +8,6 @@ services:
       context: ./dns
       dockerfile: Dockerfile.dev
       args:
-        - BUILD_DATE=${BUILD_DATE}
-        - GIT_COMMIT=${GIT_COMMIT}
+        - DNS_VERSION
+        - BUILD_DATE
+        - GIT_COMMIT
