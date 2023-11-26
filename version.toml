@@ -1,9 +1,0 @@
-# The following version number is incremented whenever 
-# a container in this repository recieves a version bump!
-
-[project]
-version = "1.0.1"
-
-[containers]
-dns = "0.0.0"
-proxy = "0.0.0"

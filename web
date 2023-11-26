@@ -4,23 +4,36 @@
 action="$1"
 environment="$2"
 
-# Pulls project version from version.toml
-project_version() {
-    local version=$(awk -F'[" ]+' '/^\[project\]/{getline; print $3}' "version.toml")
-    echo "v$version"
+# local args
+config="project.toml"
+
+# pull project info from project.toml
+project_info() {
+    local name=$(awk -F'[" ]+' '/^\[project\]/{getline; print $3}' "$config")
+    # project_version
+    local description=$(awk -F'[" ]+' '/description =/{print $3}' "$config")
+    local authors=$(awk -F'[" ]+' '/authors =/{gsub(/[\[\]]/, ""); getline; print $0}' "$config")
+    local src=$(awk -F'[" ]+' '/source =/{print $3}' "$config")
+    local license=$(awk -F'[" ]+' '/license =/{print $3}' "$config")
+
+    echo "$name $description $authors $src $license"
 }
 
 # Pulls container version from version.toml
 container_version() {
     local container="$1"
-    local version=$(awk -F'[" ]+' -v container="$container" '/^\[containers\]/{block=$1} block == "[containers]" && $1 == container {getline; print $3}' "version.toml")
+    local version=$(awk -F'[" ]+' -v container="$container" '/^\[containers\]/{block=$1} block == "[containers]" && $1 == container {getline; print $3}' "$config")
     echo "v$version"
 }
 
-# Set the build arguments as environment variables
+# Pull project info
+INFO=$(project_info)
+echo $INFO
+read -r name description authors src license <<< "$result"
+echo $project_version
 BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 GIT_COMMIT=$(git rev-parse --short HEAD)
-PROJECT_VERSION=$(project_version)
+PROJECT_VERSION=$description
 
 case $action in
     help)

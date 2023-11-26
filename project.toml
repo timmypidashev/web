@@ -1,0 +1,18 @@
+# The following version number is incremented whenever 
+# a container in this repository recieves a version bump!
+
+[project]
+name = "web"
+version = "1.0.1"
+description = "My portfolio website!"
+authors = ["Timothy Pidashev (timmypidashev) <pidashev.tim@gmail.com>"]
+source = "https://github.com/timmypidashev/web"
+license = "MIT"
+
+[containers]
+
+    [proxy]
+    version = "0.0.0"
+    description = "Responsible for proxying all traffic from containers to the web."
+
+

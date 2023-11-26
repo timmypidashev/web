@@ -2,12 +2,12 @@ version: '3'
 
 
 services:
-  dns:
-    container_name: dns
+  proxy:
+    container_name: proxy
     build:
-      context: ./dns
+      context: ./proxy
       dockerfile: Dockerfile.dev
       args:
-        - DNS_VERSION
+        - PROXY_VERSION
         - BUILD_DATE
         - GIT_COMMIT

@@ -1,9 +1,15 @@
+# Imported args
+ARG PROXY_VERSION
+ARG BUILD_DATE
+ARG GIT_COMMIT
+
 # Caddy base image
 ARG ALPINE_VERSION=3.18
 ARG GO_VERSION=1.21.3
 ARG CADDY_VERSION=v2.7.5
 
-FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS builder
+FROM golang:${GO_VERSION}-alpine${PROXY_VERSION} AS builder
+
 RUN apk add -q --progress --update --no-cache git ca-certificates tzdata
 RUN mkdir -p /caddydir/data && \
     chmod -R 700 /caddydir
