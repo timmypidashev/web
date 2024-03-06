@@ -1,13 +1,39 @@
-version: '3'
-
+version: "3.8"
 
 services:
   proxy:
     container_name: proxy
     build:
-      context: ./proxy
+      context: ./src/proxy
       dockerfile: Dockerfile.dev
-      args:
-        - PROXY_VERSION
-        - BUILD_DATE
-        - GIT_COMMIT
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./src/proxy/Caddyfile.dev:/Caddyfile.dev:ro"
+      - "./src/proxy/certs:/certs:rw"
+    restart: always
+    networks:
+      - proxy
+    depends_on:
+      - landing
+
+  landing:
+    container_name: landing
+    build:
+      context: ./src/landing
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+      - "8000:8000"
+    volumes:
+      - "./src/landing:/landing:rw"
+    networks:
+      - proxy
+
+
+
+networks:
+  # The proxy network is the only network exposed externally
+  proxy:
+    name: proxy
