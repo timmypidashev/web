@@ -3,15 +3,12 @@ version: "3.8"
 services:
   proxy:
     container_name: proxy
-    build:
-      context: ./src/proxy
-      dockerfile: Dockerfile.dev
+    image: caddy:latest
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     volumes:
-      - "./src/proxy/Caddyfile.dev:/Caddyfile.dev:ro"
-      - "./src/proxy/certs:/certs:rw"
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile:ro
     restart: always
     networks:
       - proxy
@@ -20,20 +17,11 @@ services:
 
   landing:
     container_name: landing
-    build:
-      context: ./src/landing
-      dockerfile: Dockerfile.dev
-    ports:
-      - "3000:3000"
-      - "8000:8000"
-    volumes:
-      - "./src/landing:/landing:rw"
+    image: landing:dev
     networks:
       - proxy
 
-
-
 networks:
-  # The proxy network is the only network exposed externally
   proxy:
     name: proxy
+    driver: bridge

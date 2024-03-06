@@ -6,20 +6,10 @@ PROJECT_SOURCES							:= "https://github.com/timmypidashev/web"
 PROJECT_REGISTRY						:= "ghcr.io/timmypidashev/web"
 PROJECT_ORGANIZATION					:= "org.opencontainers"
 
-CONTAINER_PROXY_NAME					:= "proxy"
-CONTAINER_PROXY_VERSION					:= "v0.0.1"
-CONTAINER_PROXY_LOCATION				:= "src/proxy"
-CONTAINER_PROXY_DESCRIPTION				:= "A Caddy reverse proxy."
-
 CONTAINER_LANDING_NAME					:= "landing"
 CONTAINER_LANDING_VERSION				:= "v1.0.0"
-CONTAINER_LANDING_LOCATION				:= "src/web/landing"
+CONTAINER_LANDING_LOCATION				:= "src/landing"
 CONTAINER_LANDING_DESCRIPTION			:= "The landing page for my website."
-
-CONTAINER_BLOG_NAME						:= "blog"
-CONTAINER_BLOG_VERSION					:= "v0.0.0"
-CONTAINER_BLOG_LOCATION					:= "src/web/blog"
-CONTAINER_BLOG_DESCRIPTION				:= "The blog page for my website."
 
 .DEFAULT_GOAL := help
 .PHONY: run build push prune bump
@@ -52,6 +42,7 @@ run:
 	fi
 
 	docker compose -f compose.$(word 2,$(MAKECMDGOALS)).yml up --remove-orphans
+
 
 build:
 	# Arguments

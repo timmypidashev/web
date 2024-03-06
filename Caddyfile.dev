@@ -1,0 +1,5 @@
+localhost
+
+encode gzip
+
+reverse_proxy landing:3000
