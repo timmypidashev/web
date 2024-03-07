@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 
 services:
   proxy:
@@ -6,12 +6,11 @@ services:
     image: caddy:latest
     ports:
       - 80:80
-      - 443:443
     volumes:
       - ./Caddyfile.dev:/etc/caddy/Caddyfile:rw
     restart: always
     networks:
-      - proxy
+      - external
     depends_on:
       - landing
 
@@ -19,12 +18,12 @@ services:
     container_name: landing
     image: landing:dev
     expose:
-      - 8000
       - 3000
+      - 8000
     networks:
-      - proxy
+      - external
 
 networks:
-  proxy:
-    name: proxy
+  external:
+    name: external
     driver: bridge

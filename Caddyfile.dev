@@ -2,6 +2,6 @@
 	auto_https off
 }
 
-localhost {
-	reverse_proxy landing:8000
+127.0.0.1:80 {
+	reverse_proxy landing:3000
 }
