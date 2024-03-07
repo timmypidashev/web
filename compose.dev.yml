@@ -17,6 +17,8 @@ services:
   landing:
     container_name: landing
     image: landing:dev
+    volumes:
+      - ./src/landing:/app
     expose:
       - 3000
       - 8000
