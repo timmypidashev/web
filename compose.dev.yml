@@ -8,7 +8,7 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./Caddyfile.dev:/etc/caddy/Caddyfile:ro
+      - ./Caddyfile.dev:/etc/caddy/Caddyfile:rw
     restart: always
     networks:
       - proxy
@@ -18,6 +18,9 @@ services:
   landing:
     container_name: landing
     image: landing:dev
+    expose:
+      - 8000
+      - 3000
     networks:
       - proxy
 

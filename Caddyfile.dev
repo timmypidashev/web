@@ -1,5 +1,7 @@
-localhost
+{
+	auto_https off
+}
 
-encode gzip
-
-reverse_proxy landing:3000
+localhost {
+	reverse_proxy landing:8000
+}
