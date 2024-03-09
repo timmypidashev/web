@@ -12,8 +12,6 @@ services:
     restart: always
     networks:
       - caddy
-    depends_on:
-      - landing
 
   landing:
     container_name: landing
@@ -23,6 +21,8 @@ services:
       - ./src/landing/assets:/app/assets
       - ./src/landing/rxconfig.py:/app/rxconfig.py
     networks:
+      - caddy
+    depends_on:
       - caddy
 
 networks:

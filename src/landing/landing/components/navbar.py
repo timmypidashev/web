@@ -1,16 +1,15 @@
 import reflex as rx
-
+from landing.style import *
 
 def navbar():
-    return rx.flex(
-        background = "#FFF",
-        border_bottom=f"8px solid {rx.color('mauve', 4)};",
-        height="10vh",
-        position="fixed",
-        width="100%",
-        top="0px",
-        z_index="5", 
-        align_items= "center",
-        spacing="6",
-        padding= "7px 20px 7px 20px;",
+    return rx.box(
+        rx.center(
+            rx.vstack(
+                rx.heading("Navbar", size="9"),
+                align="center",
+                spacing="7"
+            ),
+            border_bottom=f"2px solid {color['white']};",
+            height="10vh"
+        )
     )

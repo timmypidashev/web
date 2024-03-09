@@ -1,10 +1,10 @@
 import reflex as rx
+from landing.style import * 
 
 def footer():
     return rx.box(
         footer_content(),
-        background="#FFF",
-        border_top=f"8px solid {rx.color('mauve', 4)};"
+        border_top=f"2px solid {color['white']};"
     )
 
 
