@@ -1,15 +1,15 @@
-{
-	auto_https off
-}
+timmypidashev.localhost {
+    encode gzip
 
-127.0.0.1:80 {
-	@backend_routes {
+	reverse_proxy landing:3000
+
+    @backend_routes {
 		path /_event/*
 		path /_upload
 		path /ping
 	}
 
 	handle @backend_routes {
-		reverse_proxy landing:3000
+		reverse_proxy landing:8000
 	}
 }

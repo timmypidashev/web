@@ -1,16 +1,17 @@
 version: '3.8'
 
 services:
-  proxy:
-    container_name: proxy
+  caddy:
+    container_name: caddy
     image: caddy:latest
     ports:
       - 80:80
+      - 443:443
     volumes:
       - ./Caddyfile.dev:/etc/caddy/Caddyfile:rw
     restart: always
     networks:
-      - external
+      - caddy
     depends_on:
       - landing
 
@@ -18,14 +19,13 @@ services:
     container_name: landing
     image: landing:dev
     volumes:
-      - ./src/landing:/app
-    expose:
-      - 3000
-      - 8000
+      - ./src/landing/landing:/app/landing
+      - ./src/landing/assets:/app/assets
+      - ./src/landing/rxconfig.py:/app/rxconfig.py
     networks:
-      - external
+      - caddy
 
 networks:
-  external:
-    name: external
-    driver: bridge
+  caddy:
+    name: caddy
+    external: true
