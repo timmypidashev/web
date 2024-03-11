@@ -1,2 +1,2 @@
-from .navbar import navbar
+from landing.shared.components import navbar
 from .footer import footer

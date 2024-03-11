@@ -36,7 +36,7 @@ def webpage(path: str, title: str = "Timothy Pidashev", props=None) -> Callable:
                 The component with the template applied.
             """
             # Import here to avoid circular imports.
-            from landing.components.navbar import navbar
+            from landing.shared.components.navbar import navbar
             from landing.components.footer import footer
 
             # Wrap the component in the template.

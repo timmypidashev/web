@@ -147,7 +147,9 @@ define container_build
 		$(eval TAG := $(PROJECT_REGISTRY)/$(CONTAINER):$(VERSION)), \
 	)
 
+	sudo mount -o bind src/shared src/landing/landing/shared
 	docker buildx build --load -t $(TAG) -f $(strip $(subst $(SPACE),,$(call container_location,$(CONTAINER))))/Dockerfile.$(ENVIRONMENT) ./$(strip $(subst $(SPACE),,$(call container_location,$(CONTAINER))))/. $(ARGS) $(call labels,$(shell echo $(CONTAINER_NAME) | tr '[:lower:]' '[:upper:]')) --no-cache
+	sudo umount /src/landing/landing/shared
 endef
 
 define container_location
@@ -160,4 +162,12 @@ define container_version
 	$(if $(CONTAINER_$(CONTAINER_NAME)_VERSION), \
 		$(shell echo $(strip $(strip $(CONTAINER_$(CONTAINER_NAME)_VERSION))) | tr -d '[:space:]'), \
 		$(error Version data for container $(1) not found))
+endef
+
+define mount_shared
+	$(sudo mount -o bind src/shared src/landing/landing/shared)
+endef
+
+define unmount_shared
+	$(sudo umount src/shared)
 endef

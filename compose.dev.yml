@@ -23,6 +23,7 @@ services:
       - ./src/landing/landing:/app/landing
       - ./src/landing/assets:/app/assets
       - ./src/landing/rxconfig.py:/app/rxconfig.py
+      - ./src/shared:/app/landing/shared
     networks:
       - caddy
 
@@ -33,8 +34,10 @@ services:
       - ./src/about/about:/app/about
       - ./src/about/assets:/app/assets
       - ./src/about/rxconfig.py:/app/rxconfig.py
+      - ./src/shared:/app/about/shared
     networks:
       - caddy
+
 
 networks:
   caddy:
