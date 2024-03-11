@@ -53,7 +53,7 @@ base_style = {
         "font_family": "ComicCode",
         "font_size": 24,
         "color": color["black"],
-        "text_decoration": "underline",
+        "text_decoration": "none",
         "_hover": {
             "color": color["green"][100]
         }
