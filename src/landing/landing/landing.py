@@ -6,7 +6,7 @@ from landing.style import *
 
 # Create app instance and add index page.
 app = rx.App(
-    style=style,
+    style=base_style,
     stylesheets=[
         "fonts/fonts.css",
         "css/scrollbar.css"

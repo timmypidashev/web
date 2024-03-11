@@ -29,10 +29,11 @@ color = {
     }
 }
 
-style = {
-    # Background color
-    "background_color": color["black"],
-        
+base_style = {
+    # Background
+    # TODO: Implement dynamic background switching once reflex allows for Dict state management
+    "background_color": "#282828",
+
     # Text
     rx.text: {
         "font_family": "ComicCode",
@@ -52,9 +53,39 @@ style = {
         "font_family": "ComicCode",
         "font_size": 24,
         "color": color["black"],
-        "text_decoration": "none", 
+        "text_decoration": "underline",
         "_hover": {
             "color": color["green"][100]
         }
     },
 }
+
+# Dark Theme
+#dark_theme = dict()
+#dark_theme["background_color"] = "#282828"
+
+# Soft Contrast Dark Theme
+# TODO
+
+# Medium Contrast Dark Theme
+# TODO
+
+# Hard Contrast Dark Theme
+# TODO
+
+# Amoled Contrast Dark Theme
+#amoled_dark_theme = dict()
+#amoled_dark_theme = "#000000"
+
+# Light Theme
+# TODO
+
+# Soft Contrast Light Theme
+# TODO
+
+# Medium Contrast Light Theme
+# TODO
+
+# Hard Contrast Light Theme
+# TODO
+
