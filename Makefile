@@ -11,6 +11,11 @@ CONTAINER_LANDING_VERSION				:= "v1.0.0"
 CONTAINER_LANDING_LOCATION				:= "src/landing"
 CONTAINER_LANDING_DESCRIPTION			:= "The landing page for my website."
 
+CONTAINER_ABOUT_NAME					:= "about"
+CONTAINER_ABOUT_VERSION					:= "v0.0.0"
+CONTAINER_ABOUT_LOCATION				:= "src/about"
+CONTAINER_ABOUT_DESCRIPTION				:= "The about page for my website."
+
 .DEFAULT_GOAL := help
 .PHONY: run build push prune bump
 .SILENT: run build push prune bump

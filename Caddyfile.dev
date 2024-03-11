@@ -13,3 +13,19 @@ timmypidashev.localhost {
 		reverse_proxy landing:8000
 	}
 }
+
+about.timmypidashev.localhost {
+    encode gzip
+
+    reverse_proxy about:3000
+
+    @backend_routes {
+        path /_event/*
+        path /_upload
+        path /ping
+    }
+
+    handle @backend_routes {
+        reverse_proxy about:8000
+    }
+}

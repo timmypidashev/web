@@ -12,6 +12,9 @@ services:
     restart: always
     networks:
       - caddy
+    depends_on:
+      - landing
+      - about
 
   landing:
     container_name: landing
@@ -22,7 +25,15 @@ services:
       - ./src/landing/rxconfig.py:/app/rxconfig.py
     networks:
       - caddy
-    depends_on:
+
+  about:
+    container_name: about
+    image: about:dev
+    volumes:
+      - ./src/about/about:/app/about
+      - ./src/about/assets:/app/assets
+      - ./src/about/rxconfig.py:/app/rxconfig.py
+    networks:
       - caddy
 
 networks:
