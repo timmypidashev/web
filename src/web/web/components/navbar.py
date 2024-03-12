@@ -6,32 +6,27 @@ def navbar():
         rx.center(
             rx.flex(
                 rx.link(
-                    rx.text("About", color=color["white"]),
-                    href="http://about.timmypidashev.localhost"
+                    rx.text("About", color=color["white"]), href="/about"
                 )
             ),
             rx.flex(
                 rx.link(
-                    rx.text("Projects", color=color["white"]),
-                    href="http://projects.timmypidashev.localhost"
+                    rx.text("Projects", color=color["white"]), href="/projects"
                 )
             ),
             rx.flex(
                 rx.link(
-                    rx.text("Resume", color=color["white"]),
-                    href="http://resume.timmypidashev.localhost"
+                    rx.text("Resume", color=color["white"]), href="/resume"
                 )
             ),
             rx.flex(
                 rx.link(
-                    rx.text("Blog", color=color["white"]),
-                    href="http://blog.timmypidashev.localhost"
+                    rx.text("Blog", color=color["white"]), href="/blog"
                 )
             ),
             rx.flex(
                 rx.link(
-                    rx.text("Shop", color=color["white"]),
-                    href="http://shop.timmypidashev.localhost"
+                    rx.text("Shop", color=color["white"]), href="shop"
                 )
             ),
             spacing="7",

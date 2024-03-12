@@ -1,7 +1,7 @@
 timmypidashev.localhost {
     encode gzip
 
-	reverse_proxy landing:3000
+	reverse_proxy web:3000
 
     @backend_routes {
 		path /_event/*
