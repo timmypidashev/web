@@ -14,28 +14,15 @@ import NextHead from "next/head"
 
 
 
-export function Fragment_e9a05c105aa9215aeba52aeec8fe2e76 () {
-  const state = useContext(StateContexts.state)
-  const [addEvents, connectErrors] = useContext(EventLoopContext);
+const pulse = keyframes`
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+`
 
-
-  return (
-    <Fragment>
-  {isTrue(((!state.is_hydrated) || (connectErrors.length > 0))) ? (
-  <Fragment>
-  <LucideWifiOffIcon css={{"color": "crimson", "zIndex": 9999, "position": "fixed", "bottom": "30px", "right": "30px", "animation": `${pulse} 1s infinite`}} size={32}>
-  {`wifi_off`}
-</LucideWifiOffIcon>
-</Fragment>
-) : (
-  <Fragment/>
-)}
-</Fragment>
-  )
-}
-
-        import { useIsPresent } from "framer-motion";
-        
 
 export function Fragment_14636cc997c0546c0967a25d8e600f96 () {
   const [addEvents, connectErrors] = useContext(EventLoopContext);
@@ -66,15 +53,28 @@ export function Fragment_14636cc997c0546c0967a25d8e600f96 () {
   )
 }
 
-const pulse = keyframes`
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-`
+        import { useIsPresent } from "framer-motion";
+        
 
+export function Fragment_e9a05c105aa9215aeba52aeec8fe2e76 () {
+  const state = useContext(StateContexts.state)
+  const [addEvents, connectErrors] = useContext(EventLoopContext);
+
+
+  return (
+    <Fragment>
+  {isTrue(((!state.is_hydrated) || (connectErrors.length > 0))) ? (
+  <Fragment>
+  <LucideWifiOffIcon css={{"color": "crimson", "zIndex": 9999, "position": "fixed", "bottom": "30px", "right": "30px", "animation": `${pulse} 1s infinite`}} size={32}>
+  {`wifi_off`}
+</LucideWifiOffIcon>
+</Fragment>
+) : (
+  <Fragment/>
+)}
+</Fragment>
+  )
+}
 
 export default function Component() {
 
@@ -92,38 +92,48 @@ export default function Component() {
   <RadixThemesBox>
   <RadixThemesFlex css={{"display": "flex", "alignItems": "center", "justifyContent": "center"}} gap={`7`}>
   <RadixThemesFlex>
-  <RadixThemesLink css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#000000", "textDecoration": "none", "&:hover": {"color": "#b8bb26"}}}>
-  <RadixThemesText as={`p`} css={{"href": "/about", "fontFamily": "ComicCode", "fontSize": 24, "color": "#ebdbb2"}}>
+  <RadixThemesLink asChild={true} css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#000000", "textDecoration": "none", "&:hover": {"color": "#b8bb26"}}}>
+  <NextLink href={`/about`} passHref={true}>
+  <RadixThemesText as={`p`} css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#ebdbb2"}}>
   {`About`}
 </RadixThemesText>
+</NextLink>
 </RadixThemesLink>
 </RadixThemesFlex>
   <RadixThemesFlex>
-  <RadixThemesLink css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#000000", "textDecoration": "none", "&:hover": {"color": "#b8bb26"}}}>
-  <RadixThemesText as={`p`} css={{"href": "/projects", "fontFamily": "ComicCode", "fontSize": 24, "color": "#ebdbb2"}}>
+  <RadixThemesLink asChild={true} css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#000000", "textDecoration": "none", "&:hover": {"color": "#b8bb26"}}}>
+  <NextLink href={`/projects`} passHref={true}>
+  <RadixThemesText as={`p`} css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#ebdbb2"}}>
   {`Projects`}
 </RadixThemesText>
+</NextLink>
 </RadixThemesLink>
 </RadixThemesFlex>
   <RadixThemesFlex>
-  <RadixThemesLink css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#000000", "textDecoration": "none", "&:hover": {"color": "#b8bb26"}}}>
-  <RadixThemesText as={`p`} css={{"href": "/resume", "fontFamily": "ComicCode", "fontSize": 24, "color": "#ebdbb2"}}>
+  <RadixThemesLink asChild={true} css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#000000", "textDecoration": "none", "&:hover": {"color": "#b8bb26"}}}>
+  <NextLink href={`/resume`} passHref={true}>
+  <RadixThemesText as={`p`} css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#ebdbb2"}}>
   {`Resume`}
 </RadixThemesText>
+</NextLink>
 </RadixThemesLink>
 </RadixThemesFlex>
   <RadixThemesFlex>
-  <RadixThemesLink css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#000000", "textDecoration": "none", "&:hover": {"color": "#b8bb26"}}}>
-  <RadixThemesText as={`p`} css={{"href": "/blog", "fontFamily": "ComicCode", "fontSize": 24, "color": "#ebdbb2"}}>
+  <RadixThemesLink asChild={true} css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#000000", "textDecoration": "none", "&:hover": {"color": "#b8bb26"}}}>
+  <NextLink href={`/blog`} passHref={true}>
+  <RadixThemesText as={`p`} css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#ebdbb2"}}>
   {`Blog`}
 </RadixThemesText>
+</NextLink>
 </RadixThemesLink>
 </RadixThemesFlex>
   <RadixThemesFlex>
-  <RadixThemesLink css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#000000", "textDecoration": "none", "&:hover": {"color": "#b8bb26"}}}>
-  <RadixThemesText as={`p`} css={{"href": "shop", "fontFamily": "ComicCode", "fontSize": 24, "color": "#ebdbb2"}}>
+  <RadixThemesLink asChild={true} css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#000000", "textDecoration": "none", "&:hover": {"color": "#b8bb26"}}}>
+  <NextLink href={`shop`} passHref={true}>
+  <RadixThemesText as={`p`} css={{"fontFamily": "ComicCode", "fontSize": 24, "color": "#ebdbb2"}}>
   {`Shop`}
 </RadixThemesText>
+</NextLink>
 </RadixThemesLink>
 </RadixThemesFlex>
 </RadixThemesFlex>

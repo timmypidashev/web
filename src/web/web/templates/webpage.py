@@ -1,7 +1,6 @@
 from typing import Callable
 import reflex as rx
 from web.route import Route
-from web.motion import motion
 
 def webpage(path: str, title: str = "Timothy Pidashev", props=None) -> Callable:
     """This template wraps the webpage with the navbar and footer.
@@ -42,15 +41,11 @@ def webpage(path: str, title: str = "Timothy Pidashev", props=None) -> Callable:
 
             # Declare the entire page content
             return rx.box(
-                motion(
-                    rx.box(
-                        navbar(),
-                        contents(*children, **props),
-                        footer(),
-                        **props
-                    ),
-                    initial={"opacity": 0, "y": -50},  # Initial state: transparent and above the screen
-                    animate={"opacity": 1, "y": 0, "transition": {"duration": 0.5, "ease": "easeInOut"}},  # Animate opacity to 1 and move down into view
+                rx.box(
+                    navbar(),
+                    contents(*children, **props),
+                    footer(),
+                    **props
                 )
             )
 

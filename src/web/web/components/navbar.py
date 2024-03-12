@@ -1,33 +1,24 @@
 import reflex as rx
+from web.state import *
 from web.style import *
 
 def navbar():
     return rx.box(
         rx.center(
             rx.flex(
-                rx.link(
-                    rx.text("About", href="/about")
-                )
+                rx.link("About", href="/about")
             ),
             rx.flex(
-                rx.link(
-                    rx.text("Projects", href="/projects")
-                )
+                rx.link("Projects", href="/projects")
             ),
             rx.flex(
-                rx.link(
-                    rx.text("Resume", href="/resume")
-                )
+                rx.link("Resume", href="/resume")
             ),
             rx.flex(
-                rx.link(
-                    rx.text("Blog", href="/blog")
-                )
+                rx.link("Blog", href="/blog")
             ),
             rx.flex(
-                rx.link(
-                    rx.text("Shop", href="shop")
-                )
+                rx.link("Shop", href="/shop")
             ),
             spacing="7",
         )

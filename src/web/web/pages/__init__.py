@@ -1,6 +1,7 @@
 from web.route import Route
 
 from .index import index
+from .about import about
 from .page404 import page404
 
 routes = [
