@@ -1,7 +1,10 @@
 from web.route import Route
 
 from .index import index
-from .about import about
+from .projects import projects
+from .resume import resume
+from .blog import blog
+from .shop import shop
 from .page404 import page404
 
 routes = [
