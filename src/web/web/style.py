@@ -52,7 +52,7 @@ base_style = {
     rx.link: {
         "font_family": "ComicCode",
         "font_size": 24,
-        "color": color["black"],
+        "color": color["white"],
         "text_decoration": "none",
         "_hover": {
             "color": color["green"][100]
