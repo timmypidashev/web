@@ -1,5 +1,5 @@
 import reflex as rx
-from landing.templates import webpage
+from web.templates import webpage
 
 # TODO: Add a go back here link
 

@@ -1,6 +1,6 @@
 from typing import Callable
 import reflex as rx
-from landing.route import Route
+from web.route import Route
 
 def webpage(path: str, title: str = "Timothy Pidashev", props=None) -> Callable:
     """This template wraps the webpage with the navbar and footer.
@@ -36,8 +36,8 @@ def webpage(path: str, title: str = "Timothy Pidashev", props=None) -> Callable:
                 The component with the template applied.
             """
             # Import here to avoid circular imports.
-            from landing.shared.components.navbar import navbar
-            from landing.components.footer import footer
+            from web.components.navbar import navbar
+            from web.components.footer import footer
 
             # Wrap the component in the template.
             return rx.box(

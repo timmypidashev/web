@@ -1,5 +1,5 @@
 import reflex as rx
-from landing.style import *
+from web.style import *
 
 def navbar():
     return rx.box(

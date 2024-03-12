@@ -1,8 +1,8 @@
 import reflex as rx
 from rxconfig import config
-from landing.state import *
-from landing.pages import *
-from landing.style import *
+from web.state import *
+from web.pages import *
+from web.style import *
 
 # Create app instance and add index page.
 app = rx.App(

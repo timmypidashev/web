@@ -13,28 +13,15 @@ services:
     networks:
       - caddy
     depends_on:
-      - landing
-      - about
+      - web
 
-  landing:
-    container_name: landing
-    image: landing:dev
+  web:
+    container_name: web
+    image: web:dev
     volumes:
-      - ./src/landing/landing:/app/landing
-      - ./src/landing/assets:/app/assets
-      - ./src/landing/rxconfig.py:/app/rxconfig.py
-      - ./src/shared:/app/landing/shared
-    networks:
-      - caddy
-
-  about:
-    container_name: about
-    image: about:dev
-    volumes:
-      - ./src/about/about:/app/about
-      - ./src/about/assets:/app/assets
-      - ./src/about/rxconfig.py:/app/rxconfig.py
-      - ./src/shared:/app/about/shared
+      - ./src/web/web:/app/web
+      - ./src/web/assets:/app/assets
+      - ./src/web/rxconfig.py:/app/rxconfig.py
     networks:
       - caddy
 

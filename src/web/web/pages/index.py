@@ -1,6 +1,6 @@
 import reflex as rx
-from landing.components import navbar
-from landing.templates import webpage
+from web.components import navbar
+from web.templates import webpage
 
 @webpage(path="/", title="Timothy Pidashev")
 def index() -> rx.Component:

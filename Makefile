@@ -6,15 +6,10 @@ PROJECT_SOURCES							:= "https://github.com/timmypidashev/web"
 PROJECT_REGISTRY						:= "ghcr.io/timmypidashev/web"
 PROJECT_ORGANIZATION					:= "org.opencontainers"
 
-CONTAINER_LANDING_NAME					:= "landing"
-CONTAINER_LANDING_VERSION				:= "v1.0.0"
-CONTAINER_LANDING_LOCATION				:= "src/landing"
-CONTAINER_LANDING_DESCRIPTION			:= "The landing page for my website."
-
-CONTAINER_ABOUT_NAME					:= "about"
-CONTAINER_ABOUT_VERSION					:= "v0.0.0"
-CONTAINER_ABOUT_LOCATION				:= "src/about"
-CONTAINER_ABOUT_DESCRIPTION				:= "The about page for my website."
+CONTAINER_WEB_NAME						:= "web"
+CONTAINER_WEB_VERSION					:= "v1.0.0"
+CONTAINER_WEB_LOCATION					:= "src/web"
+CONTAINER_WEB_DESCRIPTION				:= "My portfolio website!"
 
 .DEFAULT_GOAL := help
 .PHONY: run build push prune bump
@@ -147,14 +142,7 @@ define container_build
 		$(eval TAG := $(PROJECT_REGISTRY)/$(CONTAINER):$(VERSION)), \
 	)
 
-	sudo mkdir -p $(call container_location,$(CONTAINER))/$(CONTAINER)/shared
-	sudo mount -o bind src/shared $(call container_location,$(CONTAINER))/$(CONTAINER)/shared
 	docker buildx build --load -t $(TAG) -f $(strip $(subst $(SPACE),,$(call container_location,$(CONTAINER))))/Dockerfile.$(ENVIRONMENT) ./$(strip $(subst $(SPACE),,$(call container_location,$(CONTAINER))))/. $(ARGS) $(call labels,$(shell echo $(CONTAINER_NAME) | tr '[:lower:]' '[:upper:]')) --no-cache
-	sudo umount -l $(call container_location,$(CONTAINER))/$(CONTAINER)/shared
-	sleep 1
-	sudo rm -rf $(call container_location,$(CONTAINER))/$(CONTAINER)/shared
-	sleep 1
-
 endef
 
 define container_location

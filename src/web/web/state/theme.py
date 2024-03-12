@@ -1,6 +1,6 @@
 import reflex as rx
 from .state import State
-from landing.style import *
+from web.style import *
 from typing import Dict, Any, List
 
 
