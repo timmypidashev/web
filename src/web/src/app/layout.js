@@ -1,5 +1,6 @@
 // Imports
-import Navbar from "@/components/navbar";
+import '@/styles/tailwind.css';
+import NavBar from "@/components/navbar";
 import Footer from "@/components/footer";
 
 // Metadata
@@ -11,10 +12,12 @@ export const metadata = {
 // Exports
 export default function Layout({children}) {
   return (
-    <>
-      <Navbar/>
-      <main>{children}</main>
-      <Footer/>
-    </>
+    <html lang="en">
+      <body>
+        <NavBar/>
+        <main>{children}</main>
+        <Footer/>
+      </body>
+    </html>
   );
 }
