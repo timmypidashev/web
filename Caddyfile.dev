@@ -10,6 +10,6 @@ timmypidashev.localhost {
 	}
 
 	handle @backend_routes {
-		reverse_proxy landing:8000
+		reverse_proxy web:8000
 	}
 }
