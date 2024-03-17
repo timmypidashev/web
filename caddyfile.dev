@@ -1,15 +1,5 @@
 timmypidashev.localhost {
     encode gzip
 
-	reverse_proxy web:3000
-
-    @backend_routes {
-		path /_event/*
-		path /_upload
-		path /ping
-	}
-
-	handle @backend_routes {
-		reverse_proxy web:8000
-	}
+	  reverse_proxy web:3000
 }

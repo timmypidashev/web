@@ -18,10 +18,6 @@ services:
   web:
     container_name: web
     image: web:dev
-    volumes:
-      - ./src/web/web:/app/web
-      - ./src/web/assets:/app/assets
-      - ./src/web/rxconfig.py:/app/rxconfig.py
     networks:
       - caddy
 
