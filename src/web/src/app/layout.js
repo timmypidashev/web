@@ -1,5 +1,5 @@
 // Imports
-import "@/styles/tailwind.css";
+import "@/app/globals.css";
 import Theme from "@/app/theme";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -14,10 +14,10 @@ export const metadata = {
 export default function Layout({children}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
+      <body className="bg-gray-50 dark:bg-slate-800">
         <Theme>
           <Header />
-          <main className="dark:bg-red-1">
+          <main>
             {children}
           </main>
           <Footer />
