@@ -1,5 +1,6 @@
 "use client";
 
+import ThemeToggle from "@/components/theme-toggle"
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -29,8 +30,13 @@ const navItems= [
 const Header = () => {
 
   return (
-    <div>
-      Navbar
+    <div className="flex justify-center space-x-7">
+      <Link href="/">Home</Link>
+      <Link href="/projects">Projects</Link>
+      <Link href="/resume">Resume</Link>
+      <Link href="/blog">Blog</Link>
+      <Link href="/shop">Shop</Link>
+      <ThemeToggle />
     </div>
   );
 }

@@ -14,7 +14,10 @@ export const metadata = {
 export default function Layout({children}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-light-background dark:bg-dark-background">
+      <body className="
+        bg-light-background text-light-foreground 
+        dark:bg-dark-background dark:text-dark-foreground
+      ">
         <Theme>
           <Header />
           <main>

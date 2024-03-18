@@ -9,6 +9,7 @@ module.exports = {
       colors: {
         light:{
           background: "#fbf1c7",
+          foreground: "#3c3836",
           red: {
             1: "#cc241d",
             2: "#9d0006"
@@ -40,6 +41,7 @@ module.exports = {
         },
         dark: {
           background: "#282828",
+          foreground: "#ebdbb2",
           red: {
             1: "#cc241d",
             2: "#fb4934"
