@@ -6,6 +6,8 @@ import ThemeToggle from "@/components/theme-toggle";
 // Exports
 export default function Index() {
   return (
-    <ThemeToggle />
+    <div> 
+      <ThemeToggle />
+    </div>
   );
 }

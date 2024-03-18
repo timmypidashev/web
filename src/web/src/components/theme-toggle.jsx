@@ -21,6 +21,7 @@ export default function ThemeToggle() {
       alt="Loading Light/Dark Toggle"
       priority={false}
       title="Loading Light/Dark Toggle"
+      style={{ opacity: 0 }}
     />
   )
 

@@ -29,7 +29,7 @@ const navItems= [
 const Header = () => {
 
   return (
-    <div className="text-gray-800 hover:text-blue-500 cursor-pointer">
+    <div>
       Navbar
     </div>
   );
