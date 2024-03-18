@@ -1,10 +1,11 @@
 // Imports
+import ThemeToggle from "@/components/theme-toggle";
 
 // Metadata
 
 // Exports
 export default function Index() {
   return (
-    <h1>Test</h1>
+    <ThemeToggle />
   );
 }

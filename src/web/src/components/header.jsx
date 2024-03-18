@@ -26,13 +26,13 @@ const navItems= [
   }
 ]
 
-const NavBar = () => {
+const Header = () => {
 
   return (
-    <div className="text-3xl font-bold text-gray-800">
+    <div className="dark:bg-red-1">
       Navbar
     </div>
   );
 }
 
-export default NavBar;
+export default Header;
