@@ -36,7 +36,9 @@ const Header = () => {
       <Link href="/resume">Resume</Link>
       <Link href="/blog">Blog</Link>
       <Link href="/shop">Shop</Link>
-      <ThemeToggle />
+      <div className="flex items-center">
+        <ThemeToggle />
+      </div>
     </div>
   );
 }
