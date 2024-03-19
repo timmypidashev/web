@@ -5,10 +5,10 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 
 // Metadata
-export const metadata = {
-  title: "Timothy Pidashev",
-  description: "Engineering the Future!"
-};
+//export const metadata = {
+//  title: "Timothy Pidashev",
+//  description: "Engineering the Future!"
+//};
 
 // Exports
 export default function Layout({children}) {
