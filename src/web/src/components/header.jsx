@@ -7,12 +7,20 @@ import { useState, useEffect } from "react";
 
 
 let tabs = [
-  { id: "/", label: "Home" },
-  { id: "projects", label: "Projects" },
-  { id: "resume", label: "Resume" },
-  { id: "blog", label: "Blog" },
-  { id: "shop", label: "Shop" },
+  { id: "/", label: "Home", color: "green" },
+  { id: "projects", label: "Projects", color: "yellow" },
+  { id: "resume", label: "Resume", color: "blue" },
+  { id: "blog", label: "Blog", color: "purple" },
+  { id: "shop", label: "Shop", color: "aqua" }
 ];
+
+const tabColors = {
+  "green": "bg-light-green-1 dark:bg-dark-green-1",
+  "yellow": "bg-light-yellow-1 dark:bg-dark-yellow-1",
+  "blue": "bg-light-blue-1 dark:bg-dark-blue-1",
+  "purple": "bg-light-purple-1 dark:bg-dark-purple-1",
+  "aqua": "bg-light-aqua-1 dark:bg-dark-aqua-1"
+}
 
 function Header() {
   const [mounted, setMounted] = useState(false);
@@ -43,7 +51,7 @@ function Header() {
               onClick={() => setActiveTab(tab.id)}
               className={`${
                 activeTab === tab.id ? "" : "hover:text-white/60"
-              } relative rounded-full px-3 py-1.5 text-sm font-medium text-light-foreground dark:text-dark-foreground outline-sky-400 transition focus-visible:outline-2`}
+              } relative rounded-full px-3 py-1.5 text-sm text-light-foreground dark:text-dark-foreground outline-sky-400 transition focus-visible:outline-2`}
               style={{
                 WebkitTapHighlightColor: "transparent",
               }}
@@ -51,7 +59,7 @@ function Header() {
               {activeTab === tab.id && (
                 <motion.div
                   layoutId="underline"
-                  className="absolute inset-x-0 bottom-0 h-1 bg-light-green-1 dark:bg-dark-green-1"
+                  className={`absolute inset-x-0 bottom-0 h-1 ${tabColors[tab.color]}`}
                   style={{ marginLeft: "0.75em", marginRight: "0.75em", borderRadius: 9999  }}
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
@@ -60,6 +68,7 @@ function Header() {
             </motion.a>
           </Link>
         ))}
+        <ThemeToggle />
       </div>
     </div>
   );
