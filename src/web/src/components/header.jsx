@@ -2,7 +2,7 @@
 
 import ThemeToggle from "@/components/theme-toggle"
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
 
@@ -30,46 +30,54 @@ function Header() {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return (
-      <div className="flex space-x-1">
-        {tabs.map((tab) => (
-          <div key={tab.id} className="invisible">
-            {/* Placeholder for each tab */}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
   return (
     <div className="flex justify-center items-center">
-      <div className="flex space-x-1">
-        {tabs.map((tab) => (
-          <Link key={tab.id} href={`/${tab.id}`} passHref>
-            <motion.a
-              onClick={() => setActiveTab(tab.id)}
-              className={`${
-                activeTab === tab.id ? "" : "hover:text-white/60"
-              } relative rounded-full px-3 py-1.5 text-sm text-light-foreground dark:text-dark-foreground transition-all focus-visible:outline-2`}
-              style={{
-                WebkitTapHighlightColor: "transparent",
-              }}
-            >
-              {activeTab === tab.id && (
-                <motion.div
-                  layoutId="underline"
-                  className={`absolute inset-x-0 bottom-0 h-1 ${tabColors[tab.color]}`}
-                  style={{ marginLeft: "0.75em", marginRight: "0.75em", borderRadius: 9999  }}
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
-              {tab.label}
-            </motion.a>
-          </Link>
-        ))}
-        <ThemeToggle />
-      </div>
+      <AnimatePresence>
+        {mounted && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={{
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 }
+              },
+              hidden: { opacity: 0 }
+            }}
+            className="flex space-x-1"
+          >
+            {tabs.map((tab, index) => (
+              <Link key={tab.id} href={`/${tab.id}`} passHref>
+                <motion.a
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`${
+                    activeTab === tab.id ? "" : ""
+                  } relative rounded-full px-3 py-1.5 text-sm text-light-foreground dark:text-dark-foreground transition-all focus-visible:outline-2`}
+                  style={{
+                    WebkitTapHighlightColor: "transparent",
+                  }}
+                  variants={{
+                    visible: { opacity: 1, x: 0 },
+                    hidden: { opacity: 0, x: -50 }
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {activeTab === tab.id && (
+                    <motion.div
+                      layoutId="underline"
+                      className={`absolute inset-x-0 bottom-0 h-1 ${tabColors[tab.color]}`}
+                      style={{ marginLeft: "0.75em", marginRight: "0.75em", borderRadius: 9999 }}
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                  {tab.label}
+                </motion.a>
+              </Link>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
