@@ -35,24 +35,30 @@ function Header() {
       <AnimatePresence>
         {mounted && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex items-center"
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            variants={{
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 }
+              },
+              hidden: { opacity: 0 }
+            }}
+            className="flex space-x-1"
           >
-            {tabs.map((tab) => (
+            {tabs.map((tab, index) => (
               <Link key={tab.id} href={`/${tab.id}`} passHref>
                 <motion.a
                   onClick={() => setActiveTab(tab.id)}
                   className={`${
                     activeTab === tab.id ? "" : ""
                   } 
-                  flex justify-center relative rounded-full 
+                  relative rounded-full
                   lg:px-6 md:px-5 sm:px-4 lg:py-1.5 md:py-1.5 sm:py-1.5
                   lg:mr-8 md:mr-4 sm:mr-2 lg:mb-1 md:mb-1 sm:mb-1
                   lg:text-4xl md:text-3xl sm:text-2xl font-bold text-light-foreground dark:text-dark-foreground
-                  transition-all focus-visible:outline-2
-                  `}
+                  transition-all focus-visible:outline-2`}
                   style={{
                     WebkitTapHighlightColor: "transparent",
                   }}
