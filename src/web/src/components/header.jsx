@@ -43,16 +43,16 @@ function Header() {
               onClick={() => setActiveTab(tab.id)}
               className={`${
                 activeTab === tab.id ? "" : "hover:text-white/60"
-              } relative rounded-full px-3 py-1.5 text-sm font-medium text-white outline-sky-400 transition focus-visible:outline-2`}
+              } relative rounded-full px-3 py-1.5 text-sm font-medium text-light-foreground dark:text-dark-foreground outline-sky-400 transition focus-visible:outline-2`}
               style={{
                 WebkitTapHighlightColor: "transparent",
               }}
             >
               {activeTab === tab.id && (
-                <motion.span
-                  layoutId="bubble"
-                  className="absolute inset-0 z-10 bg-white mix-blend-difference"
-                  style={{ borderRadius: 9999 }}
+                <motion.div
+                  layoutId="underline"
+                  className="absolute inset-x-0 bottom-0 h-1 bg-light-green-1 dark:bg-dark-green-1"
+                  style={{ marginLeft: "0.75em", marginRight: "0.75em", borderRadius: 9999  }}
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
