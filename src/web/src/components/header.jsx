@@ -15,7 +15,24 @@ let tabs = [
 ];
 
 function Header() {
+  const [mounted, setMounted] = useState(false);
   let [activeTab, setActiveTab] = useState(tabs[0].id);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="flex space-x-1">
+        {tabs.map((tab) => (
+          <div key={tab.id} className="invisible">
+            {/* Placeholder for each tab */}
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="flex space-x-1">
