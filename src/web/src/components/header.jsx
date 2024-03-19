@@ -35,19 +35,12 @@ function Header() {
       <AnimatePresence>
         {mounted && (
           <motion.div
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            variants={{
-              visible: {
-                opacity: 1,
-                transition: { staggerChildren: 0.1 }
-              },
-              hidden: { opacity: 0 }
-            }}
-            className="flex space-x-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex items-center"
           >
-            {tabs.map((tab, index) => (
+            {tabs.map((tab) => (
               <Link key={tab.id} href={`/${tab.id}`} passHref>
                 <motion.a
                   onClick={() => setActiveTab(tab.id)}
