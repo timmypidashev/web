@@ -1,8 +1,9 @@
-"use client";
+use client";
 import { Suspense, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { OrbitControls } from "@react-three/drei";
 import Bird from "@/components/Bird";
 
 function HeroSection1() {
@@ -40,6 +41,7 @@ function HeroSection1() {
     <Canvas camera={{ position: [0, 0, 35] }}>
       <ambientLight intensity={2} />
       <pointLight position={[40, 40, 40]} />
+      <OrbitControls />
       <Suspense fallback={null}>
         {birds.map((props) => (
           <Bird {...props} key={props.key} />
