@@ -25,7 +25,7 @@ const tabColors = {
 };
 
 // Individual tab links
-function Tab({ tab, activeTab, setActiveTab }) {
+function MenuTab({ tab, activeTab, setActiveTab }) {
   return (
     <Link href={`/${tab.id}`} passHref>
       <motion.a
@@ -84,39 +84,42 @@ function TabMenu({ tabs, activeTab, setActiveTab }) {
       className="hidden 2xl:flex xl:flex lg:flex md:flex space-x-1" // Hide on small screens
     >
       {tabs.map((tab) => (
-        <Tab key={tab.id} tab={tab} activeTab={activeTab} setActiveTab={setActiveTab} />
+        <MenuTab key={tab.id} tab={tab} activeTab={activeTab} setActiveTab={setActiveTab} />
       ))}
     </motion.div>
   );
 }
 
-function CollapsibleMenu({ tabs, activeTab, setActiveTab }) {
+function CollapsibleTab({ tab }) {
+
+}
+
+function CollapsibleTabMenu() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      exit="hidden"
-      variants={{
-        visible: {
-          opacity: 1,
-          transition: { staggerChildren: 0.1 }
-        },
-        hidden: { opacity: 0 }
-      }}
-      className="2xl:hidden xl:hidden lg:hidden md:hidden sm:flex-col space-y-4" // Flex column layout
-    >
-      {tabs.map((tab) => (
-        <motion.div
-          key={tab.id}
-          variants={{
-            visible: { opacity: 1, y: 0 },
-            hidden: { opacity: 0, y: -20 }
-          }}
-        >
-          <Tab tab={tab} activeTab={activeTab} setActiveTab={setActiveTab} />
-        </motion.div>
-      ))}
-    </motion.div>
+    <div className="flex items-center justify-end lg:hidden">
+      <button onClick={toggleMenu} className="focus:outline-none">
+        <FaBars size={24} />
+      </button>
+      {isOpen && (
+        <div className="fixed top-16 right-4 flex flex-col items-center space-y-4 bg-gray-200 dark:bg-gray-800 rounded-md p-4 shadow-lg z-10">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => console.log(`Clicked ${tab.label}`)} // Example onClick function
+              className={`text-lg font-bold text-white ${tabColors[tab.color]} rounded-full px-4 py-2 focus:outline-none`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -134,7 +137,7 @@ function Header() {
         {mounted && (
           <>
             <TabMenu tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
-            <CollapsibleMenu tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+            <CollapsibleTabMenu />
           </>
         )}
       </AnimatePresence>
