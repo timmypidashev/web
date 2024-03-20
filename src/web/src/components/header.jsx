@@ -124,7 +124,7 @@ function CollapsibleTabMenu({ tabs }) {
   };
 
   return (
-    <div className="flex items-center justify-end lg:hidden">
+    <div className="flex items-center justify-end 2xl:hidden xl:hidden lg:hidden md:hidden">
       <button onClick={toggleMenu} className="focus:outline-none">
         <FaBars size={24} />
       </button>
