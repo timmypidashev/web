@@ -116,7 +116,7 @@ function CollapsibleTab({ tab }) {
   );
 }
 
-function CollapsibleTabMenu() {
+function CollapsibleTabMenu({ tabs }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -168,7 +168,7 @@ function Header() {
         {mounted && (
           <>
             <TabMenu tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
-            <CollapsibleTabMenu />
+            <CollapsibleTabMenu tabs={tabs} />
           </>
         )}
       </AnimatePresence>
