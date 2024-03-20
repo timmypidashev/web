@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { FaBars } from "react-icons/fa"; // Import hamburger icon
+
 
 // Tabs(links to be converted into a tab menu)
 const tabs = [
@@ -79,10 +81,40 @@ function TabMenu({ tabs, activeTab, setActiveTab }) {
         },
         hidden: { opacity: 0 }
       }}
-      className="flex space-x-1"
+      className="hidden 2xl:flex xl:flex lg:flex md:flex space-x-1" // Hide on small screens
     >
       {tabs.map((tab) => (
         <Tab key={tab.id} tab={tab} activeTab={activeTab} setActiveTab={setActiveTab} />
+      ))}
+    </motion.div>
+  );
+}
+
+function CollapsibleMenu({ tabs, activeTab, setActiveTab }) {
+  return (
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+      variants={{
+        visible: {
+          opacity: 1,
+          transition: { staggerChildren: 0.1 }
+        },
+        hidden: { opacity: 0 }
+      }}
+      className="2xl:hidden xl:hidden lg:hidden md:hidden sm:flex-col space-y-4" // Flex column layout
+    >
+      {tabs.map((tab) => (
+        <motion.div
+          key={tab.id}
+          variants={{
+            visible: { opacity: 1, y: 0 },
+            hidden: { opacity: 0, y: -20 }
+          }}
+        >
+          <Tab tab={tab} activeTab={activeTab} setActiveTab={setActiveTab} />
+        </motion.div>
       ))}
     </motion.div>
   );
@@ -100,7 +132,10 @@ function Header() {
     <div className="flex justify-center items-center">
       <AnimatePresence>
         {mounted && (
-          <TabMenu tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+          <>
+            <TabMenu tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+            <CollapsibleMenu tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+          </>
         )}
       </AnimatePresence>
     </div>
