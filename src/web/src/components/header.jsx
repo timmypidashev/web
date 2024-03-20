@@ -54,11 +54,12 @@ function Header() {
                   className={`${
                     activeTab === tab.id ? "" : ""
                   } 
-                  relative rounded-full
-                  lg:px-6 md:px-5 sm:px-4 lg:py-1.5 md:py-1.5 sm:py-1.5
-                  lg:mr-8 md:mr-4 sm:mr-2 lg:mb-1 md:mb-1 sm:mb-1
-                  lg:text-4xl md:text-3xl sm:text-2xl font-bold text-light-foreground dark:text-dark-foreground
-                  transition-all focus-visible:outline-2`}
+                    relative rounded-full
+                    lg:px-6 md:px-5 sm:px-4 lg:py-1.5 md:py-1.5 sm:py-1.5
+                    lg:mr-8 md:mr-4 sm:mr-2 lg:mb-1 md:mb-1 sm:mb-1
+                    lg:text-4xl md:text-3xl sm:text-2xl font-bold text-light-foreground dark:text-dark-foreground
+                    transition-all focus-visible:outline-2
+                  `}
                   style={{
                     WebkitTapHighlightColor: "transparent",
                   }}
@@ -71,7 +72,12 @@ function Header() {
                   {activeTab === tab.id && (
                     <motion.div
                       layoutId="underline"
-                      className={`absolute inset-x-0 lg:bottom-0.5 md:bottom-0.5 sm:bottom-0.5 lg:h-1.5 md:h-1.5 sm:h-1 ${tabColors[tab.color]}`}
+                      className={`
+                        absolute inset-x-0 
+                        lg:bottom-0.5 md:bottom-0.5 sm:bottom-0.5 
+                        lg:h-1.5 md:h-1.5 sm:h-1 
+                        ${tabColors[tab.color]}
+                      `}
                       style={{ marginLeft: "0.75em", marginRight: "0.75em", borderRadius: 9999 }}
                       transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />

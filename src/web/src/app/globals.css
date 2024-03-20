@@ -1,4 +1,10 @@
 @import "tailwindcss/base";
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  display: none;
+}
+
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
@@ -32,4 +38,10 @@ body {
 
 .italic-text {
   font-family: "ComicCodeItalic";
+}
+
+/* 3d goodies :D */
+canvas {
+  width: 100%;
+  height: 100vh;
 }
