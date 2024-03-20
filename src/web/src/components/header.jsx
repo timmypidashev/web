@@ -16,12 +16,20 @@ const tabs = [
 ];
 
 // Tab theme colors
-const tabColors = {
+const tabLineColors = {
   green: "bg-light-green-1 dark:bg-dark-green-1",
   yellow: "bg-light-yellow-1 dark:bg-dark-yellow-1",
   blue: "bg-light-blue-1 dark:bg-dark-blue-1",
   purple: "bg-light-purple-1 dark:bg-dark-purple-1",
   aqua: "bg-light-aqua-1 dark:bg-dark-aqua-1"
+};
+
+const tabColors = {
+  green: "text-light-green-1 dark:text-dark-green-1",
+  yellow: "text-light-yellow-1 dark:text-dark-yellow-1",
+  blue: "text-light-blue-1 dark:text-dark-blue-1",
+  purple: "text-light-purple-1 dark:text-dark-purple-1",
+  aqua: "text-light-aqua-1 dark:text-dark-aqua-1"
 };
 
 // Individual tab links
@@ -55,7 +63,7 @@ function MenuTab({ tab, activeTab, setActiveTab }) {
             absolute inset-x-0 
             lg:bottom-0.5 md:bottom-0.5 sm:bottom-0.5 
             lg:h-1.5 md:h-1.5 sm:h-1 
-            ${tabColors[tab.color]}
+            ${tabLineColors[tab.color]}
           `}
             style={{ marginLeft: "0.75em", marginRight: "0.75em", borderRadius: 9999 }}
             transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
@@ -90,8 +98,22 @@ function TabMenu({ tabs, activeTab, setActiveTab }) {
   );
 }
 
+// CollapsibleTab component
 function CollapsibleTab({ tab }) {
-
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <Link href={`/${tab.id}`} passHref>
+        <motion.a
+          className={`text-lg font-bold ${tabColors[tab.color]} px-4 py-2 focus:outline-none`}>
+          {tab.label}
+        </motion.a>
+      </Link>
+    </motion.div>
+  );
 }
 
 function CollapsibleTabMenu() {
@@ -106,19 +128,28 @@ function CollapsibleTabMenu() {
       <button onClick={toggleMenu} className="focus:outline-none">
         <FaBars size={24} />
       </button>
-      {isOpen && (
-        <div className="fixed top-16 right-4 flex flex-col items-center space-y-4 bg-gray-200 dark:bg-gray-800 rounded-md p-4 shadow-lg z-10">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => console.log(`Clicked ${tab.label}`)} // Example onClick function
-              className={`text-lg font-bold text-white ${tabColors[tab.color]} rounded-full px-4 py-2 focus:outline-none`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="fixed top-16 right-4 flex flex-col items-center space-y-4 bg-gray-200 dark:bg-gray-800 rounded-md p-4 shadow-lg z-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {tabs.map((tab, index) => (
+              <motion.div
+                key={tab.id}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: index * 0.1 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <CollapsibleTab tab={tab} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
