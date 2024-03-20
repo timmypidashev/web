@@ -98,55 +98,70 @@ function TabMenu({ tabs, activeTab, setActiveTab }) {
   );
 }
 
-// CollapsibleTab component
-function CollapsibleTab({ tab }) {
+function CollapsibleTab({ tab, onClick }) {
+  const handleClick = () => {
+    onClick(); // Close the menu when a tab is clicked
+    // You can add additional functionality here if needed
+    // For example: console.log(`Clicked ${tab.label}`);
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
-    >
-      <Link href={`/${tab.id}`} passHref>
-        <motion.a
-          className={`text-lg font-bold ${tabColors[tab.color]} px-4 py-2 focus:outline-none`}>
-          {tab.label}
-        </motion.a>
-      </Link>
-    </motion.div>
+    <Link href={`/${tab.id}`} passHref>
+      <motion.a
+        className={`text-lg font-bold ${tabColors[tab.color]} rounded-full px-4 py-2 focus:outline-none`}
+        onClick={handleClick}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        {tab.label}
+      </motion.a>
+    </Link>
   );
 }
 
-function CollapsibleTabMenu({ tabs }) {
+// CollapsibleTabMenu component
+function CollapsibleTabMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleTabClick = () => {
+    setIsOpen(false); // Close the menu when a tab is clicked
+  };
+
   return (
-    <div className="flex items-center justify-end 2xl:hidden xl:hidden lg:hidden md:hidden">
-      <button onClick={toggleMenu} className="focus:outline-none">
-        <FaBars size={24} />
-      </button>
+    <div>
+      <div className="justify-end">
+        <button onClick={toggleMenu} className="focus:outline-none">
+          <FaBars size={24} />
+        </button>
+      </div>
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed top-16 right-4 flex flex-col items-center space-y-4 bg-gray-200 dark:bg-gray-800 rounded-md p-4 shadow-lg z-10"
+            className="fixed top-0 left-0 w-full h-full bg-gray-200 dark:bg-gray-800 z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {tabs.map((tab, index) => (
-              <motion.div
-                key={tab.id}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2, delay: index * 0.1 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <CollapsibleTab tab={tab} />
-              </motion.div>
-            ))}
+            <motion.div
+              className="flex flex-col items-center justify-center h-full"
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={{
+                visible: { opacity: 1, scale: 1, transition: { staggerChildren: 0.1 } },
+                hidden: { opacity: 0, scale: 0.9 }
+              }}
+            >
+              {tabs.map((tab, index) => (
+                <motion.div key={tab.id} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
+                  <CollapsibleTab tab={tab} onClick={handleTabClick} />
+                </motion.div>
+              ))}
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
