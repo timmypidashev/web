@@ -1,4 +1,5 @@
-use client";
+"use client"
+
 import { Suspense, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { motion, AnimatePresence } from "framer-motion";

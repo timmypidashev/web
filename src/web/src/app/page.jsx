@@ -6,6 +6,6 @@ import { HeroSection1, HeroSection2, HeroSection3 } from "@/components/hero";
 // Exports
 export default function Index() {
   return (
-    <HeroSection1 />
+    <div></div>
   );
 }
