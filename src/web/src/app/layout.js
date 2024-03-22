@@ -1,5 +1,5 @@
 // Imports
-import "@/app/globals.css";
+import "@/style/globals.css";
 import Theme from "@/app/theme";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
