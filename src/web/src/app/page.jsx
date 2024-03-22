@@ -1,11 +1,11 @@
 // Imports
-import { HeroSection1, HeroSection2, HeroSection3 } from "@/components/hero";
+import Hero from "@/components/hero";
 
 // Metadata
 
 // Exports
 export default function Index() {
   return (
-    null
+    <Hero />
   );
 }

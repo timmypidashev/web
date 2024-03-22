@@ -41,7 +41,6 @@ body {
 }
 
 /* 3d goodies :D */
-canvas {
-  width: 100%;
-  height: 100vh;
+canvas + div {
+  mix-blend-mode: multiply;
 }
