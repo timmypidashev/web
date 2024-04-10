@@ -1,6 +1,5 @@
 "use client"
 
-import { motion } from 'framer-motion';
 import Typewriter from 'typewriter-effect';
 import React from 'react';
 

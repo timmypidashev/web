@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useRef } from 'react';
-import Content from '@/components/hero/sections';
+import React from 'react';
+import Content from '@/components/hero/content';
 
 function Hero() {
   return (
@@ -12,4 +12,3 @@ function Hero() {
 }
 
 export default Hero;
-
