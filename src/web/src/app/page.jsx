@@ -1,4 +1,5 @@
 // Imports
+import Container from "@/components/ui/container";
 import Hero from "@/components/hero";
 
 // Metadata
@@ -6,6 +7,8 @@ import Hero from "@/components/hero";
 // Exports
 export default function Index() {
   return (
-    <Hero />
+    <Container>
+      <Hero />
+    </Container>
   );
 }

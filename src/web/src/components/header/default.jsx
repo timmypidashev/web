@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Links, LinkColors } from "@/components/header/constants";
 
-function Topbar() {
+function DefaultHeader() {
   return (
     <div className="sticky mx-auto max-w-screen-lg">
       <motion.nav
@@ -43,4 +43,4 @@ function Topbar() {
   );
 }
 
-export default Topbar;
+export default DefaultHeader;
