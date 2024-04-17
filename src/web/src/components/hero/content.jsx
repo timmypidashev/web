@@ -18,7 +18,7 @@ function Content() {
               cursor: ''
             }}
             onInit={(typewriter) => {
-              typewriter.typeString("<center><span class=''>Hello, I'm</span><br><span class=''>Timothy Pidashev</span></center>")
+              typewriter.typeString("<center><span class='inline-block mb-4'>Hello, I'm</span><br><span class='inline-block mb-4'><strong class='text-light-aqua-1 dark:text-dark-aqua-1'>Timothy Pidashev</strong></span></center>")
                 .callFunction(() => {
                   console.log('Change the background element to a portrait of my face');
                 })
@@ -29,12 +29,12 @@ function Content() {
                 })
                 .start()
 
-              typewriter.typeString("<center><span class=''>I'm a 19 year old</span><br><span class=''>on an epic journey to</span><br><span class=''>become a software engineer!</span></center>")
+              typewriter.typeString("<center><span class='inline-block mb-4'>I'm a <strong class='text-light-green-1 dark:text-dark-green-1'>19 year old</strong></span><br><span class='inline-block mb-4'>on an <strong class='text-light-yellow-1 dark:text-dark-yellow-1'>epic journey</strong> to</span><br><span class='inline-block mb-4'>become a <strong class='text-light-blue-1 dark:text-dark-blue-1'>software engineer</strong>!</span></center>")
                 .pauseFor(2500)
                 .deleteAll()
                 .start()
 
-              typewriter.typeString("<center><span class=''>I enjoy:</span><br><span class=''>writing code</span><br><span class=''>hiking and camping</span><br><span class=''>driving cars</span><br><span class=''>and much more!</span></center>")
+              typewriter.typeString("<center><span class=''>I enjoy</span><br><span class=''>writing code</span><br><span class=''>hiking and camping</span><br><span class=''>driving cars</span><br><span class=''>and much more!</span></center>")
                 .pauseFor(2500)
                 .deleteAll()
                 .start()
