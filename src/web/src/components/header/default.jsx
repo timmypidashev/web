@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Links, LinkColors } from "@/components/header/constants";
+import Container from "@/components/ui/container";
 
 function DefaultHeader() {
   return (
-    <div className="sticky mx-auto max-w-screen-lg">
+    <Container>
       <motion.nav
         initial="hidden"
         animate="visible"
@@ -39,7 +40,7 @@ function DefaultHeader() {
           ))}
         </div>
       </motion.nav>
-    </div>
+    </Container>
   );
 }
 

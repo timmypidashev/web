@@ -4,6 +4,7 @@ import Typewriter from 'typewriter-effect';
 import { motion } from 'framer-motion';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Container from "@/components/ui/container";
 
 function Portrait() {
   const fadeInAnimation = {
@@ -31,10 +32,9 @@ function Portrait() {
 
 function Content() {
   return (
-    <>
+    <Container>
       <div className="relative h-screen overflow-y-scroll font-bold text-4xl">
         <div className="h-screen flex flex-col items-center justify-center">
-          <Portrait />
           <div className="relative h-48 overflow-y-auto">
             <Typewriter
               options={{
@@ -85,7 +85,7 @@ function Content() {
           </div>
         </div>
       </div>
-    </>
+    </Container>
   );
 };
 
