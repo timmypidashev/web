@@ -32,7 +32,7 @@ function Portrait() {
 
 function Content() {
   return (
-    <Container>
+    <>
       <div className="relative h-screen overflow-y-scroll font-bold text-4xl">
         <div className="h-screen flex flex-col items-center justify-center">
           <div className="relative h-48 overflow-y-auto">
@@ -85,7 +85,7 @@ function Content() {
           </div>
         </div>
       </div>
-    </Container>
+    </>
   );
 };
 
