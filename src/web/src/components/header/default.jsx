@@ -17,7 +17,7 @@ function DefaultHeader() {
         },
       }}
       className="
-        mx-auto
+        fixed top-0 left-0 w-full
         hidden 2xl:flex xl:flex lg:flex md:flex flex-row
         lg:px-6 md:px-5 sm:px-4 lg:py-1.5 md:py-1.5
         lg:text-4xl md:text-3xl
