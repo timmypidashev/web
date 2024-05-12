@@ -3,6 +3,7 @@ import "@/style/globals.css";
 import Theme from "@/app/theme";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import Container from "@/components/ui/container";
 
 // Metadata
 export const metadata = {
@@ -19,11 +20,13 @@ export default function Layout({children}) {
         dark:bg-dark-background dark:text-dark-foreground
       ">
         <Theme>
-          <Header />
-          <main>
-            {children}
-          </main>
-          <Footer />
+          <Container>
+            <Header />
+            <main>
+              {children}
+            </main>
+            <Footer />
+          </Container >
         </Theme>
       </body>
     </html>

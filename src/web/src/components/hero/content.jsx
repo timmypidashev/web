@@ -4,7 +4,6 @@ import Typewriter from 'typewriter-effect';
 import { motion } from 'framer-motion';
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Container from "@/components/ui/container";
 
 function Portrait() {
   const fadeInAnimation = {

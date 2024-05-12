@@ -3,9 +3,7 @@ import Content from "@/components/footer/content";
 
 function Footer() {
   return (
-    <Container>
-      <Content />
-    </Container>
+    <Content />
   );
 }
 

@@ -22,7 +22,6 @@ function DefaultHeader() {
         lg:px-6 md:px-5 sm:px-4 lg:py-1.5 md:py-1.5
         lg:text-4xl md:text-3xl
         font-bold justify-center
-        shadow-md
     ">
       <div className="flex lg:space-x-20 md:space-x-10">
         {Links.map((link) => (
