@@ -85,8 +85,36 @@ prune:
 	# Removes all built and cached docker images and containers.
 
 bump:
-	@echo "Future: consider adding this; for now manually bumping project and container versions is acceptable :D"
+	# Arguments
+	# [container]: Bump context(which container version to bump)
+	# [semantic_type]: Semantic type context(major, minor, patch)
+	#
+	# Explanation:
+	# * Bumps the specified container version within the makefile config and the container's package.json.
+	# * Bumps the global project version in the makefile, and creates a new git tag with said version.
+	
+	# Extract container and semantic_type inputted.
+	$(eval INPUT_TARGET := $(word 2,$(MAKECMDGOALS)))
+	$(eval INPUT_CONTAINER := $(firstword $(subst :, ,$(INPUT_TARGET))))
+	$(eval INPUT_SEMANTIC_TYPE := $(lastword $(subst :, ,$(INPUT_TARGET))))
+	
+	# Extract old container and project versions.
+	$(eval OLD_CONTAINER_VERSION := $(subst v,,$(CONTAINER_$(shell echo $(INPUT_CONTAINER) | tr a-z A-Z)_VERSION)))
+	$(eval OLD_PROJECT_VERSION := $(subst v,,$(PROJECT_VERSION)))
 
+	# Pull docker semver becsause the normal command doesn't seem to work; also we don't need to worry about dependencies.
+	docker pull usvc/semver:latest
+
+	# Bump npm package.json file for selected container
+	cd $(call container_location,$(INPUT_CONTAINER)) && npm version $(shell docker run usvc/semver:latest bump $(INPUT_SEMANTIC_TYPE) $(OLD_CONTAINER_VERSION))
+
+	# Bump the git tag to match the new global version
+	git tag v$(shell docker run usvc/semver:latest bump $(INPUT_SEMANTIC_TYPE) $(OLD_PROJECT_VERSION))
+	
+	# Bump the container version and global version in the Makefile
+	perl -pi -e 's/^PROJECT_VERSION\s*:=\s*\K.*/"v$(shell docker run usvc/semver:latest bump $(INPUT_SEMANTIC_TYPE) $(OLD_PROJECT_VERSION))"/ if /^PROJECT_VERSION\s*:=/' Makefile;
+	perl -pi -e 's/^CONTAINER_$(shell echo $(INPUT_CONTAINER) | tr a-z A-Z)_VERSION\s*:=\s*\K.*/"v$(shell docker run usvc/semver:latest bump $(INPUT_SEMANTIC_TYPE) $(OLD_CONTAINER_VERSION))"/ if /^CONTAINER_$(shell echo $(INPUT_CONTAINER) | tr a-z A-Z)_VERSION\s*:=/' Makefile;
+	
 # This function generates Docker build arguments based on variables defined in the Makefile.
 # It extracts variable assignments, removes whitespace, and formats them as build arguments.
 # Additionally, it appends any custom shell generated arguments defined below.
