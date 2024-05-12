@@ -34,25 +34,19 @@ function Content() {
     <>
       <div className="flex justify-center items-center h-full font-bold text-4xl">
         <div className="h-screen flex flex-col items-center justify-center">
-          <div className="relative h-48 overflow-y-auto">
+          <div className="flex items-center justify-center relative h-58 overflow-y-auto">
             <Typewriter
               options={{
                 autoStart: true,
                 loop: true,
                 delay: 50,
-                deleteSpeed: 25,
+                deleteSpeed: 800,
                 cursor: ''
               }}
               onInit={(typewriter) => {
                 typewriter.typeString("<center><span class='inline-block mb-4'>Hello, I'm</span><br><span class='inline-block mb-4'><strong class='text-light-aqua-1 dark:text-dark-aqua-1'>Timothy Pidashev</strong></span></center>")
-                  .callFunction(() => {
-                    console.log('Change the background element to a portrait of my face');
-                  })
                   .pauseFor(2500)
                   .deleteAll()
-                  .callFunction(() => {
-                    console.log('Wipe the background element');
-                  })
                   .start()
 
                 typewriter.typeString("<center><span class='inline-block mb-4'>I'm a <strong class='text-light-green-1 dark:text-dark-green-1'>19 year old</strong></span><br><span class='inline-block mb-4'>on an <strong class='text-light-yellow-1 dark:text-dark-yellow-1'>epic journey</strong> to</span><br><span class='inline-block mb-4'>become a <strong class='text-light-blue-1 dark:text-dark-blue-1'>software engineer</strong>!</span></center>")
@@ -60,22 +54,7 @@ function Content() {
                   .deleteAll()
                   .start()
 
-                typewriter.typeString("<center><span class=''>I enjoy</span><br><span class=''>writing code</span><br><span class=''>hiking and camping</span><br><span class=''>driving cars</span><br><span class=''>and much more!</span></center>")
-                  .pauseFor(2500)
-                  .deleteAll()
-                  .start()
-
-                typewriter.typeString("<center><span class=''>Fun facts about me:</span><br><span class=''>I keep a journal</span><br><span class=''>I love rust lang!</span><br><span class=''>I use a corebooted thinkpad</span></center>")
-                  .pauseFor(2500)
-                  .deleteAll()
-                  .start()
-
-                typewriter.typeString("<center><span class=''>Wait your still here?</span></center>")
-                  .pauseFor(2500)
-                  .deleteAll()
-                  .start()
-
-                typewriter.typeString("<center><span class=''>Check out my blog and shop</span><br><span class=''>for many goodies!</span><br><span class=''>or contact me below!</span></center>")
+                typewriter.typeString("<center><span class=''>Check out my <strong class='text-light-purple-1 dark:text-dark-purple-1'>blog</strong> and <strong class='text-light-aqua-1 dark:text-dark-aqua-1'>shop</strong></span><br></span><br><span class=''>or <strong class='text-light-green-1 dark:text-dark-green-1'>contact me below</strong>!</span></center>")
                   .pauseFor(2500)
                   .deleteAll()
                   .start()
