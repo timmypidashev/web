@@ -33,7 +33,7 @@ function Portrait() {
 function Content() {
   return (
     <>
-      <div className="relative h-screen overflow-y-scroll font-bold text-4xl">
+      <div className="flex justify-center items-center h-full font-bold text-4xl">
         <div className="h-screen flex flex-col items-center justify-center">
           <div className="relative h-48 overflow-y-auto">
             <Typewriter
