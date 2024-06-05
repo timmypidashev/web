@@ -49,7 +49,7 @@ function Content() {
               inline-block
               ${ItemColors[item.color]} dark:${ItemColors[item.color]}
           `}>
-            <Link href={item.href}>{item.label}</Link>
+            <Link href={item.href} target="_blank" rel="noopener noreferrer">{item.label}</Link>
           </motion.div>
         ))}
       </div>
