@@ -1,8 +1,9 @@
-import fs from "fs"
-import path from "path"
-import { compileMDX } from "next-mdx-remote/rsc"
+import fs from "fs";
+import path from "path";
+import rehypeHighlight from 'rehype-highlight'
+import { compileMDX } from "next-mdx-remote/rsc";
 
-const contentDir = path.join(process.cwd(), "src/app/blog/_mdx-content")
+const contentDir = path.join(process.cwd(), "app/blog/_mdx-content")
 
 export async function getBlogBySlug(slug: string) {
   const fileName = slug + ".mdx"
