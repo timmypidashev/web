@@ -10,14 +10,13 @@ export async function generateStaticParams() {
 export default async function BlogPage({ params }) {
   const blog = await getBlogBySlug(params.slug);
   return (
-    <main className="prose mx-auto">
+    <section className="prose mx-auto">
       <article>
         <h1>{blog.frontmatter.title}</h1>
         <p>{blog.frontmatter.author}</p>
-        <p>{blog.frontmatter.publishDate}</p>
-        <article>{blog.content}</article>
+        <p>{blog.frontmatter.date}</p>
+        <div>{blog.content}</div>
       </article>
-    </main>
+    </section>
   );
 }
-

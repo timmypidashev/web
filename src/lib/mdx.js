@@ -19,8 +19,6 @@ export async function getBlogBySlug(slug) {
       },
     },
   });
-  console.log("Frontmatter:", frontmatter); // Debug log
-  console.log("Content:", content); // Debug log
   return { frontmatter, content, slug };
 }
 
