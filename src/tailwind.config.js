@@ -74,7 +74,86 @@ module.exports = {
           },
         },
       },
+      typography: (theme) => ({
+        DEFAULT: {
+          css: {
+            color: theme('colors.light.foreground'),
+            a: {
+              color: theme('colors.light.blue.2'),
+              '&:hover': {
+                color: theme('colors.light.blue.1'),
+              },
+            },
+            h1: {
+              color: theme('colors.light.foreground'),
+            },
+            h2: {
+              color: theme('colors.light.foreground'),
+            },
+            h3: {
+              color: theme('colors.light.foreground'),
+            },
+            h4: {
+              color: theme('colors.light.foreground'),
+            },
+            h5: {
+              color: theme('colors.light.foreground'),
+            },
+            h6: {
+              color: theme('colors.light.foreground'),
+            },
+            strong: {
+              color: theme('colors.light.foreground'),
+            },
+            code: {
+              color: theme('colors.light.orange.1'),
+            },
+            blockquote: {
+              color: theme('colors.light.foreground'),
+            },
+          },
+        },
+        dark: {
+          css: {
+            color: theme('colors.light.foreground'), // Keeping same as light mode
+            a: {
+              color: theme('colors.light.blue.2'),
+              '&:hover': {
+                color: theme('colors.light.blue.1'),
+              },
+            },
+            h1: {
+              color: theme('colors.light.foreground'),
+            },
+            h2: {
+              color: theme('colors.light.foreground'),
+            },
+            h3: {
+              color: theme('colors.light.foreground'),
+            },
+            h4: {
+              color: theme('colors.light.foreground'),
+            },
+            h5: {
+              color: theme('colors.light.foreground'),
+            },
+            h6: {
+              color: theme('colors.light.foreground'),
+            },
+            strong: {
+              color: theme('colors.light.foreground'),
+            },
+            code: {
+              color: theme('colors.light.orange.1'),
+            },
+            blockquote: {
+              color: theme('colors.light.foreground'),
+            },
+          },
+        },
+      }),
     },
   },
   plugins: [require("@tailwindcss/typography")],
 };
+
