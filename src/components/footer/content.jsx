@@ -39,6 +39,7 @@ function Content() {
         px-6 py-1.5
         font-bold text-2xl
         justify-center
+        bg-light-background dark:bg-dark-background
     ">
       <div className="flex space-x-10">
         {Items.map((item) => (
