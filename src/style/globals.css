@@ -43,7 +43,103 @@ body {
   font-family: "ComicCodeItalic";
 }
 
-/* 3d goodies :D */
-canvas + div {
-  mix-blend-mode: multiply;
+
+/* global.css or a specific css file */
+code {
+  background-color: #f5f5f5;
+  color: #333;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
 }
+
+pre {
+  background-color: #282c34;
+  color: #abb2bf;
+  padding: 1em;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+}
+
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 1em;
+  background: #282c34;
+  color: #abb2bf;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #7d8799;
+  font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: #e06c75;
+}
+
+.hljs-literal,
+.hljs-number,
+.hljs-string,
+.hljs-doctag,
+.hljs-regexp {
+  color: #98c379;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+  color: #61afef;
+}
+
+.hljs-subst {
+  font-weight: normal;
+}
+
+.hljs-type,
+.hljs-class .hljs-title {
+  color: #e5c07b;
+}
+
+.hljs-tag,
+.hljs-name,
+.hljs-attribute {
+  color: #d19a66;
+}
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #56b6c2;
+}
+
+.hljs-bullet,
+.hljs-code,
+.hljs-addition {
+  color: #d7ba7d;
+}
+
+.hljs-meta {
+  color: #abb2bf;
+}
+
+.hljs-deletion {
+  color: #e06c75;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+

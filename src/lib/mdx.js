@@ -28,4 +28,3 @@ export async function getAllBlogSlugs() {
     slug: path.parse(file).name,
   }));
 }
-
