@@ -186,6 +186,30 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
+"@shikijs/core@1.6.4":
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/@shikijs/core/-/core-1.6.4.tgz#06bbb38f2cac7ee587be68586a9a9c0768a06194"
+  integrity sha512-WTU9rzZae1p2v6LOxMf6LhtmZOkIHYYW160IuahUyJy7YXPPjyWZLR1ag+SgD22ZMxZtz1gfU6Tccc8t0Il/XA==
+
+"@shikijs/rehype@^1.6.4":
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/@shikijs/rehype/-/rehype-1.6.4.tgz#e02eedbbf7134d33db05b9d86bc7a3d83f56dfc5"
+  integrity sha512-rQFnJKb9uJm3lr6DDKoVBSnWcocHGIqfKM591NSDawMxfhm+gPGhgLP6/EX1N2v0qNHQeuzBuunkApWVQbVTCg==
+  dependencies:
+    "@shikijs/transformers" "1.6.4"
+    "@types/hast" "^3.0.4"
+    hast-util-to-string "^3.0.0"
+    shiki "1.6.4"
+    unified "^11.0.4"
+    unist-util-visit "^5.0.0"
+
+"@shikijs/transformers@1.6.4":
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/@shikijs/transformers/-/transformers-1.6.4.tgz#bc0097ec0a2a85093effa137a993512a5609285b"
+  integrity sha512-NqDt7gUg3ayVBnsipT/KoL1pqsVbsvT/2cB0pb5SG2q72qjAv9Lb5OP99pL//BMmI+sMTo+TeARntklyBu4mZQ==
+  dependencies:
+    shiki "1.6.4"
+
 "@swc/counter@^0.1.3":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@swc/counter/-/counter-0.1.3.tgz#cc7463bd02949611c6329596fccd2b0ec782b0e9"
@@ -235,7 +259,7 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.5.tgz#a6ce3e556e00fd9895dd872dd172ad0d4bd687f4"
   integrity sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==
 
-"@types/hast@^3.0.0":
+"@types/hast@^3.0.0", "@types/hast@^3.0.4":
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/@types/hast/-/hast-3.0.4.tgz#1d6b39993b82cea6ad783945b0508c25903e15aa"
   integrity sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==
@@ -858,6 +882,13 @@ hast-util-to-parse5@^8.0.0:
     space-separated-tokens "^2.0.0"
     web-namespaces "^2.0.0"
     zwitch "^2.0.0"
+
+hast-util-to-string@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/hast-util-to-string/-/hast-util-to-string-3.0.0.tgz#2a131948b4b1b26461a2c8ac876e2c88d02946bd"
+  integrity sha512-OGkAxX1Ua3cbcW6EJ5pT/tslVb90uViVkcJ4ZZIMW/R33DX/AkcJcRrPebPwJkHYwlDHXz4aIwvAAaAdtrACFA==
+  dependencies:
+    "@types/hast" "^3.0.0"
 
 hast-util-to-text@^4.0.0:
   version "4.0.2"
@@ -2093,6 +2124,13 @@ shebang-regex@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/shebang-regex/-/shebang-regex-3.0.0.tgz#ae16f1644d873ecad843b0307b143362d4c42172"
   integrity sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==
+
+shiki@1.6.4:
+  version "1.6.4"
+  resolved "https://registry.yarnpkg.com/shiki/-/shiki-1.6.4.tgz#7413d7425732fb603e0eafa33aeb7cd6a1b0da74"
+  integrity sha512-X88chM7w8jnadoZtjPTi5ahCJx9pc9f8GfEkZAEYUTlcUZIEw2D/RY86HI/LkkE7Nj8TQWkiBfaFTJ3VJT6ESg==
+  dependencies:
+    "@shikijs/core" "1.6.4"
 
 signal-exit@^4.0.1:
   version "4.1.0"
