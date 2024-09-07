@@ -1,0 +1,5 @@
+timmypidashev.dev {
+  tls pidashev.tim@gmail.com
+
+	reverse_proxy web:3000
+}

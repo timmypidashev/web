@@ -1,0 +1,32 @@
+from node:22-alpine
+
+WORKDIR /app
+
+RUN set -eux \
+    & apk add \
+        --no-cache \
+        nodejs \
+        curl
+
+COPY package.json pnpm-lock.yaml ./
+
+ARG CONTAINER_WEB_VERSION
+ARG ENVIRONMENT
+ARG BUILD_DATE
+ARG GIT_COMMIT
+
+RUN echo "PUBLIC_VERSION=${CONTAINER_FHCC_VERSION}" > /app/.env && \
+    echo "PUBLIC_ENVIRONMENT=${ENVIRONMENT}" >> /app/.env && \
+    echo "PUBLIC_BUILD_DATE=${BUILD_DATE}" >> /app/.env && \
+    echo "PUBLIC_GIT_COMMIT=${GIT_COMMIT}" >> /app/.env
+
+RUN pnpm install --frozen-lockfile --production
+RUN pnpm run build 
+
+FROM node:22-alpine
+WORKDIR /app
+
+EXPOSE 3000
+
+CMD node ./dist/server/entry.mjs
+COPY --from=builder /app/.dist ./

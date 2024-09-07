@@ -1,0 +1,33 @@
+services:
+  caddy:
+    container_name: proxy
+    image: caddy:latest
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./.caddy/Caddyfile.dev:/etc/caddy/Caddyfile:rw
+    networks:
+      - proxy
+    depends_on:
+      - web
+
+  web:
+    container_name: web
+    image: web:dev
+    volumes:
+      - ./src/astro.config.mjs:/app/astro.config.mjs
+      - ./src/sandbox.config.json:/app/sandbox.config.json
+      - ./src/tailwind.config.cjs:/app/tailwind.config.cjs
+      - ./src/tsconfig.json:/app/tsconfig.json
+      - ./src/pnpm-lock.yaml:/app/pnpm-lock.yaml
+      - ./src/package.json:/app/package.json
+      - ./src/public:/app/public
+      - ./src/src:/app/src
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    name: proxy
+    external: true

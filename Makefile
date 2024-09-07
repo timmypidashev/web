@@ -8,7 +8,7 @@ PROJECT_ORGANIZATION					:= "org.opencontainers"
 
 CONTAINER_WEB_NAME						:= "web"
 CONTAINER_WEB_VERSION					:= "v1.0.0"
-CONTAINER_WEB_LOCATION					:= "src/web"
+CONTAINER_WEB_LOCATION					:= "src/"
 CONTAINER_WEB_DESCRIPTION				:= "My portfolio website!"
 
 .DEFAULT_GOAL := help
@@ -17,7 +17,7 @@ CONTAINER_WEB_DESCRIPTION				:= "My portfolio website!"
 
 help:
 	@echo "Available targets:"
-	@echo "  run           - Runs the docker compose file with the specified environment (dev or prod)"
+	@echo "  run           - Runs the docker compose file with the specified environment (dev or release)"
 	@echo "  build         - Builds the specified docker image with the appropriate environment"
 	@echo "  push          - Pushes the built docker image to the registry"
 	@echo "  prune         - Removes all built and cached docker images and containers"
@@ -25,19 +25,19 @@ help:
 
 run:
 	# Arguments:
-	# [environment]: 'dev' or 'prod'
+	# [environment]: 'dev' or 'release'
 	# 
 	# Explanation:
-	# * Runs the docker compose file with the specified environment(compose.dev.yml, or compose.prod.yml)
+	# * Runs the docker compose file with the specified environment(compose.dev.yml, or compose.release.yml)
 	# * Passes all generated arguments to the compose file.
 	
 	# Make sure we have been given proper arguments.
 	@if [ "$(word 2,$(MAKECMDGOALS))" = "dev" ]; then \
 		echo "Running in development environment"; \
-	elif [ "$(word 2,$(MAKECMDGOALS))" = "prod" ]; then \
-		echo "Running in production environment"; \
+	elif [ "$(word 2,$(MAKECMDGOALS))" = "release" ]; then \
+		echo "Running in release environment"; \
 	else \
-		echo "Invalid usage. Please use 'make run dev' or 'make run prod'"; \
+		echo "Invalid usage. Please use 'make run dev' or 'make run release'"; \
 		exit 1; \
 	fi
 
@@ -47,7 +47,7 @@ run:
 build:
 	# Arguments
 	# [container]: Build context(which container to build ['all' to build every container defined])
-	# [environment]: 'dev' or 'prod'
+	# [environment]: 'dev' or 'release'
 	#
 	# Explanation:
 	# * Builds the specified docker image with the appropriate environment.
@@ -161,16 +161,16 @@ define container_build
 	@echo "Environment: $(ENVIRONMENT)"
 	@echo "Version: $(VERSION)"
 
-	@if [ "$(strip $(ENVIRONMENT))" != "dev" ] && [ "$(strip $(ENVIRONMENT))" != "prod" ]; then \
-        echo "Invalid environment. Please specify 'dev' or 'prod'"; \
+	@if [ "$(strip $(ENVIRONMENT))" != "dev" ] && [ "$(strip $(ENVIRONMENT))" != "release" ]; then \
+        echo "Invalid environment. Please specify 'dev' or 'release'"; \
         exit 1; \
     fi
 
-	$(if $(filter $(strip $(ENVIRONMENT)),prod), \
+	$(if $(filter $(strip $(ENVIRONMENT)),release), \
 		$(eval TAG := $(PROJECT_REGISTRY)/$(CONTAINER):$(VERSION)), \
 	)
 
-	docker buildx build --load -t $(TAG) -f $(strip $(subst $(SPACE),,$(call container_location,$(CONTAINER))))/Dockerfile.$(ENVIRONMENT) ./$(strip $(subst $(SPACE),,$(call container_location,$(CONTAINER))))/. $(ARGS) $(call labels,$(shell echo $(CONTAINER_NAME) | tr '[:lower:]' '[:upper:]')) --no-cache
+	docker buildx build --load -t $(TAG) -f .docker/Dockerfile.$(ENVIRONMENT) ./$(strip $(subst $(SPACE),,$(call container_location,$(CONTAINER))))/. $(ARGS) $(call labels,$(shell echo $(CONTAINER_NAME) | tr '[:lower:]' '[:upper:]')) --no-cache
 endef
 
 define container_location
