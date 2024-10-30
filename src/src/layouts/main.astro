@@ -1,5 +1,10 @@
 ---
 const { content } = Astro.props;
+
+import "@/style/globals.css";
+
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 ---
 
 <html lang="en">
@@ -9,7 +14,11 @@ const { content } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<title>{content.title}</title>
 	</head>
-	<body>
-		<slot />
+  <body class="bg-background text-foreground">
+    <Header client:load />
+    <main>
+      <slot />
+    </main>
+    <Footer client:load />
 	</body>
 </html>

@@ -16,8 +16,10 @@ services:
     container_name: web
     image: web:dev
     volumes:
-      - ./src/astro.config.mjs:/app/astro.config.mjs
+      - ./src/node_modules:/app/node_modules
       - ./src/sandbox.config.json:/app/sandbox.config.json
+      - ./src/.stackblitzrc:/app/.stackblitzrc
+      - ./src/astro.config.mjs:/app/astro.config.mjs
       - ./src/tailwind.config.cjs:/app/tailwind.config.cjs
       - ./src/tsconfig.json:/app/tsconfig.json
       - ./src/pnpm-lock.yaml:/app/pnpm-lock.yaml

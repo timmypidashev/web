@@ -1,20 +1,11 @@
 ---
 import "@/style/globals.css"
 
+import MainLayout from "@/layouts/main.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-    <!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> -->
-		<meta name="generator" content={Astro.generator} />
-		<title>Timothy Pidashev</title>
-	</head>
-
-  <body class="bg-background text-foreground">
-    <div class="flex items-center justify-center h-screen w-full">
-      <h1 class="text-4xl text-aqua font-bold">Coming Soon</h1>
-    </div>
-	</body>
-</html>
+<MainLayout content={{ title: "Timothy Pidashev"}}>
+  <div class="flex items-center justify-center h-screen w-full">
+    <h1 class="text-4xl text-aqua font-bold">Coming Soon</h1>
+  </div>
+</MainLayout>
