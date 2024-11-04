@@ -31,7 +31,7 @@ export default function Hero() {
       .start();
 
     typewriter
-      .typeString("<center><span class=''>Check out my <strong class='text-purple'>blog</strong> and <strong class='text-aqua'>shop</strong></span><br></span><br><span class=''>or <strong class='text-green'>contact me below</strong>!</span></center>")
+      .typeString("<center><span class=''>Check out my <strong class='text-purple'>blog</strong> and <strong class='text-aqua'>shop</strong></span><br></span><br><span class=''>or <strong class='text-green'>contact</strong> me below!</span></center>")
       .pauseFor(2500)
       .deleteAll()
       .start();
