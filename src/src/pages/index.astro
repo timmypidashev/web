@@ -1,11 +1,10 @@
 ---
 import "@/style/globals.css"
 
-import MainLayout from "@/layouts/main.astro";
+import IndexLayout from "@/layouts/index.astro";
+import Hero from "@/components/hero";
 ---
 
-<MainLayout content={{ title: "Timothy Pidashev"}}>
-  <div class="flex items-center justify-center h-screen w-full">
-    <h1 class="text-4xl text-aqua font-bold">Coming Soon</h1>
-  </div>
-</MainLayout>
+<IndexLayout content={{ title: "Timothy Pidashev" }}>
+  <Hero client:load />
+</IndexLayout>
