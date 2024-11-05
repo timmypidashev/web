@@ -30,11 +30,8 @@ export default function Header() {
     <header className={`fixed top-0 left-0 right-0 transition-transform duration-300 ${
       visible ? "translate-y-0" : "-translate-y-full"
     }`}>
-      <div className="hidden md:flex flex-row pt-2 md:text-3xl items-center justify-center lg:space-x-20 md:space-x-10">
+      <div className="flex flex-row pt-1 px-2 text-lg lg:pt-2 lg:text-3xl md:text-2xl items-center justify-between md:justify-center space-x-2 md:space-x-10 lg:space-x-20">
         {headerLinks}
-      </div>
-      <div className="flex md:hidden">
-       {headerLinks}
       </div>
     </header>
   );

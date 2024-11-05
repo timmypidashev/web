@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '@/layouts/main.astro';
+
+const posts = (await getCollection('blog', ({ data }) => {
+  return data.isDraft !== true;
+})).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<MainLayout>
+  <section>
+    <ul>
+      {
+        posts.map((post) => (
+          <li>
+            <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+            <p>by <a href={`/authors/${post.data.author.toLowerCase()}/`}>{post.data.author}</a>, 
+              published {post.data.pubDate.toDateString()}, 
+              tags: <strong>{post.data.tags.join(", ")}</strong>
+            </p>
+            <p>{post.data.description}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</MainLayout>
