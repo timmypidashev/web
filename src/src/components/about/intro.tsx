@@ -11,7 +11,7 @@ export default function Intro() {
   
   return (
     <div className="w-full max-w-4xl px-4">
-      <div className="space-y-32 md:space-y-48">
+      <div className="space-y-8 md:space-y-12">
         <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center gap-8 sm:gap-16">
           <div className="w-32 h-32 sm:w-48 sm:h-48 shrink-0">
             <img
@@ -37,8 +37,7 @@ export default function Intro() {
             </div>
           </div>
         </div>
-        <br/>
-        <div className="space-y-32 md:space-y-48">
+        <div className="space-y-8">
           <p className="text-foreground/80 text-center text-base sm:text-2xl italic max-w-3xl mx-auto font-medium">
             Coffee-to-code conversion isn't just a clever phrase – 
             <span className="text-aqua-bright"> it's how I approach each project:</span>
@@ -46,7 +45,6 @@ export default function Intro() {
             <span className="text-blue-bright"> with attention to detail,</span>
             <span className="text-green-bright"> and a refined process.</span>
           </p>
-          <br/>
           <div className="flex justify-center">
             <button 
               onClick={scrollToNext}
