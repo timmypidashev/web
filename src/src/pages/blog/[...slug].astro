@@ -1,6 +1,17 @@
 ---
 import { CollectionEntry, getCollection } from "astro:content";
-import MainLayout from "@/layouts/main.astro";
+import { Image } from "astro:assets";
+import BlogLayout from "@/layouts/blog.astro";
+
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import { getArticleSchema } from "@/lib/structuredData";
+import { blogWebsite } from "@/lib/structuredData";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
 
 export async function getStaticPaths() {
 	const posts = await getCollection("blog");
@@ -10,20 +21,44 @@ export async function getStaticPaths() {
 	}));
 }
 
-type Props = CollectionEntry<"blog">;
 const post = Astro.props;
 const { Content } = await post.render();
+
+const articleStructuredData = getArticleSchema(post);
+ 
+const breadcrumbsStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Blog",
+      item: `${import.meta.env.SITE}/blog/`,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: post.data.title,
+      item: `${import.meta.env.SITE}/blog/${post.slug}/`,
+    },
+  ],
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [articleStructuredData, breadcrumbsStructuredData, blogWebsite],
+};
 ---
 
-<MainLayout>
-  <article>
-    <h1 class="title">{post.data.title}</h1>
-    <p>by <a href={`/authors/${post.data.author.toLowerCase()}/`}>{post.data.author}</a>, 
-      published {post.data.pubDate.toDateString()}, 
-      tags: <strong>{post.data.tags.join(", ")}</strong>
-    </p>
-    <hr />
+<BlogLayout>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <article class="prose">
+    <h1 class="text-3xl pt-4">{post.data.title}</h1>
+    <p class="lg:text-2xl sm:text-lg">{post.data.description}</p>
+    <p class="text-lg pb-4">{post.data.author} | {post.data.date}</h1>
+    <hr class="bg-orange" />
+    <br />
     <Content />
   </article>
-</MainLayout>
-
+</BlogLayout>

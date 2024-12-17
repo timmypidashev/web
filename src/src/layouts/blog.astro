@@ -1,8 +1,5 @@
 ---
-const { content } = Astro.props;
-
 import "@/style/globals.css";
-
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
@@ -12,20 +9,22 @@ export interface Props {
   permalink: string;
   current?: string;
 }
+
 const { title, description, permalink, current } = Astro.props;
 ---
-
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<title>{content.title}</title>
+		<title>{title}</title>
 	</head>
   <body class="bg-background text-foreground">
     <Header client:load />
     <main>
-      <slot />
+      <div class="max-w-5xl mx-auto pt-12 px-4 py-8">
+        <slot />
+      </div>
     </main>
     <Footer client:load />
 	</body>

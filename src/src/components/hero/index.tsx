@@ -1,6 +1,14 @@
 import React from "react";
 import Typewriter from "typewriter-effect";
 
+const html = (strings: TemplateStringsArray, ...values: any[]) => {
+  let result = strings[0];
+  for (let i = 0; i < values.length; i++) {
+    result += values[i] + strings[i + 1];
+  }
+  return result.replace(/\n\s*/g, "").replace(/\s+/g, " ").trim();
+};
+
 interface TypewriterOptions {
   autoStart: boolean;
   loop: boolean;
@@ -17,22 +25,40 @@ interface TypewriterInstance {
 }
 
 export default function Hero() {
+  const SECTION_1 = html`
+    <span>Hello, I'm</span>
+    <br><div class="mb-4"></div>
+    <span><a href="/about" class="text-aqua hover:underline"><strong>Timothy Pidashev</strong></a></span>
+  `;
+
+  const SECTION_2 = html`
+    <span>I've been turning</span>
+    <br><div class="mb-4"></div>
+    <span><a href="/projects" class="text-green hover:underline"><strong>coffee</strong></a> into 
+    <a href="/projects" class="text-yellow hover:underline"><strong>code</strong></a></span>
+    <br><div class="mb-4"></div>
+    <span>since <a href="/about" class="text-blue hover:underline"><strong>2018</strong></a>!</span>
+  `;
+
+  const SECTION_3 = html`
+    <span>Check out my</span>
+    <br><div class="mb-4"></div>
+    <span><a href="/blog" class="text-purple hover:underline"><strong>blog</strong></a>/
+    <a href="/projects" class="text-blue hover:underline"><strong>projects</strong></a> or</span>
+    <br><div class="mb-4"></div>
+    <span><a href="/contact" class="text-green hover:underline"><strong>contact</strong></a> me below!</span>
+  `;
+
   const handleInit = (typewriter: TypewriterInstance): void => {
     typewriter
-      .typeString("<center><span class='inline-block mb-4'>Hello, I'm</span><br><span class='inline-block mb-4'><strong class='text-aqua'>Timothy Pidashev</strong></span></center>")
-      .pauseFor(2500)
+      .typeString(SECTION_1)
+      .pauseFor(2000)
       .deleteAll()
-      .start();
-
-    typewriter
-      .typeString("<center><span class='inline-block mb-4'>I've been turning</span><br><span class='inline-block mb-4'><strong class='text-green'>coffee</strong> into <strong class='text-yellow'>code</strong></span><br><span class='inline-block mb-4'>since <strong class='text-blue'>2018</strong>!</span></center>")
-      .pauseFor(2500)
+      .typeString(SECTION_2)
+      .pauseFor(2000)
       .deleteAll()
-      .start();
-
-    typewriter
-      .typeString("<center><span class=''>Check out my <strong class='text-purple'>blog</strong> and <strong class='text-aqua'>shop</strong></span><br></span><br><span class=''>or <strong class='text-green'>contact</strong> me below!</span></center>")
-      .pauseFor(2500)
+      .typeString(SECTION_3)
+      .pauseFor(2000)
       .deleteAll()
       .start();
   };
@@ -42,21 +68,17 @@ export default function Hero() {
     loop: true,
     delay: 50,
     deleteSpeed: 800,
-    cursor: ''
+    cursor: '|'
   };
 
   return (
-    <>
-      <div className="flex justify-center items-center h-full font-bold text-4xl">
-        <div className="h-screen flex flex-col items-center justify-center">
-          <div className="flex items-center justify-center relative h-58 overflow-y-auto">
-            <Typewriter
-              options={typewriterOptions}
-              onInit={handleInit}
-            />
-          </div>
-        </div>
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="text-4xl font-bold text-center">
+        <Typewriter
+          options={typewriterOptions}
+          onInit={handleInit}
+        />
       </div>
-    </>
+    </div>
   );
-};
+}

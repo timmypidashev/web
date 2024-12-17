@@ -27,7 +27,7 @@ export default function Header() {
    ));
   
   return (
-    <header className={`fixed top-0 left-0 right-0 transition-transform duration-300 ${
+    <header className={`fixed top-0 left-0 right-0 bg-black font-bold transition-transform duration-300 ${
       visible ? "translate-y-0" : "-translate-y-full"
     }`}>
       <div className="flex flex-row pt-1 px-2 text-lg lg:pt-2 lg:text-3xl md:text-2xl items-center justify-between md:justify-center space-x-2 md:space-x-10 lg:space-x-20">
