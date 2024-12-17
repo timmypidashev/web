@@ -2,10 +2,11 @@
 import "@/style/globals.css"
 
 import MainLayout from "@/layouts/main.astro";
+import Intro from "@/components/about/intro";
 ---
 
 <MainLayout content={{ title: "About | Timothy Pidashev" }}>
   <div class="flex items-center justify-center h-screen w-full">
-    <h1 class="text-4xl text-blue font-bold">About</h1>
+    <Intro client:load />
   </div>
 </MainLayout>
