@@ -1,0 +1,179 @@
+---
+title: "Revive Auto Parts"
+description: "A car parts listing site built for a client."
+demoUrl: "https://reviveauto.parts"
+techStack: ["Typescript", "Tanstack Router", "React Query"]
+date: "2024-12-15"
+image: "/projects/reviveauto/thumbnail.jpeg"
+---
+
+## Overview
+A car parts listing website built to provide an intuitive and efficient experience 
+for users searching for automotive parts. This project was commissioned by a client 
+and showcases some pretty cool modern web technologies, enabling excellent
+performance and a clean user interface.
+
+## Key Features
+* **Dynamic & Simple Routing**: Powered by TanStack Router, enabling seamless navigation 
+and deep-linking for product categories and details.
+
+* **Real-Time Data Fetching**: Utilized React Query to handle server state and caching, 
+ensuring users have up-to-date information.
+
+* **Infinite Scroll**:  Implemented React Query's infinite scrolling and memoization 
+optimization techniques to ensure fast and seamless scrolling through listings.
+
+* **Dynamic Filters**: Created dynamic filters which are editable on the admin panel,
+allowing for a high level of customization.
+
+* **Responsive Design**: Built with Tailwind and Shadcn for a fully responsive layout,
+providing a consistent experience across desktop and mobile devices.
+
+* **Optimized Performance**: Leveraged Vite for fast builds and optimized code-splitting,
+improving page load times drastically.
+
+## Development Highlights
+I had numerous highlights and *aha* moments when developing this site. One of these has to 
+be the site layout, built with [shadcn/ui](https://ui.shadcn.com) components. I had used 
+this component library in a previous site, but I had yet to grasp just how powerful this 
+collection of components is. We truly do stand on the shoulders of giants, and using this
+library not only allowed me to very quickly prototype a design, but to then flesh it out
+without having to dive into the weeds of UI development.
+
+Another great highlight has to be [Tanstack Router](https://tanstack.com/router/latest). 
+As a seasoned developer, I have had many opportunities to try a lot of different routers
+across several frameworks. As many have before me, we stumble onto the nextjs router, and 
+tend not to look back. However, tanstack did something I did not expect, and it takes routing 
+to the next level. With TanStack, the routes folder is solely focused on defining routes and 
+layouts, providing a cleaner, more modular structure. This is a stark contrast to Next.js's 
+approach, where the app directory can quickly become convoluted by mixing route definitions 
+with server-side logic, API calls, and other concerns. Anybody who has built a Nextjs project
+bigger than a To-Do app can likely relate to the mental pain that is trying to find a route or 
+endpoint in your app router when its nested and hidden away four or five directories deep.
+
+Another memorable highlight was writing my backend in Python using [Fastapi](https://fastapi.tiangolo.com/). 
+Sometimes, a project doesn't need a complex nodejs runtime, or an ORM built for a massive service. 
+As a python enthusiast, I found the combination of fastapi & sqlmodel to be just perfect for this project, 
+and defining api endpoints and schemas were quite enjoyable. As I do, I decided to roll my own authentication, 
+and found Python to be a great environment in which to do so. 
+
+Lastly, I have to touch on React Query. The combo that is React Query and Fastapi can truly be magical.
+To truly showcase what I mean, here's an example of a query and endpoint working together:
+
+```typescript
+// features/auth/services/login/queries.ts
+export function useLogin() {
+  const { setCredentials } = useUserStore();
+
+  return useMutation<LoginResponseSchemaType, AxiosError<BackendError>, LoginRequestSchemaType>({
+    mutationFn: user => login(user),
+    onSuccess: data => {
+      setCredentials({
+        accessToken: data.access_token,
+      });
+    },
+  });
+}
+
+const login = backend<z.infer<typeof LoginRequestSchema>, z.infer<typeof LoginResponseSchema>>({
+  method: "POST",
+  path: `${BACKEND_URL}${AUTH}/login`,
+  requestSchema: LoginRequestSchema,
+  responseSchema: LoginResponseSchema,
+  type: "public",
+});
+```
+```typescript 
+// features/auth/services/login/schemas
+import { z } from "zod";
+
+export const LoginRequestSchema = z.object({
+  email: z
+    .string()
+    .min(1, "Email is required!")
+    .trim()
+    .email({ message: "Invalid email!" })
+    .toLowerCase(),
+  password: z.string().trim().min(8, { message: "Password must be at least 8 characters long!" }),
+});
+export type LoginRequestSchemaType = z.infer<typeof LoginRequestSchema>;
+
+export const LoginResponseSchema = z.object({
+  access_token: z.string(),
+});
+export type LoginResponseSchemaType = z.infer<typeof LoginResponseSchema>;
+```
+
+```python
+# routes/auth.py
+class LoginResponse(BaseModel):
+    access_token: str
+
+@router.post(
+    "/login",
+    description=
+    """
+    The login endpoint.
+    
+    Used to create access and refresh tokens for a user.
+    The refresh token is set as an HTTP-only cookie.
+    """,
+    summary="Create access token and set refresh token as HTTP-only cookie."
+)
+async def login(
+    response: Response,
+    form_data: LoginSchema = Body(...), 
+    session: Session = Depends(get_session)
+) -> Any:
+
+    # Fetch user using the form_data sent by the client
+    user = await service.authenticate(
+        email=form_data.email,
+        password=form_data.password,
+        session=session
+    )
+
+    # If service returns None, raise exception 
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+        )
+
+    # Set refresh token as HTTP-only cookie
+    response.set_cookie(
+        key="refresh_token",
+        value=create_token(user, type="refresh"),
+        httponly=True,
+        path="/auth/refresh",
+        domain=Config.JWT_COOKIE_DOMAIN,
+        expires=datetime.now(timezone.utc) + Config.JWT_REFRESH_EXPIRES
+    )
+    
+    return LoginResponse(
+        access_token=create_token(user, type="access")
+    )
+```
+Using Zod, the frontend is validating what a user is attempting to submit 
+before calling the endpoint. If Zod does not throw an error, our frontend will 
+call our backend endpoint, which also expects the right types to be present.
+Afterwards, the backend will respond back with a response that our frontend 
+will also validate. This allows for a complete multi-directional 
+request -> response type validation!
+
+## Challenges and Roadblocks
+For the most part, there were really no challenges, say for some hiccups here and there.
+Probably the most painful parts were creating unit tests for the frontend, and scraping
+Facebook for a total of 1,384 posts for my client, who wanted the posts imported over.
+As one can imagine, that process is not simple to do manually by hand, so I wrote multiple 
+python scriptsusing the seleneum library to fetch the posts from the sellers account, a process 
+which took multiple attempts, several overnight scrapes, and lots of data sanitation afterwards. 
+Other than that, everything else was an absolute joy to work on, and I finished the project in under 
+15K LOC.
+
+## Summary
+Sometimes, building a CRUD app can be lots of fun, no matter how many times you've done it before.
+All it takes is adding something new to the stack, and striving to improve the code you write. This
+project was exactly that, a mix of new technologies working together to power a fairly neat site,
+which can be viewed [here](https://reviveauto.parts). Maybe there is a car part there which the reader
+might need. As always, thanks for the read :)

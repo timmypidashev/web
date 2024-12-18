@@ -8,6 +8,7 @@ type BlogPost = {
     date: string;
     tags: string[];
     description: string;
+    image?: string;
   };
 };
 
@@ -25,36 +26,70 @@ const formatDate = (dateString: string) => {
 
 export const BlogPostList = ({ posts }: BlogPostListProps) => {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <ul className="space-y-8">
+    <div className="w-full max-w-4xl mx-auto">
+      <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-10 text-yellow-bright px-4 md:px-0">Blog Posts</h1>
+      <ul className="space-y-6 md:space-y-10">
         {posts.map((post) => (
-          <li key={post.slug} className="border-b border-gray-200 pb-8 last:border-b-0">
+          <li key={post.slug} className="group px-4 md:px-0">
             <a 
               href={`/blog/${post.slug}`}
-              className="text-xl font-semibold hover:text-blue-600 transition-colors duration-200"
+              className="block"
             >
-              {post.data.title}
+              <article className="flex flex-col md:flex-row gap-4 md:gap-8 pb-6 md:pb-10 border-b border-foreground/20 last:border-b-0 p-2 md:p-4 rounded-lg group-hover:outline group-hover:outline-2 group-hover:outline-purple transition-all duration-200">
+                {/* Image container with fixed aspect ratio */}
+                <div className="w-full md:w-1/3 aspect-[16/9] overflow-hidden rounded-lg bg-background">
+                  <img
+                    src={post.data.image || '/api/placeholder/400/300'}
+                    alt={post.data.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                
+                {/* Content container */}
+                <div className="w-full md:w-2/3 flex flex-col gap-2 md:gap-4 py-1 md:py-2">
+                  {/* Title and meta info */}
+                  <div className="space-y-1.5 md:space-y-3">
+                    <h2 className="text-lg md:text-2xl font-semibold text-yellow group-hover:text-purple transition-colors duration-200 line-clamp-2">
+                      {post.data.title}
+                    </h2>
+                    
+                    <div className="flex flex-wrap items-center gap-2 md:gap-3 text-sm md:text-base text-foreground/80">
+                      <span className="text-orange">{post.data.author}</span>
+                      <span className="text-foreground/50">•</span>
+                      <time dateTime={post.data.date} className="text-blue">
+                        {formatDate(post.data.date)}
+                      </time>
+                    </div>
+                  </div>
+                  
+                  {/* Description */}
+                  <p className="text-foreground/90 text-sm md:text-lg leading-relaxed line-clamp-2 mt-0.5 md:mt-0">
+                    {post.data.description}
+                  </p>
+                  
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1.5 md:gap-3 mt-1 md:mt-2">
+                    {post.data.tags.slice(0, 3).map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs md:text-base text-aqua hover:text-aqua-bright transition-colors duration-200"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.location.href = `/blog/tag/${tag}`;
+                        }}
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                    {post.data.tags.length > 3 && (
+                      <span className="text-xs md:text-base text-foreground/60">
+                        +{post.data.tags.length - 3}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </article>
             </a>
-            <div className="mt-2 text-sm text-gray-600">
-              <span>{post.data.author}</span>
-              <span className="mx-2">•</span>
-              <time dateTime={post.data.date}>
-                {formatDate(post.data.date)}
-              </time>
-            </div>
-            <p className="mt-3 text-gray-700">
-              {post.data.description}
-            </p>
-            <div className="mt-3 space-x-2">
-              {post.data.tags.map((tag) => (
-                <span 
-                  key={tag} 
-                  className="text-sm text-gray-600"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
           </li>
         ))}
       </ul>

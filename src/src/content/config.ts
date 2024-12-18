@@ -8,6 +8,7 @@ export const collections = {
       author: z.string(),
       tags: z.array(z.string()),
       date: z.string(),
+      image: z.string().optional(),
     }),
   }),
   projects: defineCollection({
