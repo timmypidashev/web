@@ -1,11 +1,11 @@
 import React from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDownIcon } from "@/components/icons";
 
 export default function Intro() {
   const scrollToNext = () => {
     window.scrollTo({
       top: window.innerHeight,
-      behavior: 'smooth'
+      behavior: "smooth"
     });
   };
   
@@ -26,7 +26,7 @@ export default function Intro() {
             </h2>
             <div className="text-sm sm:text-xl text-foreground/70 space-y-2 sm:space-y-3">
               <p className="flex items-center justify-center font-bold sm:justify-start gap-2">
-                <span className="text-blue">Full Stack Developer</span>
+                <span className="text-blue">Software Systems Engineer</span>
               </p>
               <p className="flex items-center justify-center font-bold sm:justify-start gap-2">
                 <span className="text-green">Open Source Enthusiast</span>
@@ -39,7 +39,7 @@ export default function Intro() {
         </div>
         <div className="space-y-8">
           <p className="text-foreground/80 text-center text-base sm:text-2xl italic max-w-3xl mx-auto font-medium">
-            Coffee-to-code conversion isn't just a clever phrase – 
+            "Turning coffee into code" isn't just a clever phrase – 
             <span className="text-aqua-bright"> it's how I approach each project:</span>
             <span className="text-purple-bright"> methodically,</span>
             <span className="text-blue-bright"> with attention to detail,</span>
@@ -51,7 +51,7 @@ export default function Intro() {
               className="text-foreground/50 hover:text-yellow-bright transition-colors duration-300"
               aria-label="Scroll to next section"
             >
-              <ChevronDown size={40} className="animate-bounce" />
+              <ChevronDownIcon size={40} className="animate-bounce" />
             </button>
           </div>
         </div>

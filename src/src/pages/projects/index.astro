@@ -1,0 +1,15 @@
+---
+import { getCollection } from "astro:content";
+import ProjectsLayout from "@/layouts/projects.astro";
+import { ProjectList } from "@/components/projects/project-list";
+
+const projects = (await getCollection("projects", ({ data }) => {
+  return data.isDraft !== true;
+})).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<ProjectsLayout title="Projects | Timothy Pidashev">
+  <ProjectList projects={projects} client:load />
+</ProjectsLayout>

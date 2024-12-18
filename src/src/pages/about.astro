@@ -1,12 +1,27 @@
 ---
 import "@/style/globals.css"
-
 import MainLayout from "@/layouts/main.astro";
 import Intro from "@/components/about/intro";
+import Timeline from "@/components/about/timeline";
+import CurrentFocus from "@/components/about/current-focus";
+import OutsideCoding from "@/components/about/outside-coding";
 ---
-
 <MainLayout content={{ title: "About | Timothy Pidashev" }}>
-  <div class="flex items-center justify-center h-screen w-full">
-    <Intro client:load />
+  <div class="min-h-screen">
+    <section class="h-screen flex items-center justify-center">
+      <Intro client:load />
+    </section>
+    
+    <section class="flex items-center justify-center py-16">
+      <Timeline client:load />
+    </section>
+
+    <section class="flex items-center justify-center py-16">
+      <CurrentFocus client:load />
+    </section>
+
+    <section class="flex items-center justify-center py-16">
+      <OutsideCoding client:load />
+    </section>
   </div>
 </MainLayout>

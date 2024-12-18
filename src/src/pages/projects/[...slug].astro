@@ -1,0 +1,63 @@
+---
+import { getCollection } from "astro:content";
+import ProjectsLayout from "@/layouts/projects.astro";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map(project => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+---
+
+<ProjectsLayout title={`${project.data.title} | Timothy Pidashev`}>
+  <article class="w-full mx-auto px-4 pt-6 sm:pt-12">
+    {/* Image Section */}
+    {project.data.image && (
+      <div class="w-full rounded-lg overflow-hidden mb-8 border-2 border-foreground/20 aspect-video">
+        <img 
+          src={project.data.image}
+          alt={project.data.title}
+          class="w-full h-full object-cover"
+        />
+      </div>
+    )}
+
+    <header class="mb-8">
+      <h1 class="text-3xl sm:text-4xl font-bold text-yellow-bright mb-4">
+        {project.data.title}
+      </h1>
+      
+      <div class="flex flex-wrap gap-2 mb-4">
+        {project.data.techStack.map(tech => (
+          <span class="text-xs px-2 py-1 rounded-full bg-purple-bright/10 text-purple-bright">
+            {tech}
+          </span>
+        ))}
+      </div>
+
+      <div class="flex gap-4">
+        {project.data.githubUrl && (
+          <a href={project.data.githubUrl} 
+             class="text-foreground/70 hover:text-blue-bright transition-colors">
+            View Source
+          </a>
+        )}
+        {project.data.demoUrl && (
+          <a href={project.data.demoUrl} 
+             class="text-foreground/70 hover:text-green-bright transition-colors">
+            Live Demo
+          </a>
+        )}
+      </div>
+    </header>
+
+    <div class="prose prose-invert max-w-none">
+      <Content />
+    </div>
+  </article>
+</ProjectsLayout>
