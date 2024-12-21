@@ -2,28 +2,21 @@
 import { CollectionEntry, getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import BlogLayout from "@/layouts/blog.astro";
-
-import { Image } from "astro:assets";
-import { getCollection } from "astro:content";
-import type { CollectionEntry } from "astro:content";
 import { getArticleSchema } from "@/lib/structuredData";
 import { blogWebsite } from "@/lib/structuredData";
 
 interface Props {
   post: CollectionEntry<"blog">;
 }
-
 export async function getStaticPaths() {
-	const posts = await getCollection("blog");
-	return posts.map((post) => ({
-		params: { slug: post.slug },
-		props: post,
-	}));
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: post,
+  }));
 }
-
 const post = Astro.props;
 const { Content } = await post.render();
-
 const articleStructuredData = getArticleSchema(post);
  
 const breadcrumbsStructuredData = {
@@ -44,7 +37,6 @@ const breadcrumbsStructuredData = {
     },
   ],
 };
-
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [articleStructuredData, breadcrumbsStructuredData, blogWebsite],
@@ -53,12 +45,33 @@ const jsonLd = {
 
 <BlogLayout>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-  <article class="prose">
-    <h1 class="text-3xl pt-4">{post.data.title}</h1>
-    <p class="lg:text-2xl sm:text-lg">{post.data.description}</p>
-    <p class="text-lg pb-4">{post.data.author} | {post.data.date}</h1>
-    <hr class="bg-orange" />
-    <br />
-    <Content />
-  </article>
+  <div class="relative max-w-8xl mx-auto">
+    <article class="prose prose-lg mx-auto max-w-4xl">
+      {post.data.image && (
+        <div class="-mx-4 sm:mx-0 mb-8">
+          <Image
+            src={post.data.image}
+            alt={post.data.title}
+            class="w-full h-auto rounded-lg object-cover"
+            width={1200}
+            height={630}
+            quality={100}
+          />
+        </div>
+      )}
+      <h1 class="text-3xl pt-4">{post.data.title}</h1>
+      <p class="lg:text-2xl sm:text-lg">{post.data.description}</p>
+      <p class="text-lg">{post.data.author} | {post.data.date}</p>
+      <div class="flex flex-wrap gap-2 pb-4">
+        {post.data.tags.map((tag) => (
+          <span class="text-sm px-2 py-1 bg-muted rounded-full">
+            #{tag}
+          </span>
+        ))}
+      </div>
+      <hr class="bg-orange" />
+      <br />
+      <Content />
+    </article>
+  </div>
 </BlogLayout>
