@@ -5,6 +5,7 @@ import "@/style/globals.css";
 
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import VineAnimation from "@/components/vines";
 ---
 
 <html lang="en">
@@ -16,6 +17,8 @@ import Footer from "@/components/footer";
 	</head>
   <body class="bg-background text-foreground">
     <Header client:load />
+    <VineAnimation side="left" client:only="react" />
+    <VineAnimation side="right" client:only="react" />
     <main>
       <slot />
     </main>
