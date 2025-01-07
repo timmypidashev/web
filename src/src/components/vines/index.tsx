@@ -90,7 +90,7 @@ const VineAnimation = ({ side }) => {
       const leafPosition = Math.min(branch.points.length - 2, Math.floor(Math.random() * branch.points.length));
 
       newLeaves.push({
-        position: leafPosition, // Use the selected point
+        position: leafPosition,
         size: leafSize,
         side: Math.random() > 0.5 ? 'left' : 'right'
       });
@@ -127,21 +127,37 @@ const VineAnimation = ({ side }) => {
       Math.random() < 0.05 &&
       newMainBranch.points.length > 4
     ) {
-      // Choose a random point, excluding the last point
+      // Choose a random point, excluding the last few points of any branch
       const allBranches = [newMainBranch, ...newSubBranches];
       const sourceBranch = allBranches[Math.floor(Math.random() * allBranches.length)];
-
-      const branchPointIndex = Math.floor(Math.random() * (sourceBranch.points.length - 1)); // Exclude the last point
-      const branchPoint = sourceBranch.points[branchPointIndex];
-
-      const rotationOffset = Math.random() * 0.8 - 0.4;
-      newSubBranches.push(
-        createBranch(
-          branchPoint.x,
-          branchPoint.y,
-          branchPoint.rotation + rotationOffset
-        )
+      
+      // Calculate the valid range for branching
+      const minPoints = 4; // Minimum points needed before branching
+      const reservedTipPoints = 5; // Points to reserve at the tip
+      const maxBranchPoint = Math.max(
+        minPoints,
+        sourceBranch.points.length - reservedTipPoints
       );
+      
+      // Only create new branch if there's a valid spot
+      if (maxBranchPoint > minPoints) {
+        const branchPointIndex = Math.floor(
+          Math.random() * (maxBranchPoint - minPoints) + minPoints
+        );
+        const branchPoint = sourceBranch.points[branchPointIndex];
+
+        // Add some randomness to the branching angle
+        const rotationOffset = (Math.random() * 0.8 - 0.4) + 
+                             (Math.random() > 0.5 ? Math.PI/4 : -Math.PI/4);
+        
+        newSubBranches.push(
+          createBranch(
+            branchPoint.x,
+            branchPoint.y,
+            branchPoint.rotation + rotationOffset
+          )
+        );
+      }
     }
 
     // Update existing branches
@@ -157,7 +173,8 @@ const VineAnimation = ({ side }) => {
     };
   }, [side]);
 
-  // Render functions for leaves and branches
+  // [Rest of the component code remains the same...]
+  
   const renderLeaf = (point, size, leafSide, parentOpacity = 1) => {
     const sideMultiplier = leafSide === 'left' ? -1 : 1;
     const angle = point.rotation + (Math.PI / 3) * sideMultiplier;
@@ -239,11 +256,9 @@ const VineAnimation = ({ side }) => {
     );
   };
 
-  // Animation loop effect
   useEffect(() => {
     if (isMobile) return;
 
-    // Initialize with staggered vines
     if (vines.length === 0) {
       setVines([
         createNewVine(),
@@ -254,12 +269,10 @@ const VineAnimation = ({ side }) => {
 
     const interval = setInterval(() => {
       setVines(currentVines => {
-        // Update all vines
         const updatedVines = currentVines
           .map(vine => updateVine(vine))
           .filter(vine => vine.opacity > 0.01);
 
-        // Add new vines to maintain constant activity
         if (updatedVines.length < 3) {
           return [...updatedVines, createNewVine()];
         }
