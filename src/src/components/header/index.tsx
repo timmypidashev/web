@@ -1,4 +1,3 @@
-// components/header/index.tsx
 import React, { useState, useEffect, useRef } from "react";
 import { Links } from "@/components/header/links";
 
@@ -19,13 +18,11 @@ export default function Header() {
 
   useEffect(() => {
     if (!isClient) return;
-
     const handleScroll = () => {
       const currentScrollY = document.documentElement.scrollTop;
       setVisible(currentScrollY < lastScrollY || currentScrollY < 10);
       setLastScrollY(currentScrollY);
     };
-
     document.addEventListener("scroll", handleScroll);
     return () => document.removeEventListener("scroll", handleScroll);
   }, [lastScrollY, isClient]);
@@ -38,6 +35,8 @@ export default function Header() {
     
     return linkHref !== "/" && path.startsWith(linkHref);
   };
+
+  const isIndexPage = checkIsActive("/");
 
   const headerLinks = Links.map((link) => {
     const isActive = checkIsActive(link.href);
@@ -85,9 +84,10 @@ export default function Header() {
     <header 
       className={`
         fixed z-50 top-0 left-0 right-0 
-        bg-black font-bold 
+        font-bold 
         transition-transform duration-300
         ${visible ? "translate-y-0" : "-translate-y-full"}
+        ${!isIndexPage ? "bg-black" : ""}
       `}
     >
       <div className="flex flex-row pt-1 px-2 text-lg lg:pt-2 lg:text-3xl md:text-2xl items-center justify-between md:justify-center space-x-2 md:space-x-10 lg:space-x-20">
