@@ -2,6 +2,7 @@
 import "@/style/globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import Background from "@/components/background";
 
 export interface Props {
   title: string;
@@ -23,7 +24,9 @@ const { title, description, permalink, current } = Astro.props;
     <Header client:load />
     <main>
       <div class="max-w-5xl mx-auto pt-12 px-4 py-8">
+        <Background layout="content" position="right" client:only="react" />
         <slot />
+        <Background layout="content" position="left" client:only="react" />
       </div>
     </main>
     <Footer client:load />

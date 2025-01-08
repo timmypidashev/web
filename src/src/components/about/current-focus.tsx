@@ -4,22 +4,22 @@ import { Code2, BookOpen, RocketIcon, Compass } from 'lucide-react';
 export default function CurrentFocus() {
   const recentProjects = [
     {
-      title: "Project Name 1",
-      description: "Short description of the project",
-      href: "/projects/project-1",
-      tech: ["React", "TypeScript", "Node.js"]
+      title: "Darkbox",
+      description: "My gruvbox theme, with a pure black background",
+      href: "/projects/darkbox",
+      tech: ["Neovim", "Lua"]
     },
     {
-      title: "Project Name 2",
-      description: "Short description of the project",
-      href: "/projects/project-2",
-      tech: ["Python", "Django", "PostgreSQL"]
+      title: "Revive Auto Parts",
+      description: "A car parts listing site built for a client",
+      href: "/projects/reviveauto",
+      tech: ["Tanstack", "React Query", "Fastapi"]
     },
     {
-      title: "Project Name 3",
-      description: "Short description of the project",
-      href: "/projects/project-3",
-      tech: ["Next.js", "Tailwind", "Prisma"]
+      title: "Fhccenter",
+      description: "Website made for a private school",
+      href: "/projects/fhccenter",
+      tech: ["Nextjs", "Typescript", "Prisma"]
     }
   ];
 

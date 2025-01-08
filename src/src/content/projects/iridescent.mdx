@@ -1,8 +1,58 @@
 ---
 title: "Iridescent"
-description: "An open-source graphics engine."
+description: "An open-source graphics engine"
 githubUrl: "https://github.com/timmypidashev/iridescent"
 techStack: ["Cmake", "Glad", "Imgui"]
 date: "2024-05-03"
 image: "/projects/iridescent/thumbnail.jpeg"
 ---
+
+## Overview
+A open-source graphics engine concept created for my highschool senior project. 
+Built to expand my understanding of the low level programming world, and further
+my reach of graphics and c++ programming.
+
+## Key Features
+* **Dockable Windows**: A quality of life feature utilizing imgui which allows
+to efficiently use monitor space, moving logging and certain tools into their own 
+windows outside of the engines viewspace.
+
+* **Layer Stack**: Deterministic and fast stack which determines the order in which 
+all layers of the application are drawn, from the ui all the way to the polygons making
+up the scene.
+
+* **Input Polling**: A realtime implementation polling all input events on the keyboard
+and mouse for an extremely low latency between input events and scene events.
+
+* **Detailed Logging**: A detailed logging system which logs events from the scene all the 
+way down to the system.
+
+* **Shading**: The crème de la crème of the renderer, adding shading to the entire scene.
+
+## Development Highlights
+Some of the best highlights for me during this project was quite literally every time I managed
+to fix a compilation issue. The exhileration after each successful step forward was just mesmerizing,
+and I knew the moment I began my obsession wouldn't end until the engine was in a complete state.
+Since I was going into this blind during my senior year at highschool, I knew almost nothing about 
+c++ or the build systems that accompany it, so learning all of that at once was both a breath of fresh 
+air and a frustration. However, after several days of work, I became very comfortable with cmake, my build 
+system of choice, and most basic concepts of c++, allowing me to begin working on the engine itself. 
+It was at this point where I started hitting some real knowledge barriers and ended up going to multiple 
+resources to learn and understand the inner workings of a graphics renderer. Resources such as the 
+[Hazel Engine Series](https://www.youtube.com/watch?v=JxIZbV_XjAs&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT),
+[Learn C++ Website](https://www.learncpp.com/learn-cpp-site-index/), and [OpenGL Tutorials](https://www.opengl.org/sdk/docs/tutorials/)
+helped me tremendously here.
+
+## Challenges and Roadblocks
+Some of the biggest challenges I faced was overcoming the knowledge barrier I had on the inner workings
+of graphics rendering and low level programming overall. Thankfuly, being stubborn and obsessed can 
+sometimes help, and in this case after numerous attempts, I began meticoulouly learning every aspect 
+of the engine as I developed it, and over time it began paying off, snowballing into a very fun experience. 
+Some food for thought, after you overcome the biggest barrier in your journey, the rest seems laughably easy.
+
+## Summary
+Looking back, working on Iridescent was some of the most fun I have ever had programming as of yet,
+and I am still craving for the next project to top this one. It was only by working on this engine
+that I realized just how much I love working on the little details, obsessing over each little system
+in the engine. Definitely something I will have to do again, maybe write a little game, but thats for 
+future me to decide :D

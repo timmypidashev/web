@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import MainLayout from "@/layouts/main.astro";
+import ContentLayout from "@/layouts/content.astro";
 
 import { BlogPostList } from "@/components/blog/post-list";
 
@@ -11,6 +11,6 @@ const posts = (await getCollection("blog", ({ data }) => {
 );
 ---
 
-<MainLayout content={{ title: "Blog | Timothy Pidashev" }}>
+<ContentLayout content={{ title: "Blog | Timothy Pidashev" }}>
   <BlogPostList posts={posts} client:load />
-</MainLayout>
+</ContentLayout>

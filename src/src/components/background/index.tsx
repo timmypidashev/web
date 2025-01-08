@@ -24,13 +24,22 @@ interface Grid {
   offsetY: number;
 }
 
+interface BackgroundProps {
+  layout?: 'index' | 'sidebar';
+  position?: 'left' | 'right';
+}
+
 const CELL_SIZE = 25;
 const TRANSITION_SPEED = 0.1;
 const SCALE_SPEED = 0.15;
 const CYCLE_FRAMES = 120;
 const INITIAL_DENSITY = 0.15;
+const SIDEBAR_WIDTH = 240;
 
-const Background: React.FC = () => {
+const Background: React.FC<BackgroundProps> = ({ 
+  layout = 'index',
+  position = 'left' 
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gridRef = useRef<Grid>();
   const animationFrameRef = useRef<number>();
@@ -50,14 +59,10 @@ const Background: React.FC = () => {
   };
 
   const calculateGridDimensions = (width: number, height: number) => {
-    // Calculate number of complete cells that fit in the viewport
     const cols = Math.floor(width / CELL_SIZE);
     const rows = Math.floor(height / CELL_SIZE);
-    
-    // Calculate offsets to center the grid
     const offsetX = Math.floor((width - (cols * CELL_SIZE)) / 2);
     const offsetY = Math.floor((height - (rows * CELL_SIZE)) / 2);
-    
     return { cols, rows, offsetX, offsetY };
   };
 
@@ -138,7 +143,6 @@ const Background: React.FC = () => {
   };
 
   const computeNextState = (grid: Grid) => {
-    // First pass: compute next state without applying it
     for (let i = 0; i < grid.cols; i++) {
       for (let j = 0; j < grid.rows; j++) {
         const cell = grid.cells[i][j];
@@ -153,11 +157,9 @@ const Background: React.FC = () => {
           }
         }
         
-        // Mark cells that need to transition
         if (cell.alive !== cell.next && !cell.transitioning) {
           cell.transitioning = true;
           cell.transitionComplete = false;
-          // For dying cells, start the shrinking animation
           if (!cell.next) {
             cell.targetScale = 0;
             cell.targetOpacity = 0;
@@ -172,13 +174,10 @@ const Background: React.FC = () => {
       for (let j = 0; j < grid.rows; j++) {
         const cell = grid.cells[i][j];
         
-        // Update animation properties
         cell.opacity += (cell.targetOpacity - cell.opacity) * TRANSITION_SPEED;
         cell.scale += (cell.targetScale - cell.scale) * SCALE_SPEED;
         
-        // Handle transition states
         if (cell.transitioning) {
-          // Check if shrinking animation is complete for dying cells
           if (!cell.next && cell.scale < 0.05) {
             cell.alive = false;
             cell.transitioning = false;
@@ -186,7 +185,6 @@ const Background: React.FC = () => {
             cell.scale = 0;
             cell.opacity = 0;
           }
-          // Check if growing animation is complete for new cells
           else if (cell.next && !cell.alive && !cell.transitionComplete) {
             cell.alive = true;
             cell.transitioning = false;
@@ -194,7 +192,6 @@ const Background: React.FC = () => {
             cell.targetScale = 1;
             cell.targetOpacity = 1;
           }
-          // Start growing animation for new cells once old cells have shrunk
           else if (cell.next && !cell.alive && cell.transitionComplete) {
             cell.transitioning = true;
             cell.targetScale = 1;
@@ -214,17 +211,21 @@ const Background: React.FC = () => {
 
     const resizeCanvas = () => {
       const dpr = window.devicePixelRatio || 1;
-      const displayWidth = window.innerWidth;
-      const displayHeight = window.innerHeight;
+      let displayWidth: number;
+      let displayHeight: number;
+
+      if (layout === 'index') {
+        displayWidth = window.innerWidth;
+        displayHeight = window.innerHeight;
+      } else {
+        displayWidth = SIDEBAR_WIDTH;
+        displayHeight = window.innerHeight;
+      }
       
-      // Set canvas size accounting for device pixel ratio
       canvas.width = displayWidth * dpr;
       canvas.height = displayHeight * dpr;
-      
-      // Scale the context to ensure correct drawing operations
       ctx.scale(dpr, dpr);
       
-      // Set CSS size
       canvas.style.width = `${displayWidth}px`;
       canvas.style.height = `${displayHeight}px`;
       
@@ -232,7 +233,6 @@ const Background: React.FC = () => {
         gridRef.current = initGrid(displayWidth, displayHeight);
         isInitialized.current = true;
       } else if (gridRef.current) {
-        // Update grid dimensions and offsets on resize
         const { cols, rows, offsetX, offsetY } = calculateGridDimensions(displayWidth, displayHeight);
         gridRef.current.cols = cols;
         gridRef.current.rows = rows;
@@ -264,7 +264,6 @@ const Background: React.FC = () => {
             const xOffset = (cellSize - scaledSize) / 2;
             const yOffset = (cellSize - scaledSize) / 2;
             
-            // Add grid offsets to center the animation
             const x = grid.offsetX + i * CELL_SIZE + (CELL_SIZE - cellSize) / 2 + xOffset;
             const y = grid.offsetY + j * CELL_SIZE + (CELL_SIZE - cellSize) / 2 + yOffset;
             const scaledRoundness = roundness * cell.scale;
@@ -312,10 +311,21 @@ const Background: React.FC = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, []);
+  }, [layout]);
+
+  const getContainerClasses = () => {
+    if (layout === 'index') {
+      return 'fixed inset-0 -z-10';
+    }
+    
+    const baseClasses = 'fixed top-0 bottom-0 hidden lg:block -z-10';
+    return position === 'left' 
+      ? `${baseClasses} left-0` 
+      : `${baseClasses} right-0`;
+  };
 
   return (
-    <div className="fixed inset-0 -z-10">
+    <div className={getContainerClasses()}>
       <canvas
         ref={canvasRef}
         className="w-full h-full bg-black"

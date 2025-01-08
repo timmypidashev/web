@@ -5,20 +5,21 @@ import "@/style/globals.css";
 
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import Background from "@/components/hero/background";
+import Background from "@/components/background";
 ---
 
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
 		<title>{content.title}</title>
 	</head>
   <body class="bg-background text-foreground">
     <Header client:load />
     <main>
-      <Background client:only="react" />
+      <Background layout="index" client:only="react" />
       <slot />
     </main>
     <Footer client:load fixed=true />

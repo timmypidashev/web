@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import ProjectsLayout from "@/layouts/projects.astro";
+import ContentLayout from "@/layouts/content.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -14,7 +14,7 @@ const { project } = Astro.props;
 const { Content } = await project.render();
 ---
 
-<ProjectsLayout title={`${project.data.title} | Timothy Pidashev`}>
+<ContentLayout title={`${project.data.title} | Timothy Pidashev`}>
   <article class="w-full mx-auto px-4 pt-6 sm:pt-12">
     {/* Image Section */}
     {project.data.image && (
@@ -60,4 +60,4 @@ const { Content } = await project.render();
       <Content />
     </div>
   </article>
-</ProjectsLayout>
+</ContentLayout>

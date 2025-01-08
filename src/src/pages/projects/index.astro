@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import ProjectsLayout from "@/layouts/projects.astro";
+import ContentLayout from "@/layouts/content.astro";
 import { ProjectList } from "@/components/projects/project-list";
 
 const projects = (await getCollection("projects", ({ data }) => {
@@ -10,6 +10,6 @@ const projects = (await getCollection("projects", ({ data }) => {
 );
 ---
 
-<ProjectsLayout title="Projects | Timothy Pidashev">
+<ContentLayout title="Projects | Timothy Pidashev">
   <ProjectList projects={projects} client:load />
-</ProjectsLayout>
+</ContentLayout>

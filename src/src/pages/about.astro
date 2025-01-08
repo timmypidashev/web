@@ -1,12 +1,12 @@
 ---
 import "@/style/globals.css"
-import MainLayout from "@/layouts/main.astro";
+import ContentLayout from "@/layouts/content.astro";
 import Intro from "@/components/about/intro";
 import Timeline from "@/components/about/timeline";
 import CurrentFocus from "@/components/about/current-focus";
 import OutsideCoding from "@/components/about/outside-coding";
 ---
-<MainLayout content={{ title: "About | Timothy Pidashev" }}>
+<ContentLayout content={{ title: "About | Timothy Pidashev" }}>
   <div class="min-h-screen">
     <section class="h-screen flex items-center justify-center">
       <Intro client:load />

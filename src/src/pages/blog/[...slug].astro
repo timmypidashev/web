@@ -1,7 +1,7 @@
 ---
 import { CollectionEntry, getCollection } from "astro:content";
 import { Image } from "astro:assets";
-import BlogLayout from "@/layouts/blog.astro";
+import ContentLayout from "@/layouts/content.astro";
 import { getArticleSchema } from "@/lib/structuredData";
 import { blogWebsite } from "@/lib/structuredData";
 
@@ -43,7 +43,7 @@ const jsonLd = {
 };
 ---
 
-<BlogLayout>
+<ContentLayout>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <div class="relative max-w-8xl mx-auto">
     <article class="prose prose-lg mx-auto max-w-4xl">
@@ -74,4 +74,4 @@ const jsonLd = {
       <Content />
     </article>
   </div>
-</BlogLayout>
+</ContentLayout>

@@ -1,9 +1,18 @@
 ---
-import MainLayout from "@/layouts/main.astro";
- 
+import IndexLayout from "@/layouts/index.astro";
+
 const title = "404 Not Found";
 ---
- 
-<MainLayout content={{ title: "404 | Timothy Pidashev" }}>
-  <main>404 not found</main>
-</MainLayout>
+
+<IndexLayout content={{ title: "404 | Timothy Pidashev" }}>
+  <main class="min-h-screen flex flex-col items-center justify-center p-4 text-center">
+    <h1 class="text-6xl font-bold mb-4">404</h1>
+    <p class="text-xl mb-8">Whoops! This page doesn't exist.</p>
+    <button 
+      onclick="window.history.back()" 
+      class="underline hover:opacity-70 transition-opacity"
+    >
+      go back
+    </button>
+  </main>
+</IndexLayout>

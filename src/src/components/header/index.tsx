@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Links } from "@/components/header/links";
 
 export default function Header() {
@@ -8,11 +8,9 @@ export default function Header() {
   const [currentPath, setCurrentPath] = useState("");
   const [shouldAnimate, setShouldAnimate] = useState(false);
 
-  // Handle client-side initialization
   useEffect(() => {
     setIsClient(true);
     setCurrentPath(document.location.pathname);
-    // Trigger initial animation after a brief delay
     setTimeout(() => setShouldAnimate(true), 50);
   }, []);
 
@@ -44,7 +42,11 @@ export default function Header() {
     return (
       <div
         key={link.id}
-        className={`relative inline-block ${link.color}`}
+        className={`
+          relative inline-block 
+          ${link.color}
+          ${!isIndexPage ? 'bg-black rounded' : ''}
+        `}
       >
         <a 
           href={link.href}
@@ -87,11 +89,17 @@ export default function Header() {
         font-bold 
         transition-transform duration-300
         ${visible ? "translate-y-0" : "-translate-y-full"}
-        ${!isIndexPage ? "bg-black" : ""}
       `}
     >
-      <div className="flex flex-row pt-1 px-2 text-lg lg:pt-2 lg:text-3xl md:text-2xl items-center justify-between md:justify-center space-x-2 md:space-x-10 lg:space-x-20">
-        {headerLinks}
+      <div className="flex flex-row items-center justify-center h-full">
+        <div className={`
+          flex flex-row pt-1 px-2 text-lg lg:pt-2 lg:text-3xl md:text-2xl
+          items-center justify-between md:justify-center 
+          space-x-2 md:space-x-10 lg:space-x-20
+          ${!isIndexPage ? 'bg-black' : ''}
+        `}>
+          {headerLinks}
+        </div>
       </div>
     </header>
   );
