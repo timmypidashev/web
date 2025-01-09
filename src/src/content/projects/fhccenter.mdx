@@ -7,4 +7,43 @@ date: "2024-10-03"
 image: "/projects/fhccenter/thumbnail.jpeg"
 ---
 
+## Overview
+A private learning center website that provides information about the organization,
+student registrations, a newsletter, and full admin login with administrative tools.
 
+## Key Features
+* **Server Components**: React Server Components power efficient data flow and server-side
+rendering.
+
+* **JWT Authentication**: Built using a custom authentication provider, the entire site is 
+secured with a jwt token schema, including refresh tokens.
+
+* **Elegant Components**: Constructed using Shadcn and Framer motion, component animations
+and feel are seamless.
+
+## Development Highlights
+Building this site was quite an interesting feat. This was my first foray into react server 
+components, and while they aren't my preferred method of building applications, It was a great
+experience to fully dive in and make use of them. This was also my first time using Nextjs's 
+new app router, and coming from the page router I really liked the experience. Building out
+new pages and components was just a pure flow of thought, and I found myself trying to keep up
+with the ideas coming out of my head rather than coming upon development barriers or softblocks.
+
+## Challenges & Roadblocks
+One of the only real challenges I didn't anticipate was caching. In Nextjs 14, caching is handled
+very poorly, and I found myself struggling to figure out workarounds when handling dynamic data
+such as the newsletter on the site. Full cache routes were extremely tricky to understand, but 
+after reading some troubleshooting guides it was full sailing ahead.
+
+Another tricky but fun challenge was implementing authentication using react server components.
+Since I had never used them up to this point, going about setting up a jwt schema while also trying
+to ensure api routes don't accidentally leak was tricky, and something I still to this day don't really
+like when it comes to server components. The fact that a single line of code is responsible for separating
+server from client with nothing preventing a dev from putting all those components wherever they please can 
+cause quite a mess, so following good file organization conventions was instrumental. 
+
+## Summary
+Overall, I had a pleasant time working on [fhccenter](https://fhccenter.org). After learning all the new
+features like server components and the app router, I spent more time messing around with css styling and 
+getting the site to look exactly the way I wanted it rather than debugging silly mistakes, which was 
+refreshing coming from other frameworks.
