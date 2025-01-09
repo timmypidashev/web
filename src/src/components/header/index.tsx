@@ -35,7 +35,6 @@ export default function Header() {
   };
 
   const isIndexPage = checkIsActive("/");
-
   const headerLinks = Links.map((link) => {
     const isActive = checkIsActive(link.href);
     
@@ -43,9 +42,9 @@ export default function Header() {
       <div
         key={link.id}
         className={`
-          relative inline-block 
+          relative inline-block
           ${link.color}
-          ${!isIndexPage ? 'bg-black rounded' : ''}
+          ${!isIndexPage ? 'bg-black' : ''}
         `}
       >
         <a 
@@ -91,12 +90,14 @@ export default function Header() {
         ${visible ? "translate-y-0" : "-translate-y-full"}
       `}
     >
-      <div className="flex flex-row items-center justify-center h-full">
+      <div className={`
+        w-full flex flex-row items-center justify-center
+        ${!isIndexPage ? 'bg-black md:bg-transparent' : ''}
+      `}>
         <div className={`
-          flex flex-row pt-1 px-2 text-lg lg:pt-2 lg:text-3xl md:text-2xl
-          items-center justify-between md:justify-center 
-          space-x-2 md:space-x-10 lg:space-x-20
-          ${!isIndexPage ? 'bg-black' : ''}
+          w-full md:w-auto flex flex-row pt-1 px-2 text-lg lg:text-3xl md:text-2xl
+          items-center justify-between md:justify-center space-x-2 md:space-x-10 lg:space-x-20 md:py-2
+          ${!isIndexPage ? 'bg-black md:px-20' : ''}
         `}>
           {headerLinks}
         </div>

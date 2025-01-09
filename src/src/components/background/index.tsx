@@ -44,7 +44,7 @@ const Background: React.FC<BackgroundProps> = ({
   const gridRef = useRef<Grid>();
   const animationFrameRef = useRef<number>();
   const frameCount = useRef(0);
-  const isInitialized = useRef(false);
+  const resizeTimeoutRef = useRef<NodeJS.Timeout>();
 
   const randomColor = (): [number, number, number] => {
     const colors = [
@@ -90,6 +90,7 @@ const Background: React.FC<BackgroundProps> = ({
     const grid = { cells, cols, rows, offsetX, offsetY };
     computeNextState(grid);
     
+    // Initialize cells with staggered animation
     for (let i = 0; i < cols; i++) {
       for (let j = 0; j < rows; j++) {
         const cell = cells[i][j];
@@ -202,89 +203,55 @@ const Background: React.FC<BackgroundProps> = ({
     }
   };
 
+  const setupCanvas = (canvas: HTMLCanvasElement, width: number, height: number) => {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+    
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    
+    return ctx;
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const handleResize = () => {
+      // Clear the previous timeout
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
+
+      // Debounce resize event
+      resizeTimeoutRef.current = setTimeout(() => {
+        const displayWidth = layout === 'index' ? window.innerWidth : SIDEBAR_WIDTH;
+        const displayHeight = window.innerHeight;
+
+        const ctx = setupCanvas(canvas, displayWidth, displayHeight);
+        if (!ctx) return;
+
+        // Reset animation state
+        frameCount.current = 0;
+        
+        // Initialize new grid with new dimensions
+        gridRef.current = initGrid(displayWidth, displayHeight);
+      }, 250); // Debounce time of 250ms
+    };
+
+    // Initial setup
+    const displayWidth = layout === 'index' ? window.innerWidth : SIDEBAR_WIDTH;
+    const displayHeight = window.innerHeight;
+    
+    const ctx = setupCanvas(canvas, displayWidth, displayHeight);
     if (!ctx) return;
 
-    const resizeCanvas = () => {
-      const dpr = window.devicePixelRatio || 1;
-      let displayWidth: number;
-      let displayHeight: number;
-
-      if (layout === 'index') {
-        displayWidth = window.innerWidth;
-        displayHeight = window.innerHeight;
-      } else {
-        displayWidth = SIDEBAR_WIDTH;
-        displayHeight = window.innerHeight;
-      }
-      
-      canvas.width = displayWidth * dpr;
-      canvas.height = displayHeight * dpr;
-      ctx.scale(dpr, dpr);
-      
-      canvas.style.width = `${displayWidth}px`;
-      canvas.style.height = `${displayHeight}px`;
-      
-      if (!isInitialized.current) {
-        gridRef.current = initGrid(displayWidth, displayHeight);
-        isInitialized.current = true;
-      } else if (gridRef.current) {
-        const { cols, rows, offsetX, offsetY } = calculateGridDimensions(displayWidth, displayHeight);
-        gridRef.current.cols = cols;
-        gridRef.current.rows = rows;
-        gridRef.current.offsetX = offsetX;
-        gridRef.current.offsetY = offsetY;
-        gridRef.current.cells = gridRef.current.cells.slice(0, cols).map(col => col.slice(0, rows));
-      }
-    };
-
-    const drawGrid = () => {
-      if (!ctx || !canvas || !gridRef.current) return;
-
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      const grid = gridRef.current;
-      const cellSize = CELL_SIZE * 0.8;
-      const roundness = cellSize * 0.2;
-
-      for (let i = 0; i < grid.cols; i++) {
-        for (let j = 0; j < grid.rows; j++) {
-          const cell = grid.cells[i][j];
-          if (cell.opacity > 0.01) {
-            const [r, g, b] = cell.color;
-            ctx.fillStyle = `rgb(${r},${g},${b})`;
-            ctx.globalAlpha = cell.opacity * 0.8;
-
-            const scaledSize = cellSize * cell.scale;
-            const xOffset = (cellSize - scaledSize) / 2;
-            const yOffset = (cellSize - scaledSize) / 2;
-            
-            const x = grid.offsetX + i * CELL_SIZE + (CELL_SIZE - cellSize) / 2 + xOffset;
-            const y = grid.offsetY + j * CELL_SIZE + (CELL_SIZE - cellSize) / 2 + yOffset;
-            const scaledRoundness = roundness * cell.scale;
-
-            ctx.beginPath();
-            ctx.moveTo(x + scaledRoundness, y);
-            ctx.lineTo(x + scaledSize - scaledRoundness, y);
-            ctx.quadraticCurveTo(x + scaledSize, y, x + scaledSize, y + scaledRoundness);
-            ctx.lineTo(x + scaledSize, y + scaledSize - scaledRoundness);
-            ctx.quadraticCurveTo(x + scaledSize, y + scaledSize, x + scaledSize - scaledRoundness, y + scaledSize);
-            ctx.lineTo(x + scaledRoundness, y + scaledSize);
-            ctx.quadraticCurveTo(x, y + scaledSize, x, y + scaledSize - scaledRoundness);
-            ctx.lineTo(x, y + scaledRoundness);
-            ctx.quadraticCurveTo(x, y, x + scaledRoundness, y);
-            ctx.fill();
-          }
-        }
-      }
-      
-      ctx.globalAlpha = 1;
-    };
+    gridRef.current = initGrid(displayWidth, displayHeight);
 
     const animate = () => {
       frameCount.current++;
@@ -297,18 +264,62 @@ const Background: React.FC<BackgroundProps> = ({
         updateCellAnimations(gridRef.current);
       }
       
-      drawGrid();
+      // Draw frame
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (gridRef.current) {
+        const grid = gridRef.current;
+        const cellSize = CELL_SIZE * 0.8;
+        const roundness = cellSize * 0.2;
+
+        for (let i = 0; i < grid.cols; i++) {
+          for (let j = 0; j < grid.rows; j++) {
+            const cell = grid.cells[i][j];
+            if (cell.opacity > 0.01) {
+              const [r, g, b] = cell.color;
+              ctx.fillStyle = `rgb(${r},${g},${b})`;
+              ctx.globalAlpha = cell.opacity * 0.8;
+
+              const scaledSize = cellSize * cell.scale;
+              const xOffset = (cellSize - scaledSize) / 2;
+              const yOffset = (cellSize - scaledSize) / 2;
+              
+              const x = grid.offsetX + i * CELL_SIZE + (CELL_SIZE - cellSize) / 2 + xOffset;
+              const y = grid.offsetY + j * CELL_SIZE + (CELL_SIZE - cellSize) / 2 + yOffset;
+              const scaledRoundness = roundness * cell.scale;
+
+              ctx.beginPath();
+              ctx.moveTo(x + scaledRoundness, y);
+              ctx.lineTo(x + scaledSize - scaledRoundness, y);
+              ctx.quadraticCurveTo(x + scaledSize, y, x + scaledSize, y + scaledRoundness);
+              ctx.lineTo(x + scaledSize, y + scaledSize - scaledRoundness);
+              ctx.quadraticCurveTo(x + scaledSize, y + scaledSize, x + scaledSize - scaledRoundness, y + scaledSize);
+              ctx.lineTo(x + scaledRoundness, y + scaledSize);
+              ctx.quadraticCurveTo(x, y + scaledSize, x, y + scaledSize - scaledRoundness);
+              ctx.lineTo(x, y + scaledRoundness);
+              ctx.quadraticCurveTo(x, y, x + scaledRoundness, y);
+              ctx.fill();
+            }
+          }
+        }
+        
+        ctx.globalAlpha = 1;
+      }
+
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    window.addEventListener('resize', handleResize);
     animate();
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener('resize', handleResize);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
+      }
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
       }
     };
   }, [layout]);
@@ -318,7 +329,7 @@ const Background: React.FC<BackgroundProps> = ({
       return 'fixed inset-0 -z-10';
     }
     
-    const baseClasses = 'fixed top-0 bottom-0 hidden lg:block -z-10';
+    const baseClasses = 'fixed top-0 bottom-0 hidden lg:block -z-10 pointer-events-none';
     return position === 'left' 
       ? `${baseClasses} left-0` 
       : `${baseClasses} right-0`;

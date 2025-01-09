@@ -3,6 +3,8 @@ const { content } = Astro.props;
 
 import "@/style/globals.css";
 
+import { ClientRouter } from "astro:transitions";
+
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Background from "@/components/background";
@@ -14,14 +16,15 @@ import Background from "@/components/background";
 		<meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-		<title>{content.title}</title>
+    <title>{content.title}</title>
+    <ClientRouter />
 	</head>
   <body class="bg-background text-foreground">
     <Header client:load />
-    <main>
+    <main transition:animate="fade">
       <Background layout="index" client:only="react" />
       <slot />
     </main>
-    <Footer client:load fixed=true />
+    <Footer client:load transition:persist fixed=true />
 	</body>
 </html>

@@ -1,5 +1,6 @@
 ---
 import "@/style/globals.css";
+import { ClientRouter } from "astro:transitions";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Background from "@/components/background";
@@ -13,22 +14,48 @@ export interface Props {
 
 const { title, description, permalink, current } = Astro.props;
 ---
+
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<title>{title}</title>
-	</head>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <ClientRouter 
+      defaultTransition={false}
+      handleFocus={false}
+    />
+
+    <style>
+      ::view-transition-new(:root) {
+        animation: none;
+      }
+      
+      ::view-transition-old(:root) {
+        animation: 90ms ease-out both fade-out;
+      }
+
+      @keyframes fade-out {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+    </style>
+  </head>
   <body class="bg-background text-foreground">
     <Header client:load />
     <main>
       <div class="max-w-5xl mx-auto pt-12 px-4 py-8">
-        <Background layout="content" position="right" client:only="react" />
+        <Background layout="content" position="right" client:only="react" transition:persist />
         <slot />
-        <Background layout="content" position="left" client:only="react" />
+        <Background layout="content" position="left" client:only="react" transition:persist />
       </div>
     </main>
-    <Footer client:load />
-	</body>
+    <Footer client:load transition:persist />
+
+    <script>
+      document.addEventListener("astro:after-navigation", () => {
+        window.scrollTo(0, 0);
+      });
+    </script>
+  </body>
 </html>
