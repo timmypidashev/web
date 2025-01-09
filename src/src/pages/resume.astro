@@ -2,11 +2,11 @@
 import "@/style/globals.css"
 
 import ContentLayout from "@/layouts/content.astro";
+import Resume from "@/components/resume";
 ---
 
 <ContentLayout content={{ title: "Resume | Timothy Pidashev" }}>
-  <div class="flex items-center justify-center h-screen w-full">
-    <h1 class="text-4xl text-blue font-bold">Resume</h1>
+  <div class="flex items-center justify-center w-full">
+    <Resume client:load />
   </div>
 </ContentLayout>
-
