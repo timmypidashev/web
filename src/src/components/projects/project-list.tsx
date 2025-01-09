@@ -21,9 +21,11 @@ export function ProjectList({ projects }: ProjectListProps) {
         <h2 className="text-xl font-bold text-foreground/90 mb-6">
           Featured Projects
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr justify-items-center">
           {latestProjects.map(project => (
-            <ProjectCard key={project.slug} project={project} />
+            <div key={project.slug} className="w-full max-w-md">
+              <ProjectCard project={project} />
+            </div>
           ))}
         </div>
       </div>
@@ -33,9 +35,11 @@ export function ProjectList({ projects }: ProjectListProps) {
           <h2 className="text-xl font-bold text-foreground/90 mb-6">
             All Projects
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr justify-items-center">
             {otherProjects.map(project => (
-              <ProjectCard key={project.slug} project={project} />
+              <div key={project.slug} className="w-full max-w-md">
+                <ProjectCard project={project} />
+              </div>
             ))}
           </div>
         </div>

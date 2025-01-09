@@ -17,17 +17,21 @@ interface BlogPostListProps {
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  return new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
   });
 };
 
 export const BlogPostList = ({ posts }: BlogPostListProps) => {
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <h1 className="text-3xl md:text-4xl font-bold mb-6 md:mb-10 text-yellow-bright px-4 md:px-0">Blog Posts</h1>
+    <div className="w-full max-w-6xl mx-auto pt-24 sm:pt-24"> 
+      <h1 className="text-2xl sm:text-3xl font-bold text-purple mb-12 text-center px-4 leading-relaxed">
+        Latest Thoughts <br className="sm:hidden" />
+        & Writings
+      </h1>
+
       <ul className="space-y-6 md:space-y-10">
         {posts.map((post) => (
           <li key={post.slug} className="group px-4 md:px-0">
@@ -39,7 +43,7 @@ export const BlogPostList = ({ posts }: BlogPostListProps) => {
                 {/* Image container with fixed aspect ratio */}
                 <div className="w-full md:w-1/3 aspect-[16/9] overflow-hidden rounded-lg bg-background">
                   <img
-                    src={post.data.image || '/api/placeholder/400/300'}
+                    src={post.data.image || "/blog/placeholder.png"}
                     alt={post.data.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
