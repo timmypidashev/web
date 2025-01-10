@@ -1,4 +1,4 @@
-PROJECT_NAME							:= "web"
+PROJECT_NAME							:= "timmypidashev.dev"
 PROJECT_AUTHORS 						:= "Timothy Pidashev (timmypidashev) <pidashev.tim@gmail.com>"
 PROJECT_VERSION 						:= "v1.0.1"
 PROJECT_LICENSE 						:= "MIT"
@@ -7,51 +7,36 @@ PROJECT_REGISTRY						:= "ghcr.io/timmypidashev/web"
 PROJECT_ORGANIZATION					:= "org.opencontainers"
 
 CONTAINER_WEB_NAME						:= "web"
-CONTAINER_WEB_VERSION					:= "v1.0.0"
+CONTAINER_WEB_VERSION					:= "v1.0.1"
 CONTAINER_WEB_LOCATION					:= "src/"
 CONTAINER_WEB_DESCRIPTION				:= "My portfolio website!"
 
 .DEFAULT_GOAL := help
-.PHONY: run build push prune bump
-.SILENT: run build push prune bump
+.PHONY: watch run build push prune bump exec
+.SILENT: watch run build push prune bump exec
 
 help:
 	@echo "Available targets:"
-	@echo "  run           - Runs the docker compose file with the specified environment (dev or release)"
+	@echo "  run           - Runs the docker compose file with the specified environment (local, dev, preview, or release)"
 	@echo "  build         - Builds the specified docker image with the appropriate environment"
 	@echo "  push          - Pushes the built docker image to the registry"
+	@echo "  pull					 - Pulls the latest specified docker image from the registry"
 	@echo "  prune         - Removes all built and cached docker images and containers"
 	@echo "  bump          - Bumps the project and container versions"
-
-run:
-	# Arguments:
-	# [environment]: 'dev' or 'release'
-	# 
-	# Explanation:
-	# * Runs the docker compose file with the specified environment(compose.dev.yml, or compose.release.yml)
-	# * Passes all generated arguments to the compose file.
-	
-	# Make sure we have been given proper arguments.
-	@if [ "$(word 2,$(MAKECMDGOALS))" = "dev" ]; then \
-		echo "Running in development environment"; \
-	elif [ "$(word 2,$(MAKECMDGOALS))" = "release" ]; then \
-		echo "Running in release environment"; \
-	else \
-		echo "Invalid usage. Please use 'make run dev' or 'make run release'"; \
-		exit 1; \
-	fi
-
-	docker compose -f compose.$(word 2,$(MAKECMDGOALS)).yml up --remove-orphans
-
+	@echo "  exec          - Spawns a shell to execute commands from within a running container"
 
 build:
 	# Arguments
 	# [container]: Build context(which container to build ['all' to build every container defined])
-	# [environment]: 'dev' or 'release'
+	# [environment]: 'local', 'dev', 'preview', or 'release'
 	#
 	# Explanation:
 	# * Builds the specified docker image with the appropriate environment.
 	# * Passes all generated arguments to docker build-kit.
+	# * Installs pre-commit hooks if in a git repository.
+	
+	# Install pre-commit hooks if in a git repository.
+	$(call install_precommit)
 	
 	# Extract container and environment inputted.
 	$(eval INPUT_TARGET := $(word 2,$(MAKECMDGOALS)))
@@ -63,6 +48,33 @@ build:
 	$(if $(filter $(strip $(INPUT_CONTAINER)),all), \
 		$(foreach container,$(containers),$(call container_build,$(container) $(INPUT_ENVIRONMENT))), \
 		$(call container_build,$(INPUT_CONTAINER) $(INPUT_ENVIRONMENT)))
+
+run:
+	# Arguments:
+	# [environment]: 'local', 'dev', 'preview', or 'release'
+	# 
+	# Explanation:
+	# * Runs the docker compose file with the specified environment(compose.local.yml, compose.dev.yml, compose.preview.yml, or compose.release.yml)
+	# * Passes all generated arguments to the compose file.
+	# * Installs pre-commit hooks if in a git repository.
+	
+	# Install pre-commit hooks if in a git repository.
+	$(call install_precommit)
+
+	# Make sure we have been given proper arguments.
+	@if [ "$(word 2,$(MAKECMDGOALS))" = "local" ]; then \
+		echo "Running in local environment"; \
+		docker compose -f compose.$(word 2,$(MAKECMDGOALS)).yml up --watch --remove-orphans; \
+	elif [ "$(word 2,$(MAKECMDGOALS))" = "preview" ]; then \
+		echo "Running in preview environment"; \
+		docker compose -f compose.$(word 2,$(MAKECMDGOALS)).yml up --remove-orphans; \
+	elif [ "$(word 2,$(MAKECMDGOALS))" = "release" ]; then \
+		echo "Running in release environment"; \
+		docker compose -f compose.$(word 2,$(MAKECMDGOALS)).yml up --remove-orphans; \
+	else \
+		echo "Invalid usage. Please use 'make run <'local', 'dev', 'preview', or 'release'>"; \
+		exit 1; \
+	fi 
 
 push:
 	# Arguments
@@ -81,7 +93,45 @@ push:
 	# NOTE: docker will complain if the container tag is invalid, no need to validate here.
 	@docker push $(PROJECT_REGISTRY)/$(INPUT_CONTAINER):$(INPUT_VERSION)
 
+pull:
+	# TODO: FIX COMMAND PULL
+	# Arguments
+	# [container]: Pull context (which container to pull from the registry)
+	# [environment]: 'local', 'dev', 'preview', or 'release'
+	#
+	# Explanation:
+	# * Pulls the specified container version from the registry defined in the user configuration.
+	# * Uses sed and basename to extract the repository name.
+	
+	# Extract container and environment inputted.
+	$(eval INPUT_TARGET := $(word 2,$(MAKECMDGOALS)))
+	$(eval INPUT_CONTAINER := $(firstword $(subst :, ,$(INPUT_TARGET))))
+	$(eval INPUT_ENVIRONMENT := $(lastword $(subst :, ,$(INPUT_TARGET))))
+	
+	# Validate environment
+	@if [ "$(strip $(INPUT_ENVIRONMENT))" != "local" ] [ "$(strip $(INPUT_ENVIRONMENT))" != "dev" ] && [ "$(strip $(INPUT_ENVIRONMENT))" != "preview" ] && [ "$(strip $(INPUT_ENVIRONMENT))" != "release" ]; then \
+			echo "Invalid environment. Please specify 'local', 'dev', 'preview', or 'release'"; \
+			exit 1; \
+	fi
+	
+	# Extract repository name from PROJECT_SOURCES using sed and basename
+	$(eval REPO_NAME := $(shell echo "$(PROJECT_SOURCES)" | sed 's|https://github.com/[^/]*/||' | sed 's/\.git$$//' | xargs basename))
+	
+	# Determine the correct tag based on the environment and container
+	$(eval TAG := $(if $(filter $(INPUT_ENVIRONMENT),local),\
+									 $(INPUT_CONTAINER):$(INPUT_ENVIRONMENT),\
+								 $(if $(filter $(INPUT_CONTAINER),$(REPO_NAME)),\
+									 $(PROJECT_REGISTRY):$(if $(filter $(INPUT_ENVIRONMENT),prev),prev,$(call container_version,$(INPUT_CONTAINER))),\
+									 $(PROJECT_REGISTRY)/$(INPUT_CONTAINER):$(if $(filter $(INPUT_ENVIRONMENT),prev),prev,$(call container_version,$(INPUT_CONTAINER))))))
+	
+	# Pull the specified container from the registry
+	@echo "Pulling container: $(INPUT_CONTAINER)"
+	@echo "Environment: $(INPUT_ENVIRONMENT)"
+	@echo "Tag: $(TAG)"
+	@docker pull $(TAG)
+
 prune:
+	# TODO: IMPLEMENT COMMAND PRUNE
 	# Removes all built and cached docker images and containers.
 
 bump:
@@ -114,7 +164,22 @@ bump:
 	# Bump the container version and global version in the Makefile
 	perl -pi -e 's/^PROJECT_VERSION\s*:=\s*\K.*/"v$(shell docker run usvc/semver:latest bump $(INPUT_SEMANTIC_TYPE) $(OLD_PROJECT_VERSION))"/ if /^PROJECT_VERSION\s*:=/' Makefile;
 	perl -pi -e 's/^CONTAINER_$(shell echo $(INPUT_CONTAINER) | tr a-z A-Z)_VERSION\s*:=\s*\K.*/"v$(shell docker run usvc/semver:latest bump $(INPUT_SEMANTIC_TYPE) $(OLD_CONTAINER_VERSION))"/ if /^CONTAINER_$(shell echo $(INPUT_CONTAINER) | tr a-z A-Z)_VERSION\s*:=/' Makefile;
+
+	# Commit and push to git origin
+	git add .
+	git commit -a -S -m "Bump $(INPUT_CONTAINER) to v$(shell docker run usvc/semver:latest bump $(INPUT_SEMANTIC_TYPE) $(OLD_PROJECT_VERSION))"
+	git push
+	git push origin tag v$(shell docker run usvc/semver:latest bump $(INPUT_SEMANTIC_TYPE) $(OLD_PROJECT_VERSION))
+
+exec:
+	# Extract container and environment inputted.
+	$(eval INPUT_TARGET := $(word 2,$(MAKECMDGOALS)))
+	$(eval INPUT_CONTAINER := $(firstword $(subst :, ,$(INPUT_TARGET))))
+	$(eval INPUT_ENVIRONMENT := $(lastword $(subst :, ,$(INPUT_TARGET))))
+	$(eval COMPOSE_FILE := compose.$(INPUT_ENVIRONMENT).yml)
 	
+	docker compose -f $(COMPOSE_FILE) run --service-ports $(INPUT_CONTAINER) sh
+
 # This function generates Docker build arguments based on variables defined in the Makefile.
 # It extracts variable assignments, removes whitespace, and formats them as build arguments.
 # Additionally, it appends any custom shell generated arguments defined below.
@@ -129,6 +194,7 @@ define args
             gsub(":", "", $$1); \
             printf "--build-arg %s=%s ", $$1, $$2 \
         }') \
+				--build-arg ENVIRONMENT='"$(shell echo $(INPUT_ENVIRONMENT))"' \
         --build-arg BUILD_DATE='"$(shell date)"' \
 		--build-arg GIT_COMMIT='"$(shell git rev-parse HEAD)"'
 endef
@@ -155,27 +221,28 @@ define container_build
 	$(eval ENVIRONMENT := $(word 2,$1))
 	$(eval ARGS := $(shell echo $(args)))
 	$(eval VERSION := $(strip $(call container_version,$(CONTAINER))))
-	$(eval TAG := $(CONTAINER):$(ENVIRONMENT))
+	$(eval PROJECT := $(strip $(subst ",,$(PROJECT_NAME))))
+	$(eval TAG := $(PROJECT).$(CONTAINER):$(ENVIRONMENT))
 
 	@echo "Building container: $(CONTAINER)"
 	@echo "Environment: $(ENVIRONMENT)"
 	@echo "Version: $(VERSION)"
 
-	@if [ "$(strip $(ENVIRONMENT))" != "dev" ] && [ "$(strip $(ENVIRONMENT))" != "release" ]; then \
-        echo "Invalid environment. Please specify 'dev' or 'release'"; \
+	@if [ "$(strip $(ENVIRONMENT))" != "local" ] && [ "$(strip $(ENVIRONMENT))" != "dev" ] && [ "$(strip $(ENVIRONMENT))" != "preview" ] && [ "$(strip $(ENVIRONMENT))" != "release" ]; then \
+        echo "Invalid environment. Please specify 'local', 'dev', 'preview', or 'release'"; \
         exit 1; \
     fi
-
-	$(if $(filter $(strip $(ENVIRONMENT)),release), \
-		$(eval TAG := $(PROJECT_REGISTRY)/$(CONTAINER):$(VERSION)), \
-	)
-
-	docker buildx build --load -t $(TAG) -f .docker/Dockerfile.$(ENVIRONMENT) ./$(strip $(subst $(SPACE),,$(call container_location,$(CONTAINER))))/. $(ARGS) $(call labels,$(shell echo $(CONTAINER_NAME) | tr '[:lower:]' '[:upper:]')) --no-cache
+	
+	docker buildx build --no-cache --load -t $(TAG) -f .docker/Dockerfile.$(ENVIRONMENT) ./$(strip $(subst $(SPACE),,$(call container_location,$(CONTAINER))))/. $(ARGS) $(call labels,$(shell echo $(CONTAINER_NAME) | tr '[:lower:]' '[:upper:]')) --debug
 endef
 
 define container_location
     $(strip $(eval CONTAINER_NAME := $(shell echo $(1) | tr '[:lower:]' '[:upper:]'))) \
     $(CONTAINER_$(CONTAINER_NAME)_LOCATION)
+endef
+
+define container_name
+		$(strip $(shell echo '$(1)' | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]'))
 endef
 
 define container_version
@@ -184,3 +251,16 @@ define container_version
 		$(shell echo $(strip $(strip $(CONTAINER_$(CONTAINER_NAME)_VERSION))) | tr -d '[:space:]'), \
 		$(error Version data for container $(1) not found))
 endef
+
+define install_precommit
+	$(strip \
+		$(shell \
+			if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then \
+				pre-commit install > /dev/null 2>&1; \
+			fi \
+		) \
+	)
+endef
+
+%:
+	@:

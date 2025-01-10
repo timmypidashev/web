@@ -1,0 +1,24 @@
+services:
+  caddy:
+    container_name: proxy
+    image: caddy:latest
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./.caddy/Caddyfile.dev:/etc/caddy/Caddyfile:rw
+    networks:
+      - proxy_network
+    depends_on:
+      - release.timmypidashev.dev
+
+  release.timmypidashev.dev:
+    container_name: timmypidashev
+    image: ghcr.io/timmypidashev/timmypidashev.dev:release
+    networks:
+      - proxy_network
+
+networks:
+  proxy_network:
+    name: proxy_network
+    external: true

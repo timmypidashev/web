@@ -24,4 +24,4 @@ RUN echo "PUBLIC_VERSION=${CONTAINER_WEB_VERSION}" > /app/.env && \
 
 EXPOSE 3000
 
-CMD pnpm install && pnpm run dev
+CMD ["pnpm", "install", "&&", "pnpm", "run", "dev"]
