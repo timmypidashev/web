@@ -161,6 +161,13 @@ export default defineConfig({
         ],
       ],
     }),
-    sitemap(),
+    sitemap({
+      filter: (page) => {
+        return !page.includes("/drafts/") && !page.includes("/private/");
+      },
+      changefreq: "weekly",
+      priority: 0.7,
+      lastmod: new Date(),
+    }),
   ],
 });
