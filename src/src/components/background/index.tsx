@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 interface Cell {
   alive: boolean;
@@ -222,38 +222,51 @@ const Background: React.FC<BackgroundProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
+    // Create an AbortController for cleanup
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const handleResize = () => {
-      // Clear the previous timeout
+      if (signal.aborted) return;
+      
       if (resizeTimeoutRef.current) {
         clearTimeout(resizeTimeoutRef.current);
       }
 
-      // Debounce resize event
       resizeTimeoutRef.current = setTimeout(() => {
+        if (signal.aborted) return;
+        
         const displayWidth = layout === 'index' ? window.innerWidth : SIDEBAR_WIDTH;
         const displayHeight = window.innerHeight;
 
         const ctx = setupCanvas(canvas, displayWidth, displayHeight);
         if (!ctx) return;
 
-        // Reset animation state
         frameCount.current = 0;
         
-        // Initialize new grid with new dimensions
-        gridRef.current = initGrid(displayWidth, displayHeight);
-      }, 250); // Debounce time of 250ms
+        // Only initialize new grid if one doesn't exist or dimensions changed
+        if (!gridRef.current || 
+            gridRef.current.cols !== Math.floor(displayWidth / CELL_SIZE) || 
+            gridRef.current.rows !== Math.floor(displayHeight / CELL_SIZE)) {
+          gridRef.current = initGrid(displayWidth, displayHeight);
+        }
+      }, 250);
     };
 
-    // Initial setup
     const displayWidth = layout === 'index' ? window.innerWidth : SIDEBAR_WIDTH;
     const displayHeight = window.innerHeight;
     
     const ctx = setupCanvas(canvas, displayWidth, displayHeight);
     if (!ctx) return;
 
-    gridRef.current = initGrid(displayWidth, displayHeight);
+    // Only initialize grid if it doesn't exist
+    if (!gridRef.current) {
+      gridRef.current = initGrid(displayWidth, displayHeight);
+    }
 
     const animate = () => {
+      if (signal.aborted) return;
+      
       frameCount.current++;
       
       if (gridRef.current) {
@@ -310,10 +323,11 @@ const Background: React.FC<BackgroundProps> = ({
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { signal });
     animate();
 
     return () => {
+      controller.abort();
       window.removeEventListener('resize', handleResize);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
@@ -322,7 +336,7 @@ const Background: React.FC<BackgroundProps> = ({
         clearTimeout(resizeTimeoutRef.current);
       }
     };
-  }, [layout]);
+  }, []); // Empty dependency array since we're managing state internally
 
   const getContainerClasses = () => {
     if (layout === 'index') {
