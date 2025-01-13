@@ -5,6 +5,9 @@ import IndexLayout from "@/layouts/index.astro";
 import Hero from "@/components/hero";
 ---
 
-<IndexLayout content={{ title: "Timothy Pidashev" }}>
+<IndexLayout 
+  title="Timothy Pidashev" 
+  description="Turning coffee into code since 2018."
+>
   <Hero client:load />
 </IndexLayout>

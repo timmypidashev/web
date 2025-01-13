@@ -8,19 +8,30 @@ import Background from "@/components/background";
 export interface Props {
   title: string;
   description: string;
-  permalink: string;
-  current?: string;
 }
 
-const { title, description, permalink, current } = Astro.props;
+const { title, description } = Astro.props;
+const ogImage = "https://timmypidashev.dev/og-image.jpg";
 ---
 
 <html lang="en">
   <head>
+    <title>{title}</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+    <!-- OpenGraph -->
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:description" content={description} />
+    <!-- Basic meta description for search engines -->
+    <meta name="description" content={description} />
+    <!-- Also used in OpenGraph for social media sharing -->
+    <meta property="og:description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title}</title>
     <ClientRouter 
       defaultTransition={false}
       handleFocus={false}

@@ -5,7 +5,10 @@ import ContentLayout from "@/layouts/content.astro";
 import Resume from "@/components/resume";
 ---
 
-<ContentLayout title="Resume | Timothy Pidashev">
+<ContentLayout 
+  title="Resume | Timothy Pidashev"
+  description = "My professional experience, skills, and development journey in software engineering."
+>
   <div class="flex items-center justify-center w-full">
     <Resume client:load />
   </div>

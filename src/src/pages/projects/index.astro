@@ -10,6 +10,9 @@ const projects = (await getCollection("projects", ({ data }) => {
 );
 ---
 
-<ContentLayout title="Projects | Timothy Pidashev">
+<ContentLayout 
+  title="Projects | Timothy Pidashev"
+  description="My portfolio of software, including web apps, dev tools, and passion projects."
+>
   <ProjectList projects={projects} client:load />
 </ContentLayout>
