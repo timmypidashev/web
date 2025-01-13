@@ -9,6 +9,7 @@ export const collections = {
       tags: z.array(z.string()),
       date: z.string(),
       image: z.string().optional(),
+      imagePosition: z.string().optional(),
     }),
   }),
   projects: defineCollection({

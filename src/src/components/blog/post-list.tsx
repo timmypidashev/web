@@ -9,6 +9,7 @@ type BlogPost = {
     tags: string[];
     description: string;
     image?: string;
+    imagePosition?: string;
   };
 };
 
@@ -46,6 +47,7 @@ export const BlogPostList = ({ posts }: BlogPostListProps) => {
                     src={post.data.image || "/blog/placeholder.png"}
                     alt={post.data.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    style={{ objectPosition: post.data.imagePosition || "center center" }}
                   />
                 </div>
                 
