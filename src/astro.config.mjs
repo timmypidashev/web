@@ -10,6 +10,13 @@ import sitemap from "@astrojs/sitemap";
 // https://astro.build/config
 export default defineConfig({
   site: "https://timmypidashev.dev",
+  build: {
+    build: {
+    // Enable build-time optimizations
+    inlineStylesheets: "auto",
+    // Split large components into smaller chunks
+    splitComponents: true,
+  },
   integrations: [
     tailwind(), 
     react(), 
