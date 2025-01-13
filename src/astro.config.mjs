@@ -11,7 +11,6 @@ import sitemap from "@astrojs/sitemap";
 export default defineConfig({
   site: "https://timmypidashev.dev",
   build: {
-    build: {
     // Enable build-time optimizations
     inlineStylesheets: "auto",
     // Split large components into smaller chunks
