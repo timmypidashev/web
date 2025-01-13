@@ -11,6 +11,6 @@ const posts = (await getCollection("blog", ({ data }) => {
 );
 ---
 
-<ContentLayout content="Blog | Timothy Pidashev">
+<ContentLayout title="Blog | Timothy Pidashev">
   <BlogPostList posts={posts} client:load />
 </ContentLayout>
