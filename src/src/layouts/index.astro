@@ -22,7 +22,7 @@ import Background from "@/components/background";
   <body class="bg-background text-foreground">
     <Header client:load />
     <main transition:animate="fade">
-      <Background layout="index" client:only="react" />
+      <Background layout="index" client:only="react" transition:persist />
       <slot />
     </main>
     <Footer client:load transition:persist fixed=true />
