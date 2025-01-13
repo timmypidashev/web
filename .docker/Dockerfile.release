@@ -1,6 +1,5 @@
 # Stage 1: Build and install dependencies
 FROM node:22-alpine AS builder
-
 WORKDIR /app
 
 # Install necessary dependencies, including pnpm
@@ -8,8 +7,14 @@ RUN set -eux \
     && apk add --no-cache nodejs curl \
     && npm install -g pnpm
 
-# Copy package files
+# Copy package files first (for better caching)
 COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Now copy the rest of your source code
+COPY . .
 
 # Set build arguments
 ARG CONTAINER_WEB_VERSION
@@ -23,19 +28,18 @@ RUN echo "PUBLIC_VERSION=${CONTAINER_WEB_VERSION}" > /app/.env && \
     echo "PUBLIC_BUILD_DATE=${BUILD_DATE}" >> /app/.env && \
     echo "PUBLIC_GIT_COMMIT=${GIT_COMMIT}" >> /app/.env
 
-# Install dependencies (including development dependencies) and build the project
-RUN pnpm install --frozen-lockfile && pnpm run build
+# Build the project
+RUN pnpm run build
 
-# Stage 2: Set up the production environment
+# Stage 2: Serve static files
 FROM node:22-alpine
-
 WORKDIR /app
 
-# Expose the port for the application
-EXPOSE 3000
+# Install serve
+RUN npm install -g serve
 
-# Copy the build artifacts from the builder stage
+# Copy built files
 COPY --from=builder /app/dist ./dist
 
-# Set the command to run the application
-CMD ["node", "./dist/server/entry.mjs"]
+EXPOSE 3000
+CMD ["serve", "-s", "dist", "-l", "3000"]
