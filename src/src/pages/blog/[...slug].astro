@@ -8,17 +8,29 @@ import { blogWebsite } from "@/lib/structuredData";
 interface Props {
   post: CollectionEntry<"blog">;
 }
+
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
   return posts.map((post) => ({
     params: { slug: post.slug },
-    props: post,
+    props: {
+      ...post,
+      data: {
+        ...post.data,
+        date: new Date(post.data.date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric"
+        })
+      }
+    },
   }));
 }
+
 const post = Astro.props;
 const { Content } = await post.render();
 const articleStructuredData = getArticleSchema(post);
- 
+
 const breadcrumbsStructuredData = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -37,6 +49,7 @@ const breadcrumbsStructuredData = {
     },
   ],
 };
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [articleStructuredData, breadcrumbsStructuredData, blogWebsite],
