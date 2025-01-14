@@ -1,14 +1,13 @@
 ---
 import { getCollection } from "astro:content";
 import ContentLayout from "@/layouts/content.astro";
-
 import { BlogPostList } from "@/components/blog/post-list";
 
 const posts = (await getCollection("blog", ({ data }) => {
   return data.isDraft !== true;
-})).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
+})).sort((a, b) => {
+  return new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
+});
 ---
 
 <ContentLayout 
