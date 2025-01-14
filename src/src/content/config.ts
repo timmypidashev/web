@@ -7,7 +7,9 @@ export const collections = {
       description: z.string(),
       author: z.string(),
       tags: z.array(z.string()),
-      date: z.coerce.date(),
+      date: z.coerce.date().transform((date) => {
+        return new Date(date.setUTCHours(12, 0, 0, 0));
+      }),
       image: z.string().optional(),
       imagePosition: z.string().optional(),
     }),

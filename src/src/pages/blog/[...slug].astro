@@ -17,7 +17,7 @@ export async function getStaticPaths() {
       ...post,
       data: {
         ...post.data,
-        date: new Date(post.data.date).toLocaleDateString("en-US", {
+        date: post.data.date.toLocaleDateString("en-US", {
           year: "numeric",
           month: "long",
           day: "numeric"
