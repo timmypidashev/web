@@ -3,12 +3,16 @@ import { ChevronDownIcon } from "@/components/icons";
 
 export default function Intro() {
   const scrollToNext = () => {
-    window.scrollTo({
-      top: window.innerHeight,
-      behavior: "smooth"
-    });
+    const nextSection = document.querySelector("section")?.nextElementSibling;
+    if (nextSection) {
+      const offset = nextSection.offsetTop - (window.innerHeight - nextSection.offsetHeight) / 2; // Center the section
+      window.scrollTo({
+        top: offset,
+        behavior: "smooth"
+      });
+    }
   };
-  
+
   return (
     <div className="w-full max-w-4xl px-4">
       <div className="space-y-8 md:space-y-12">
