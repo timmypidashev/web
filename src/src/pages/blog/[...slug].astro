@@ -56,7 +56,10 @@ const jsonLd = {
 };
 ---
 
-<ContentLayout>
+<ContentLayout
+  title={`${post.data.title} | Timothy Pidashev`}
+  description={post.data.description}
+>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <div class="relative max-w-8xl mx-auto">
     <article class="prose prose-lg mx-auto max-w-4xl">
