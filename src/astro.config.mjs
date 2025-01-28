@@ -4,7 +4,6 @@ import react from "@astrojs/react";
 import mdx from "@astrojs/mdx";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
-
 import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
@@ -35,7 +34,7 @@ export default defineConfig({
           rehypePrettyCode,
           {
             theme: {
-              "name": "Custom Gruvbox Dark",
+              "name": "Darkbox",
               "type": "dark",
               "colors": {
                 "editor.background": "#000000",
@@ -163,6 +162,7 @@ export default defineConfig({
                 }
               ],
             },
+            keepBackground: true,
           },
         ],
       ],

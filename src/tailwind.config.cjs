@@ -2,6 +2,9 @@ module.exports = {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   theme: {
     extend: {
+      fontFamily: {
+        "comic-code": ["Comic Code", "monospace"],
+      },
       colors: {
         background: "#000000",
         foreground: "#ebdbb2",
@@ -116,6 +119,43 @@ module.exports = {
             },
 
             // Code
+            'code:not([data-language])': {
+              color: theme('colors.purple.bright'),
+              backgroundColor: '#282828',
+              padding: '0.2em 0.4em',
+              borderRadius: '0.25rem',
+              fontFamily: 'Comic Code, monospace',
+              fontWeight: '400',
+              '&::before': { content: 'none' },
+              '&::after': { content: 'none' },
+            },
+
+            'pre code': {
+              display: 'grid', // This ensures line backgrounds stretch full width
+              minWidth: '100%',
+              fontFamily: 'Comic Code, monospace',
+              fontSize: '0.875rem', // text-sm
+              lineHeight: '1.7142857', // leading-6
+              padding: '1rem', // p-4
+              '&::before': { content: 'none' },
+              '&::after': { content: 'none' },
+            },
+
+            '.highlighted': {
+              backgroundColor: theme('colors.foreground/5'),
+              paddingLeft: '1rem',
+              paddingRight: '1rem',
+              marginLeft: '-1rem',
+              marginRight: '-1rem',
+            },
+
+            '.word': {
+              backgroundColor: theme('colors.foreground/20'),
+              padding: '0.2em',
+              borderRadius: '0.25rem',
+            },
+
+
             code: {
               color: theme("colors.purple.bright"),
               backgroundColor: "#282828", // A dark gray that works with black

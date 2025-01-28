@@ -77,16 +77,28 @@ const jsonLd = {
       )}
       <h1 class="text-3xl pt-4">{post.data.title}</h1>
       <p class="lg:text-2xl sm:text-lg">{post.data.description}</p>
-      <p class="text-lg">{post.data.author} | {post.data.date}</p>
-      <div class="flex flex-wrap gap-2 pb-4">
+      <div class="mt-4 md:mt-6">
+        <div class="flex flex-wrap items-center gap-2 md:gap-3 text-sm md:text-base text-foreground/80">
+          <span class="text-orange">{post.data.author}</span>
+          <span class="text-foreground/50">•</span>
+          <time dateTime={post.data.date} class="text-blue">
+            {post.data.date}
+          </time>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2 mt-4 md:mt-6">
         {post.data.tags.map((tag) => (
-          <span class="text-sm px-2 py-1 bg-muted rounded-full">
+          <span 
+            class="text-xs md:text-base text-aqua hover:text-aqua-bright transition-colors duration-200"
+            onclick={`window.location.href='/blog/tag/${tag}'`}
+          >
             #{tag}
           </span>
         ))}
       </div>
-      <hr class="bg-orange" />
-      <Content />
+      <div class="prose prose-invert max-w-none">
+        <Content />
+      </div>
     </article>
   </div>
 </ContentLayout>

@@ -7,6 +7,15 @@
   display: none;
 }
 
+/ * Selection style */
+::selection {
+  background-color: rgba(177, 98, 134, 0.5);
+}
+
+::-moz-selection {
+  background-color: rgba(177, 98, 134, 0.5);
+}
+
 /* Regular */
 @font-face {
     font-family: "ComicRegular";
