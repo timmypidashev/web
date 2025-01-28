@@ -27,12 +27,7 @@ const formatDate = (dateString: string) => {
 
 export const BlogPostList = ({ posts }: BlogPostListProps) => {
   return (
-    <div className="w-full max-w-6xl mx-auto pt-24 sm:pt-24"> 
-      <h1 className="text-2xl sm:text-3xl font-bold text-purple mb-12 text-center px-4 leading-relaxed">
-        Latest Thoughts <br className="sm:hidden" />
-        & Writings
-      </h1>
-
+    <div className="w-full max-w-6xl mx-auto"> 
       <ul className="space-y-6 md:space-y-10">
         {posts.map((post) => (
           <li key={post.slug} className="group px-4 md:px-0">

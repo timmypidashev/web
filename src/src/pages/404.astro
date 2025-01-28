@@ -1,16 +1,16 @@
 ---
 import IndexLayout from "@/layouts/index.astro";
-
+import GlitchText from "@/components/404/glitched-text";
 const title = "404 Not Found";
 ---
 
 <IndexLayout content={{ title: "404 | Timothy Pidashev" }}>
   <main class="min-h-screen flex flex-col items-center justify-center p-4 text-center">
-    <h1 class="text-6xl font-bold mb-4">404</h1>
-    <p class="text-xl mb-8">Whoops! This page doesn't exist.</p>
+    <GlitchText client:only />
+    <p class="text-xl text-orange mb-8">Whoops! This page doesn't exist :(</p>
     <button 
       onclick="window.history.back()" 
-      class="underline hover:opacity-70 transition-opacity"
+      class="underline text-green hover:opacity-70 transition-opacity"
     >
       go back
     </button>

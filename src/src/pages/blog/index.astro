@@ -1,7 +1,9 @@
 ---
 import { getCollection } from "astro:content";
 import ContentLayout from "@/layouts/content.astro";
+import { BlogHeader } from "@/components/blog/header";
 import { BlogPostList } from "@/components/blog/post-list";
+
 const posts = (await getCollection("blog", ({ data }) => {
   return data.isDraft !== true;
 })).sort((a, b) => {
@@ -22,5 +24,6 @@ const posts = (await getCollection("blog", ({ data }) => {
   title="Blog | Timothy Pidashev"
   description="My experiences and technical insights into software development and the ever-evolving world of programming."
 >
+  <BlogHeader client:load />
   <BlogPostList posts={posts} client:load />
 </ContentLayout>
