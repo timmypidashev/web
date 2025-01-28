@@ -7,13 +7,15 @@
   display: none;
 }
 
-/ * Selection style */
-::selection {
-  background-color: rgba(177, 98, 134, 0.5);
-}
-
-::-moz-selection {
-  background-color: rgba(177, 98, 134, 0.5);
+/* src/styles/global.css or wherever your main CSS file is */
+@layer base {
+  ::selection {
+    @apply bg-purple/50
+  }
+  
+  ::-moz-selection {
+    @apply bg-purple/50
+  }
 }
 
 /* Regular */
