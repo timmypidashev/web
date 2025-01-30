@@ -18,11 +18,11 @@ import OutsideCoding from "@/components/about/outside-coding";
     </section>
 
     <section class="flex items-center justify-center py-16">
-      <AllTimeStats client:only />
+      <AllTimeStats client:only="react" />
     </section>
 
     <section class="flex items-center justify-center py-16">
-      <DetailedStats client:only />
+      <DetailedStats client:only="react" />
     </section>
     
     <section class="flex items-center justify-center py-16">
@@ -37,4 +37,4 @@ import OutsideCoding from "@/components/about/outside-coding";
       <OutsideCoding client:load />
     </section>
   </div>
-</MainLayout>
+</ContentLayout>
