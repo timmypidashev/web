@@ -4,16 +4,13 @@ import { ClientRouter } from "astro:transitions";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Background from "@/components/background";
-
 export interface Props {
   title: string;
   description: string;
 }
-
 const { title, description } = Astro.props;
 const ogImage = "https://timmypidashev.dev/og-image.jpg";
 ---
-
 <html lang="en">
   <head>
     <title>{title}</title>
@@ -36,7 +33,6 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
       defaultTransition={false}
       handleFocus={false}
     />
-
     <style>
       ::view-transition-new(:root) {
         animation: none;
@@ -45,24 +41,24 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
       ::view-transition-old(:root) {
         animation: 90ms ease-out both fade-out;
       }
-
       @keyframes fade-out {
         from { opacity: 1; }
         to { opacity: 0; }
       }
     </style>
   </head>
-  <body class="bg-background text-foreground">
+  <body class="bg-background text-foreground min-h-screen flex flex-col">
     <Header client:load />
-    <main>
-      <div class="max-w-5xl mx-auto pt-12 px-4 py-8">
+    <main class="flex-1 flex flex-col">
+      <div class="max-w-5xl mx-auto pt-12 px-4 py-8 flex-1">
         <Background layout="content" position="right" client:only="react" transition:persist />
         <slot />
         <Background layout="content" position="left" client:only="react" transition:persist />
       </div>
     </main>
-    <Footer client:load transition:persist />
-
+    <div class="mt-auto">
+      <Footer client:load transition:persist />
+    </div>
     <script>
       document.addEventListener("astro:after-navigation", () => {
         window.scrollTo(0, 0);

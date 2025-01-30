@@ -1,0 +1,28 @@
+---
+import { getCollection } from "astro:content";
+import ContentLayout from "@/layouts/content.astro";
+
+import TagList from "@/components/blog/tag-list";
+
+const posts = (await getCollection("blog", ({ data }) => {
+  return data.isDraft !== true;
+})).sort((a, b) => {
+  return b.data.date.valueOf() - a.data.date.valueOf()
+}).map(post => ({
+  ...post,
+  data: {
+    ...post.data,
+    date: post.data.date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    })
+  }
+}));
+---
+<ContentLayout 
+  title="Blog | Timothy Pidashev"
+  description="My experiences and technical insights into software development and the ever-evolving world of programming."
+>
+  <TagList posts={posts} />
+</ContentLayout>
