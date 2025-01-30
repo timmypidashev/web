@@ -56,7 +56,7 @@ const TagList: React.FC<TagListProps> = ({ posts }) => {
 
   if (tagData.length === 0) {
     return (
-      <div className="flex-1 w-full min-h-[16rem] flex items-center justify-center font-comic-code text-foreground opacity-60">
+      <div className="flex-1 w-full min-h-[16rem] flex items-center justify-center text-foreground opacity-60">
         No tags available
       </div>
     );
@@ -74,7 +74,7 @@ const TagList: React.FC<TagListProps> = ({ posts }) => {
               flex flex-col items-center justify-center
               min-h-[5rem]
               px-6 py-4 rounded-lg
-              font-comic-code text-xl
+              text-xl
               transition-all duration-300 ease-in-out
               hover:scale-105
               hover:bg-foreground/5
