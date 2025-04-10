@@ -1,0 +1,3 @@
+[submodule "src/public/scripts"]
+	path = src/public/scripts
+	url = https://github.com/timmypidashev/scripts
