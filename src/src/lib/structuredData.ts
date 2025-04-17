@@ -2,12 +2,12 @@ import { type Article, type Person, type WebSite, type WithContext } from "schem
 import type { CollectionEntry } from 'astro:content';
  
 export const blogWebsite: WithContext<WebSite> = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
+  "@context": "https://schema.org",
+  "@type": "WebSite",
   url: `${import.meta.env.SITE}/blog/`,
-  name: 'Dzmitry Kozhukh blog',
-  description: 'Frontend insights',
-  inLanguage: 'en_US',
+  name: "Timothy Pidsashev - Blog",
+  description: "Timothy Pidsashev's blog",
+  inLanguage: "en_US",
 };
  
 export const mainWebsite: WithContext<WebSite> = {

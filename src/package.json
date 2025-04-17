@@ -3,7 +3,7 @@
   "version": "v1.0.1",
   "private": true,
   "scripts": {
-    "dev": "npx prisma generate && astro dev --host",
+    "dev": "astro dev --host",
     "build": "astro build",
     "preview": "astro preview"
   },
@@ -14,7 +14,6 @@
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.6",
     "astro": "^5.7.2",
-    "prisma": "^6.6.0",
     "tailwindcss": "^3.4.17"
   },
   "dependencies": {
@@ -26,7 +25,6 @@
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
     "@pilcrowjs/object-parser": "^0.0.4",
-    "@prisma/client": "^6.6.0",
     "@react-hook/intersection-observer": "^3.1.2",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",

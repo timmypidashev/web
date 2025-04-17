@@ -329,3 +329,20 @@ button,
   background-color: #0a0a0a !important;
   padding: 0.5rem !important;
 }
+
+/* Hide the "powered by giscus" text */
+.gsc-comments .gsc-powered-by {
+  display: none !important;
+}
+
+/* Alternative approach if the above doesn't work */
+.gsc-comments footer {
+  display: none !important;
+}
+
+/* Another approach targeting specifically the text */
+.gsc-comments .gsc-powered-by a {
+  color: #000000 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
