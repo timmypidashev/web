@@ -30,9 +30,9 @@ interface BackgroundProps {
 }
 
 const CELL_SIZE = 25;
-const TRANSITION_SPEED = 0.1;
-const SCALE_SPEED = 0.15;
-const CYCLE_FRAMES = 120;
+const TRANSITION_SPEED = 0.05; // Reduced from 0.1 for slower animations
+const SCALE_SPEED = 0.05; // Reduced from 0.15 for slower animations
+const CYCLE_FRAMES = 180; // Increased from 120 to give more time for transitions
 const INITIAL_DENSITY = 0.15;
 const SIDEBAR_WIDTH = 240;
 
@@ -119,6 +119,8 @@ const Background: React.FC<BackgroundProps> = ({
         const col = (x + i + grid.cols) % grid.cols;
         const row = (y + j + grid.rows) % grid.rows;
         
+        // Only count cells that are actually alive according to the game state
+        // Not cells that are just visually transitioning
         if (grid.cells[col][row].alive) {
           neighbors.count++;
           neighbors.colors.push(grid.cells[col][row].color);
@@ -144,11 +146,13 @@ const Background: React.FC<BackgroundProps> = ({
   };
 
   const computeNextState = (grid: Grid) => {
+    // First, calculate the next state for all cells based on standard rules
     for (let i = 0; i < grid.cols; i++) {
       for (let j = 0; j < grid.rows; j++) {
         const cell = grid.cells[i][j];
         const { count, colors } = countNeighbors(grid, i, j);
 
+        // Standard Conway's Game of Life rules
         if (cell.alive) {
           cell.next = count === 2 || count === 3;
         } else {
@@ -157,14 +161,30 @@ const Background: React.FC<BackgroundProps> = ({
             cell.color = averageColors(colors);
           }
         }
+      }
+    }
+    
+    // Then, set up animations for cells that need to change state
+    for (let i = 0; i < grid.cols; i++) {
+      for (let j = 0; j < grid.rows; j++) {
+        const cell = grid.cells[i][j];
         
         if (cell.alive !== cell.next && !cell.transitioning) {
           cell.transitioning = true;
           cell.transitionComplete = false;
-          if (!cell.next) {
-            cell.targetScale = 0;
-            cell.targetOpacity = 0;
-          }
+          
+          // Random delay for staggered animation effect
+          const delay = Math.random() * 800;
+          
+          setTimeout(() => {
+            if (!cell.next) {
+              cell.targetScale = 0;
+              cell.targetOpacity = 0;
+            } else {
+              cell.targetScale = 1;
+              cell.targetOpacity = 1;
+            }
+          }, delay);
         }
       }
     }
@@ -175,28 +195,24 @@ const Background: React.FC<BackgroundProps> = ({
       for (let j = 0; j < grid.rows; j++) {
         const cell = grid.cells[i][j];
         
+        // Smooth transitions
         cell.opacity += (cell.targetOpacity - cell.opacity) * TRANSITION_SPEED;
         cell.scale += (cell.targetScale - cell.scale) * SCALE_SPEED;
         
         if (cell.transitioning) {
-          if (!cell.next && cell.scale < 0.05) {
+          // When a cell is completely faded out, update its alive state
+          if (!cell.next && cell.opacity < 0.01 && cell.scale < 0.01) {
             cell.alive = false;
             cell.transitioning = false;
             cell.transitionComplete = true;
-            cell.scale = 0;
             cell.opacity = 0;
+            cell.scale = 0;
           }
+          // When a new cell is born
           else if (cell.next && !cell.alive && !cell.transitionComplete) {
             cell.alive = true;
             cell.transitioning = false;
             cell.transitionComplete = true;
-            cell.targetScale = 1;
-            cell.targetOpacity = 1;
-          }
-          else if (cell.next && !cell.alive && cell.transitionComplete) {
-            cell.transitioning = true;
-            cell.targetScale = 1;
-            cell.targetOpacity = 1;
           }
         }
       }
@@ -270,6 +286,7 @@ const Background: React.FC<BackgroundProps> = ({
       frameCount.current++;
       
       if (gridRef.current) {
+        // Every CYCLE_FRAMES, compute the next state
         if (frameCount.current % CYCLE_FRAMES === 0) {
           computeNextState(gridRef.current);
         }
@@ -289,7 +306,8 @@ const Background: React.FC<BackgroundProps> = ({
         for (let i = 0; i < grid.cols; i++) {
           for (let j = 0; j < grid.rows; j++) {
             const cell = grid.cells[i][j];
-            if (cell.opacity > 0.01) {
+            // Draw all transitioning cells, even if they're fading out
+            if ((cell.alive || cell.targetOpacity > 0) && cell.opacity > 0.01) {
               const [r, g, b] = cell.color;
               ctx.fillStyle = `rgb(${r},${g},${b})`;
               ctx.globalAlpha = cell.opacity * 0.8;
@@ -336,7 +354,7 @@ const Background: React.FC<BackgroundProps> = ({
         clearTimeout(resizeTimeoutRef.current);
       }
     };
-  }, []); // Empty dependency array since we're managing state internally
+  }, [layout]); // Added layout as a dependency since it's used in the effect
 
   const getContainerClasses = () => {
     if (layout === 'index') {
