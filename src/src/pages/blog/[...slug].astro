@@ -4,6 +4,7 @@ import { Image } from "astro:assets";
 import ContentLayout from "@/layouts/content.astro";
 import { getArticleSchema } from "@/lib/structuredData";
 import { blogWebsite } from "@/lib/structuredData";
+import { Comments } from "@/components/blog/comments";
 
 // This is a dynamic route in SSR mode
 const { slug } = Astro.params;
@@ -100,5 +101,6 @@ const jsonLd = {
         <Content />
       </div>
     </article>
+    <Comments client:idle />
   </div>
 </ContentLayout>

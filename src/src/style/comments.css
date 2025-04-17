@@ -1,0 +1,331 @@
+/*!
+ * Gruvbox Dark Theme for Giscus - Minimalist Edition
+ * Pure black background with simplified design
+ * Hosted on a linode bucket
+ */
+
+main {
+  /* Syntax highlighting colors */
+  --color-prettylights-syntax-comment: #928374;
+  --color-prettylights-syntax-constant: #83a598;
+  --color-prettylights-syntax-entity: #d3869b;
+  --color-prettylights-syntax-storage-modifier-import: #ebdbb2;
+  --color-prettylights-syntax-entity-tag: #b8bb26;
+  --color-prettylights-syntax-keyword: #fb4934;
+  --color-prettylights-syntax-string: #83a598;
+  --color-prettylights-syntax-variable: #fe8019;
+  --color-prettylights-syntax-brackethighlighter-unmatched: #fb4934;
+  --color-prettylights-syntax-invalid-illegal-text: #ebdbb2;
+  --color-prettylights-syntax-invalid-illegal-bg: #cc241d;
+  --color-prettylights-syntax-carriage-return-text: #ebdbb2;
+  --color-prettylights-syntax-carriage-return-bg: #cc241d;
+  --color-prettylights-syntax-string-regexp: #b8bb26;
+  --color-prettylights-syntax-markup-list: #fabd2f;
+  --color-prettylights-syntax-markup-heading: #83a598;
+  --color-prettylights-syntax-markup-italic: #ebdbb2;
+  --color-prettylights-syntax-markup-bold: #fe8019;
+  --color-prettylights-syntax-markup-deleted-text: #fb4934;
+  --color-prettylights-syntax-markup-deleted-bg: #000000;
+  --color-prettylights-syntax-markup-inserted-text: #b8bb26;
+  --color-prettylights-syntax-markup-inserted-bg: #000000;
+  --color-prettylights-syntax-markup-changed-text: #fabd2f;
+  --color-prettylights-syntax-markup-changed-bg: #000000;
+  --color-prettylights-syntax-markup-ignored-text: #ebdbb2;
+  --color-prettylights-syntax-markup-ignored-bg: #000000;
+  --color-prettylights-syntax-meta-diff-range: #d3869b;
+  --color-prettylights-syntax-brackethighlighter-angle: #928374;
+  --color-prettylights-syntax-sublimelinter-gutter-mark: #928374;
+  --color-prettylights-syntax-constant-other-reference-link: #83a598;
+
+  /* Button colors */
+  --color-btn-text: #ebdbb2;
+  --color-btn-bg: #000000;
+  --color-btn-border: #3c3836;
+  --color-btn-shadow: 0 0 #0000;
+  --color-btn-inset-shadow: 0 0 #0000;
+  --color-btn-hover-bg: #282828;
+  --color-btn-hover-border: #504945;
+  --color-btn-active-bg: #1d2021;
+  --color-btn-active-border: #504945;
+  --color-btn-selected-bg: #000000;
+  
+  /* Primary button colors */
+  --color-btn-primary-text: #ebdbb2;
+  --color-btn-primary-bg: #458588;
+  --color-btn-primary-border: #000000;
+  --color-btn-primary-shadow: 0 0 #0000;
+  --color-btn-primary-inset-shadow: 0 0 #0000;
+  --color-btn-primary-hover-bg: #83a598;
+  --color-btn-primary-hover-border: #000000;
+  --color-btn-primary-selected-bg: #458588;
+  --color-btn-primary-selected-shadow: 0 0 #0000;
+  --color-btn-primary-disabled-text: #ebdbb280;
+  --color-btn-primary-disabled-bg: #45858899;
+  --color-btn-primary-disabled-border: #000000;
+  
+  /* Control colors */
+  --color-action-list-item-default-hover-bg: #28282850;
+  --color-segmented-control-bg: #28282850;
+  --color-segmented-control-button-bg: #000000;
+  --color-segmented-control-button-selected-border: #504945;
+  
+  /* Foreground colors */
+  --color-fg-default: #ebdbb2;
+  --color-fg-muted: #a89984;
+  --color-fg-subtle: #7c6f64;
+  
+  /* Background colors - pure black */
+  --color-canvas-default: #000000;
+  --color-canvas-overlay: #000000;
+  --color-canvas-inset: #000000;
+  --color-canvas-subtle: #0a0a0a;
+  
+  /* Border colors - minimal */
+  --color-border-default: #28282880;
+  --color-border-muted: #28282850;
+  --color-neutral-muted: #28282840;
+  
+  /* Accent colors */
+  --color-accent-fg: #83a598;
+  --color-accent-emphasis: #458588;
+  --color-accent-muted: #83a59866;
+  --color-accent-subtle: #83a5981a;
+  
+  /* Status colors */
+  --color-success-fg: #b8bb26;
+  --color-attention-fg: #fabd2f;
+  --color-attention-muted: #fabd2f66;
+  --color-attention-subtle: #fabd2f26;
+  --color-danger-fg: #fb4934;
+  --color-danger-muted: #fb493466;
+  --color-danger-subtle: #fb49341a;
+  
+  /* Shadow color */
+  --color-primer-shadow-inset: 0 0 #0000;
+  
+  /* Scale colors */
+  --color-scale-gray-7: #282828;
+  --color-scale-blue-8: #458588;
+  
+  /* Social reaction colors */
+  --color-social-reaction-bg-hover: #28282850;
+  --color-social-reaction-bg-reacted-hover: #45858850;
+}
+
+/* Loader SVG */
+main .pagination-loader-container {
+  background-image: url(https://github.com/images/modules/pulls/progressive-disclosure-line-dark.svg);
+}
+
+/* Custom Giscus styles - Minimalist */
+.gsc-reactions-count {
+  display: none;
+}
+
+.gsc-timeline {
+  flex-direction: column-reverse;
+}
+
+.gsc-header {
+  padding-bottom: 1rem;
+  font-family: "Comic Code", monospace;
+  border-bottom: none;
+}
+
+.gsc-comments > .gsc-header {
+  order: 1;
+}
+
+.gsc-comments > .gsc-comment-box {
+  margin-bottom: 1rem;
+  order: 2;
+  font-family: "Comic Code", monospace;
+  background-color: #000000;
+  border-radius: 0.25rem;
+  border: 1px solid #28282850;
+}
+
+.gsc-comments > .gsc-timeline {
+  order: 3;
+}
+
+.gsc-homepage-bg {
+  background-color: #000000;
+}
+
+/* Loading image */
+main .gsc-loading-image {
+  background-image: url(https://github.githubassets.com/images/mona-loading-dimmed.gif);
+}
+
+/* Additional custom styles - Minimalist */
+.gsc-comment {
+  border: 1px solid #28282850;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+  background-color: #000000;
+  transition: border-color 0.2s ease;
+}
+
+.gsc-comment-header {
+  background-color: #0a0a0a;
+  padding: 0.75rem;
+  border-bottom: 1px solid #28282830;
+  font-family: "Comic Code", monospace;
+}
+
+.gsc-comment-content {
+  padding: 1rem;
+  font-family: "Comic Code", monospace;
+}
+
+.gsc-comment-author {
+  color: var(--color-fg-default);
+  font-weight: 600;
+}
+
+.gsc-comment-author-avatar img {
+  border-radius: 50%;
+}
+
+.gsc-comment-reactions {
+  border-top: none;
+  padding-top: 0.5rem;
+}
+
+.gsc-reply-box {
+  background-color: #000000;
+  border-radius: 0.25rem;
+  margin-top: 0.5rem;
+  margin-left: 1rem;
+  font-family: "Comic Code", monospace;
+  border: 1px solid #28282840;
+}
+
+/* Text input areas */
+.gsc-comment-box-textarea {
+  background-color: #0a0a0a;
+  border: 1px solid #28282850;
+  border-radius: 0.25rem;
+  color: var(--color-fg-default);
+  font-family: "Comic Code", monospace;
+  padding: 0.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gsc-comment-box-textarea:focus {
+  border-color: var(--color-accent-fg);
+  box-shadow: 0 0 0 2px #45858830;
+  outline: none;
+}
+
+/* Buttons */
+.gsc-comment-box-buttons button {
+  font-family: "Comic Code", monospace;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Code block styling */
+.gsc-comment pre {
+  background-color: #0a0a0a;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  overflow-x: auto;
+  border: 1px solid #28282840;
+}
+
+.gsc-comment code {
+  font-family: "Comic Code", monospace;
+  background-color: #0a0a0a;
+  color: var(--color-prettylights-syntax-entity);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+}
+
+/* Add hover effects - subtle */
+.gsc-comment:hover {
+  border-color: #504945;
+}
+
+.gsc-social-reaction-summary-item:hover {
+  background-color: #28282850;
+}
+
+/* Dark scrollbar - minimal */
+.gsc-timeline::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.gsc-timeline::-webkit-scrollbar-track {
+  background: #000000;
+  border-radius: 4px;
+}
+
+.gsc-timeline::-webkit-scrollbar-thumb {
+  background: #28282880;
+  border-radius: 4px;
+}
+
+.gsc-timeline::-webkit-scrollbar-thumb:hover {
+  background: #3c3836;
+}
+
+/* Remove unnecessary borders and separators */
+.gsc-comment-footer, 
+.gsc-comment-footer-separator,
+.gsc-reactions-button,
+.gsc-social-reaction-summary-item:not(:hover) {
+  border: none;
+}
+
+.gsc-upvote svg {
+  fill: #83a598;
+}
+
+.gsc-downvote svg {
+  fill: #fb4934;
+}
+
+/* Add subtle hover transitions */
+.gsc-comment-box,
+.gsc-comment,
+.gsc-comment-reactions,
+button,
+.gsc-reply-box {
+  transition: all 0.2s ease-in-out;
+}
+
+.gsc-main {
+  border: none !important;
+}
+
+.gsc-left-header {
+  background-color: #000000 !important;
+}
+
+.gsc-right-header {
+  background-color: #000000 !important;
+}
+
+.gsc-header-status {
+  background-color: #000000 !important;
+}
+
+/* Remove any additional borders */
+.gsc-comment-box,
+.gsc-comment-box-md-toolbar,
+.gsc-comment-box-buttons {
+  border: none !important;
+}
+
+.gsc-comment-box-md-toolbar-item {
+  color: #83a598 !important;
+}
+
+/* Simplify the editor toolbar */
+.gsc-comment-box-md-toolbar {
+  background-color: #0a0a0a !important;
+  padding: 0.5rem !important;
+}
