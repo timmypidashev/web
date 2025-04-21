@@ -4,8 +4,13 @@
 
 /* Hide default cursor globally on desktop */
 @media (min-width: 1025px) {
-  * {
+  *:not(.giscus):not(.giscus *):not(.giscus-frame):not(.giscus-frame *):not(iframe):not(iframe *) {
     cursor: none !important;
+  }
+  
+  /* Allow default cursor for Giscus */
+  .giscus, .giscus *, .giscus-frame, .giscus-frame *, #inject-comments, #inject-comments *, iframe, iframe * {
+    cursor: auto !important;
   }
 }
 

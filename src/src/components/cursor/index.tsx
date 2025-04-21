@@ -7,6 +7,16 @@ interface CursorState {
   isClicking: boolean;
   isOverBackground: boolean;
   isMobile: boolean;
+  isOverGiscus: boolean;
+}
+
+interface TrailPoint {
+  x: number;
+  y: number;
+  id: number;
+  color: string;
+  opacity: number;
+  scale: number;
 }
 
 const Cursor: React.FC = () => {
@@ -16,13 +26,17 @@ const Cursor: React.FC = () => {
     isPointer: false,
     isClicking: false,
     isOverBackground: false,
-    isMobile: false
+    isMobile: false,
+    isOverGiscus: false
   });
   
+  const [trail, setTrail] = useState<TrailPoint[]>([]);
   const cursorRef = useRef<HTMLDivElement>(null);
   const requestRef = useRef<number>();
   const targetX = useRef(0);
   const targetY = useRef(0);
+  const trailIdCounter = useRef(0);
+  const lastTrailTime = useRef(0);
 
   useEffect(() => {
     // Check if device is mobile or tablet
@@ -37,49 +51,18 @@ const Cursor: React.FC = () => {
     
     // Add resize listener to detect device changes
     window.addEventListener('resize', checkMobile);
-    
-    // Function to inject styles into shadow DOM
-    const injectShadowStyles = () => {
-      const giscusElements = document.querySelectorAll('.giscus-frame');
-      giscusElements.forEach(element => {
-        if (element.shadowRoot) {
-          // Check if we already injected styles
-          if (!element.shadowRoot.querySelector('#custom-cursor-style')) {
-            const style = document.createElement('style');
-            style.id = 'custom-cursor-style';
-            style.textContent = `
-              * {
-                cursor: none !important;
-              }
-            `;
-            element.shadowRoot.appendChild(style);
-          }
-        }
-      });
-    };
-
-    // Watch for Giscus loading
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.addedNodes.length) {
-          injectShadowStyles();
-        }
-      });
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-
-    // Initial injection
-    injectShadowStyles();
 
     const updateCursorPosition = (e: MouseEvent) => {
       targetX.current = e.clientX;
       targetY.current = e.clientY;
       
       const target = e.target as HTMLElement;
+      
+      // Check if we're over Giscus
+      const isOverGiscus = target.closest('.giscus') !== null || 
+                          target.closest('#inject-comments') !== null ||
+                          target.closest('.giscus-frame') !== null ||
+                          target.closest('iframe') !== null;
       
       // Check if the element is interactive
       const isInteractive = target.tagName === 'A' || target.tagName === 'BUTTON' || 
@@ -92,8 +75,30 @@ const Cursor: React.FC = () => {
         y: e.clientY,
         isPointer: isInteractive,
         isOverBackground: target.tagName === 'CANVAS' || 
-                         target.closest('canvas') !== null
+                         target.closest('canvas') !== null,
+        isOverGiscus: isOverGiscus
       }));
+
+      // Add trail points
+      const now = Date.now();
+      if (now - lastTrailTime.current > 10) { // Control trail density
+        const cursorColor = getCursorColor();
+        setTrail(prevTrail => {
+          const newTrail = [
+            {
+              x: e.clientX,
+              y: e.clientY,
+              id: trailIdCounter.current++,
+              color: cursorColor,
+              opacity: 0.8,
+              scale: 1
+            },
+            ...prevTrail.slice(0, 20) // Keep last 20 points
+          ];
+          return newTrail;
+        });
+        lastTrailTime.current = now;
+      }
     };
 
     const handleMouseDown = (e: MouseEvent) => {
@@ -106,6 +111,7 @@ const Cursor: React.FC = () => {
 
     const handleMouseLeave = () => {
       setState(prev => ({ ...prev, x: -100, y: -100, isClicking: false }));
+      setTrail([]); // Clear trail when mouse leaves
     };
 
     // Smooth cursor movement animation
@@ -121,6 +127,16 @@ const Cursor: React.FC = () => {
         cursorRef.current.style.left = newX + 'px';
         cursorRef.current.style.top = newY + 'px';
       }
+
+      // Update trail points
+      setTrail(prevTrail => 
+        prevTrail.map(point => ({
+          ...point,
+          opacity: point.opacity * 0.95, // Fade out
+          scale: point.scale * 0.97 // Shrink
+        })).filter(point => point.opacity > 0.01) // Remove faded points
+      );
+
       requestRef.current = requestAnimationFrame(animate);
     };
 
@@ -142,7 +158,6 @@ const Cursor: React.FC = () => {
       if (requestRef.current) {
         cancelAnimationFrame(requestRef.current);
       }
-      observer.disconnect();
     };
   }, []);
 
@@ -215,17 +230,42 @@ const Cursor: React.FC = () => {
     
     return '#ebdbb2'; // default foreground color
   };
-  
+
   const cursorColor = getCursorColor();
   const scale = state.isClicking ? 0.8 : (state.isPointer ? 1.2 : 1);
-  
-  // Hide cursor completely on mobile
-  if (state.isMobile) {
+
+  // Hide cursor completely on mobile or when over Giscus
+  if (state.isMobile || state.isOverGiscus) {
     return null;
   }
   
   return (
     <>
+      {/* Trail effect */}
+      {trail.map(point => (
+        <div
+          key={point.id}
+          className="pointer-events-none fixed z-[9997]"
+          style={{
+            left: point.x,
+            top: point.y,
+            transform: 'translate(-50%, -50%)',
+            opacity: point.opacity,
+          }}
+        >
+          <div
+            className="rounded-full"
+            style={{
+              width: `${8 * point.scale}px`,
+              height: `${8 * point.scale}px`,
+              backgroundColor: point.color,
+              boxShadow: `0 0 ${4 * point.scale}px ${point.color}`,
+              filter: 'blur(1px)',
+            }}
+          />
+        </div>
+      ))}
+
       {/* Main cursor dot */}
       <div
         ref={cursorRef}
