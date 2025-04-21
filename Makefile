@@ -1,13 +1,13 @@
 PROJECT_NAME							:= "timmypidashev.dev"
 PROJECT_AUTHORS 						:= "Timothy Pidashev (timmypidashev) <pidashev.tim@gmail.com>"
-PROJECT_VERSION 						:= "v1.0.1"
+PROJECT_VERSION 						:= "v1.0.2"
 PROJECT_LICENSE 						:= "MIT"
 PROJECT_SOURCES							:= "https://github.com/timmypidashev/web"
 PROJECT_REGISTRY						:= "ghcr.io/timmypidashev"
 PROJECT_ORGANIZATION					:= "org.opencontainers"
 
 CONTAINER_WEB_NAME						:= "timmypidashev.dev"
-CONTAINER_WEB_VERSION					:= "v2.1.0"
+CONTAINER_WEB_VERSION					:= "v2.1.1"
 CONTAINER_WEB_LOCATION					:= "src/"
 CONTAINER_WEB_DESCRIPTION				:= "My portfolio website!"
 
