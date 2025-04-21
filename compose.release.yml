@@ -21,7 +21,7 @@ services:
     command: --interval 120 --cleanup --label-enable
 
   timmypidashev.dev:
-    container_name: timmypidashev
+    container_name: timmypidashev.dev
     image: ghcr.io/timmypidashev/timmypidashev.dev:latest
     networks:
       - proxy_network
