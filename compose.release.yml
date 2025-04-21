@@ -20,8 +20,8 @@ services:
       - $HOME/.docker/config.json:/config.json
     command: --interval 120 --cleanup --label-enable
 
-  timmypidashev.dev:
-    container_name: timmypidashev.dev
+  timmypidashev:
+    container_name: timmypidashev
     image: ghcr.io/timmypidashev/timmypidashev.dev:latest
     networks:
       - proxy_network
