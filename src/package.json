@@ -13,7 +13,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.6",
-    "astro": "^5.7.2",
+    "astro": "^5.7.4",
     "tailwindcss": "^3.4.17"
   },
   "dependencies": {
@@ -22,12 +22,8 @@
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.3.0",
     "@giscus/react": "^3.1.0",
-    "@oslojs/crypto": "^1.0.1",
-    "@oslojs/encoding": "^1.1.0",
     "@pilcrowjs/object-parser": "^0.0.4",
     "@react-hook/intersection-observer": "^3.1.2",
-    "@react-three/drei": "^9.122.0",
-    "@react-three/fiber": "^8.18.0",
     "arctic": "^3.6.0",
     "lucide-react": "^0.468.0",
     "marked": "^15.0.8",
@@ -38,8 +34,6 @@
     "rehype-pretty-code": "^0.14.1",
     "rehype-slug": "^6.0.0",
     "schema-dts": "^1.1.5",
-    "sha2": "link:@oslojs/crypto/sha2",
-    "three": "^0.172.0",
     "typewriter-effect": "^2.21.0"
   }
 }
