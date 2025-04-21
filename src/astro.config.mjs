@@ -10,6 +10,10 @@ import sitemap from "@astrojs/sitemap";
 // https://astro.build/config
 export default defineConfig({
   output: "server",
+  server: {
+    host: true,
+    port: 3000,
+  },
   adapter: node({
     mode: "standalone",
   }),

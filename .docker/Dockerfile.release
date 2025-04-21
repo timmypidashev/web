@@ -35,9 +35,6 @@ RUN pnpm run build
 FROM node:22-alpine
 WORKDIR /app
 
-# Install serve
-RUN npm install -g http-server
-
 # Copy built files
 COPY --from=builder /app/dist ./dist
 
@@ -45,4 +42,4 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 3000
 
 # Deployment command
-CMD ["http-server", "dist", "-a", "0.0.0.0", "-p", "3000"]
+CMD ["node", "./dist/server/entry.mjs"]
