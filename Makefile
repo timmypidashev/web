@@ -3,11 +3,11 @@ PROJECT_AUTHORS 						:= "Timothy Pidashev (timmypidashev) <pidashev.tim@gmail.c
 PROJECT_VERSION 						:= "v1.0.1"
 PROJECT_LICENSE 						:= "MIT"
 PROJECT_SOURCES							:= "https://github.com/timmypidashev/web"
-PROJECT_REGISTRY						:= "ghcr.io/timmypidashev/web"
+PROJECT_REGISTRY						:= "ghcr.io/timmypidashev"
 PROJECT_ORGANIZATION					:= "org.opencontainers"
 
-CONTAINER_WEB_NAME						:= "web"
-CONTAINER_WEB_VERSION					:= "v1.0.1"
+CONTAINER_WEB_NAME						:= "timmypidashev.dev"
+CONTAINER_WEB_VERSION					:= "v2.1.0"
 CONTAINER_WEB_LOCATION					:= "src/"
 CONTAINER_WEB_DESCRIPTION				:= "My portfolio website!"
 
@@ -17,7 +17,7 @@ CONTAINER_WEB_DESCRIPTION				:= "My portfolio website!"
 
 help:
 	@echo "Available targets:"
-	@echo "  run           - Runs the docker compose file with the specified environment (dev or release)"
+	@echo "  run           - Runs the docker compose file with the specified environment (local or release)"
 	@echo "  build         - Builds the specified docker image with the appropriate environment"
 	@echo "  push          - Pushes the built docker image to the registry"
 	@echo "  prune         - Removes all built and cached docker images and containers"
@@ -25,19 +25,19 @@ help:
 
 run:
 	# Arguments:
-	# [environment]: 'dev' or 'release'
+	# [environment]: 'local' or 'release'
 	# 
 	# Explanation:
-	# * Runs the docker compose file with the specified environment(compose.dev.yml, or compose.release.yml)
+	# * Runs the docker compose file with the specified environment(compose.local.yml, or compose.release.yml)
 	# * Passes all generated arguments to the compose file.
 	
 	# Make sure we have been given proper arguments.
-	@if [ "$(word 2,$(MAKECMDGOALS))" = "dev" ]; then \
-		echo "Running in development environment"; \
+	@if [ "$(word 2,$(MAKECMDGOALS))" = "local" ]; then \
+		echo "Running in local environment"; \
 	elif [ "$(word 2,$(MAKECMDGOALS))" = "release" ]; then \
 		echo "Running in release environment"; \
 	else \
-		echo "Invalid usage. Please use 'make run dev' or 'make run release'"; \
+		echo "Invalid usage. Please use 'make run local' or 'make run release'"; \
 		exit 1; \
 	fi
 
@@ -47,7 +47,7 @@ run:
 build:
 	# Arguments
 	# [container]: Build context(which container to build ['all' to build every container defined])
-	# [environment]: 'dev' or 'release'
+	# [environment]: 'local' or 'release'
 	#
 	# Explanation:
 	# * Builds the specified docker image with the appropriate environment.
@@ -155,19 +155,19 @@ define container_build
 	$(eval ENVIRONMENT := $(word 2,$1))
 	$(eval ARGS := $(shell echo $(args)))
 	$(eval VERSION := $(strip $(call container_version,$(CONTAINER))))
-	$(eval TAG := $(CONTAINER):$(ENVIRONMENT))
+	$(eval TAG := $(PROJECT_NAME):$(ENVIRONMENT))
 
 	@echo "Building container: $(CONTAINER)"
 	@echo "Environment: $(ENVIRONMENT)"
 	@echo "Version: $(VERSION)"
 
-	@if [ "$(strip $(ENVIRONMENT))" != "dev" ] && [ "$(strip $(ENVIRONMENT))" != "release" ]; then \
-        echo "Invalid environment. Please specify 'dev' or 'release'"; \
+	@if [ "$(strip $(ENVIRONMENT))" != "local" ] && [ "$(strip $(ENVIRONMENT))" != "release" ]; then \
+        echo "Invalid environment. Please specify 'local' or 'release'"; \
         exit 1; \
     fi
 
 	$(if $(filter $(strip $(ENVIRONMENT)),release), \
-		$(eval TAG := $(PROJECT_REGISTRY)/$(CONTAINER):$(VERSION)), \
+		$(eval TAG := $(PROJECT_REGISTRY)/$(PROJECT_NAME):$(VERSION)), \
 	)
 
 	docker buildx build --load -t $(TAG) -f .docker/Dockerfile.$(ENVIRONMENT) ./$(strip $(subst $(SPACE),,$(call container_location,$(CONTAINER))))/. $(ARGS) $(call labels,$(shell echo $(CONTAINER_NAME) | tr '[:lower:]' '[:upper:]')) --no-cache
