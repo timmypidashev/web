@@ -41,10 +41,15 @@ module.exports = {
         "draw-line": {
           "0%": { "stroke-dashoffset": "100" },
           "100%": { "stroke-dashoffset": "0" }
+        },
+        "fade-in": {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" }
         }
       },
       animation: {
-        "draw-line": "draw-line 0.6s ease-out forwards"
+        "draw-line": "draw-line 0.6s ease-out forwards",
+        "fade-in": "fade-in 0.3s ease-in-out forwards"
       },
       typography: (theme) => ({
         DEFAULT: {
@@ -126,17 +131,28 @@ module.exports = {
               borderRadius: '0.25rem',
               fontFamily: 'Comic Code, monospace',
               fontWeight: '400',
+              fontSize: 'inherit', // Match the parent text size
               '&::before': { content: 'none' },
               '&::after': { content: 'none' },
             },
 
+            'pre': {
+              backgroundColor: '#282828',
+              color: theme("colors.foreground"),
+              borderRadius: '0.5rem',
+              overflow: 'visible', // This allows the copy button to be positioned outside
+              position: 'relative', // For the copy button positioning
+              marginTop: '1.5rem', // Space for the copy button and language label
+              fontSize: 'inherit', // Match the parent font size
+            },
+
             'pre code': {
-              display: 'grid', // This ensures line backgrounds stretch full width
-              minWidth: '100%',
+              display: 'block',
               fontFamily: 'Comic Code, monospace',
-              fontSize: '0.875rem', // text-sm
-              lineHeight: '1.7142857', // leading-6
-              padding: '1rem', // p-4
+              fontSize: '1em', // This will inherit from the prose-lg setting
+              padding: '1.25rem',
+              overflow: 'auto', // Enable horizontal scrolling
+              whiteSpace: 'pre',
               '&::before': { content: 'none' },
               '&::after': { content: 'none' },
             },
@@ -153,44 +169,6 @@ module.exports = {
               backgroundColor: theme('colors.foreground/20'),
               padding: '0.2em',
               borderRadius: '0.25rem',
-            },
-
-
-            code: {
-              color: theme("colors.purple.bright"),
-              backgroundColor: "#282828", // A dark gray that works with black
-              padding: "0.2em 0.4em",
-              borderRadius: "0.25rem",
-              fontWeight: "400",
-              "&::before": {
-                content: "\"\"",
-              },
-              "&::after": {
-                content: "\"\"",
-              },
-            },
-
-            // Inline code
-            "code::before": {
-              content: "\"\"",
-            },
-            "code::after": {
-              content: "\"\"",
-            },
-
-            // Pre
-            pre: {
-              backgroundColor: "#282828",
-              color: theme("colors.foreground"),
-              code: {
-                backgroundColor: "transparent",
-                padding: "0",
-                color: "inherit",
-                fontSize: "inherit",
-                fontWeight: "inherit",
-                "&::before": { content: "none" },
-                "&::after": { content: "none" },
-              },
             },
 
             // Horizontal rules
@@ -223,6 +201,13 @@ module.exports = {
             figcaption: {
               color: theme("colors.foreground"),
               opacity: "0.8",
+            },
+          },
+        },
+        lg: {
+          css: {
+            "pre code": {
+              fontSize: "1rem",
             },
           },
         },

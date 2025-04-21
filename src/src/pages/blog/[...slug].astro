@@ -63,7 +63,7 @@ const jsonLd = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <div class="relative max-w-8xl mx-auto">
-    <article class="prose prose-lg mx-auto max-w-4xl">
+    <article class="prose prose-invert prose-lg mx-auto max-w-4xl">
       {post.data.image && (
         <div class="-mx-4 sm:mx-0 mb-8">
           <Image
@@ -97,7 +97,7 @@ const jsonLd = {
           </span>
         ))}
       </div>
-      <div class="prose prose-invert max-w-none">
+      <div class="prose prose-invert prose-lg max-w-none">
         <Content />
       </div>
     </article>
