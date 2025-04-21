@@ -37,6 +37,8 @@ WORKDIR /app
 
 # Copy built files
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
 
 # Expose port 3000
 EXPOSE 3000
