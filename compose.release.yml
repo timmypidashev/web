@@ -6,7 +6,7 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./.caddy/Caddyfile.dev:/etc/caddy/Caddyfile:rw
+      - ./.caddy/Caddyfile.release:/etc/caddy/Caddyfile:rw
     networks:
       - proxy_network
     depends_on:
