@@ -10,7 +10,7 @@ services:
     networks:
       - proxy_network
     depends_on:
-      - timmypidashev
+      - timmypidashev.dev
       
   watchtower:
     container_name: updates
@@ -20,8 +20,8 @@ services:
       - $HOME/.docker/config.json:/config.json
     command: --interval 120 --cleanup --label-enable
 
-  timmypidashev:
-    container_name: timmypidashev
+  timmypidashev.dev:
+    container_name: timmypidashev.dev
     image: ghcr.io/timmypidashev/timmypidashev.dev:latest
     networks:
       - proxy_network

@@ -45,4 +45,4 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 3000
 
 # Deployment command
-CMD ["http-server", "dist", "-a", "127.0.0.1", "-p", "3000"]
+CMD ["http-server", "dist", "-a", "0.0.0.0", "-p", "3000"]
