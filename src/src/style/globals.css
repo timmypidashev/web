@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide default cursor globally */
+* {
+  cursor: none !important;
+}
+
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
   display: none;

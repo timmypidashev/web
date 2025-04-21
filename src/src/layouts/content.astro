@@ -1,16 +1,21 @@
 ---
 import "@/style/globals.css";
 import { ClientRouter } from "astro:transitions";
+
+import Cursor from "@/components/cursor";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Background from "@/components/background";
+
 export interface Props {
   title: string;
   description: string;
 }
+
 const { title, description } = Astro.props;
 const ogImage = "https://timmypidashev.dev/og-image.jpg";
 ---
+
 <html lang="en">
   <head>
     <title>{title}</title>
@@ -48,11 +53,14 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
     </style>
   </head>
   <body class="bg-background text-foreground min-h-screen flex flex-col">
+    <Cursor client:only="react" />
     <Header client:load />
     <main class="flex-1 flex flex-col">
       <div class="max-w-5xl mx-auto pt-12 px-4 py-8 flex-1">
         <Background layout="content" position="right" client:only="react" transition:persist />
-        <slot />
+        <div>
+          <slot />
+        </div>
         <Background layout="content" position="left" client:only="react" transition:persist />
       </div>
     </main>

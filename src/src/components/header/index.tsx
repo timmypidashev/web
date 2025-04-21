@@ -80,23 +80,26 @@ export default function Header() {
       </div>
     );
   });
-  
+
   return (
     <header 
       className={`
         fixed z-50 top-0 left-0 right-0 
         font-bold 
         transition-transform duration-300
+        pointer-events-none
         ${visible ? "translate-y-0" : "-translate-y-full"}
       `}
     >
       <div className={`
         w-full flex flex-row items-center justify-center
+        pointer-events-none
         ${!isIndexPage ? 'bg-black md:bg-transparent' : ''}
       `}>
         <div className={`
           w-full md:w-auto flex flex-row pt-1 px-2 text-lg lg:text-3xl md:text-2xl
           items-center justify-between md:justify-center space-x-2 md:space-x-10 lg:space-x-20 md:py-2
+          pointer-events-none [&_a]:pointer-events-auto
           ${!isIndexPage ? 'bg-black md:px-20' : ''}
         `}>
           {headerLinks}
