@@ -1,0 +1,5 @@
+timmypidashev.local {
+  tls internal
+
+	reverse_proxy timmypidashev.dev:4321
+}
