@@ -6,7 +6,7 @@ interface CursorState {
   isPointer: boolean;
   isClicking: boolean;
   isOverBackground: boolean;
-  isOverIframe: boolean;
+  isMobile: boolean;
 }
 
 const Cursor: React.FC = () => {
@@ -16,7 +16,7 @@ const Cursor: React.FC = () => {
     isPointer: false,
     isClicking: false,
     isOverBackground: false,
-    isOverIframe: false
+    isMobile: false
   });
   
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -25,15 +25,61 @@ const Cursor: React.FC = () => {
   const targetY = useRef(0);
 
   useEffect(() => {
+    // Check if device is mobile or tablet
+    const checkMobile = () => {
+      const isMobileOrTablet = window.matchMedia('(max-width: 1024px)').matches || 
+                              ('ontouchstart' in window) || 
+                              (navigator.maxTouchPoints > 0);
+      setState(prev => ({ ...prev, isMobile: isMobileOrTablet }));
+    };
+    
+    checkMobile();
+    
+    // Add resize listener to detect device changes
+    window.addEventListener('resize', checkMobile);
+    
+    // Function to inject styles into shadow DOM
+    const injectShadowStyles = () => {
+      const giscusElements = document.querySelectorAll('.giscus-frame');
+      giscusElements.forEach(element => {
+        if (element.shadowRoot) {
+          // Check if we already injected styles
+          if (!element.shadowRoot.querySelector('#custom-cursor-style')) {
+            const style = document.createElement('style');
+            style.id = 'custom-cursor-style';
+            style.textContent = `
+              * {
+                cursor: none !important;
+              }
+            `;
+            element.shadowRoot.appendChild(style);
+          }
+        }
+      });
+    };
+
+    // Watch for Giscus loading
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.addedNodes.length) {
+          injectShadowStyles();
+        }
+      });
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    // Initial injection
+    injectShadowStyles();
+
     const updateCursorPosition = (e: MouseEvent) => {
       targetX.current = e.clientX;
       targetY.current = e.clientY;
       
       const target = e.target as HTMLElement;
-      
-      // Check if we're over an iframe
-      const isOverIframe = target.tagName === 'IFRAME' || 
-                          target.closest('iframe') !== null;
       
       // Check if the element is interactive
       const isInteractive = target.tagName === 'A' || target.tagName === 'BUTTON' || 
@@ -46,8 +92,7 @@ const Cursor: React.FC = () => {
         y: e.clientY,
         isPointer: isInteractive,
         isOverBackground: target.tagName === 'CANVAS' || 
-                         target.closest('canvas') !== null,
-        isOverIframe: isOverIframe
+                         target.closest('canvas') !== null
       }));
     };
 
@@ -61,15 +106,6 @@ const Cursor: React.FC = () => {
 
     const handleMouseLeave = () => {
       setState(prev => ({ ...prev, x: -100, y: -100, isClicking: false }));
-    };
-
-    // Handle iframe mouse enter/leave
-    const handleFrameEnter = () => {
-      setState(prev => ({ ...prev, isOverIframe: true }));
-    };
-
-    const handleFrameLeave = () => {
-      setState(prev => ({ ...prev, isOverIframe: false }));
     };
 
     // Smooth cursor movement animation
@@ -94,13 +130,6 @@ const Cursor: React.FC = () => {
     document.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('mouseleave', handleMouseLeave);
     
-    // Add iframe detection listeners
-    const iframes = document.getElementsByTagName('iframe');
-    Array.from(iframes).forEach(iframe => {
-      iframe.addEventListener('mouseenter', handleFrameEnter);
-      iframe.addEventListener('mouseleave', handleFrameLeave);
-    });
-    
     // Start animation
     requestRef.current = requestAnimationFrame(animate);
 
@@ -109,16 +138,11 @@ const Cursor: React.FC = () => {
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('mouseleave', handleMouseLeave);
-      
-      // Remove iframe listeners
-      Array.from(iframes).forEach(iframe => {
-        iframe.removeEventListener('mouseenter', handleFrameEnter);
-        iframe.removeEventListener('mouseleave', handleFrameLeave);
-      });
-      
+      window.removeEventListener('resize', checkMobile);
       if (requestRef.current) {
         cancelAnimationFrame(requestRef.current);
       }
+      observer.disconnect();
     };
   }, []);
 
@@ -195,8 +219,8 @@ const Cursor: React.FC = () => {
   const cursorColor = getCursorColor();
   const scale = state.isClicking ? 0.8 : (state.isPointer ? 1.2 : 1);
   
-  // Hide custom cursor when over iframe
-  if (state.isOverIframe) {
+  // Hide cursor completely on mobile
+  if (state.isMobile) {
     return null;
   }
   

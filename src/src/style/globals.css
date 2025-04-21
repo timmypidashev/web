@@ -2,9 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Hide default cursor globally */
-* {
-  cursor: none !important;
+/* Hide default cursor globally on desktop */
+@media (min-width: 1025px) {
+  * {
+    cursor: none !important;
+  }
+}
+
+/* Show default cursor on mobile and tablet */
+@media (max-width: 1024px) {
+  * {
+    cursor: auto !important;
+  }
 }
 
 /* Chrome, Edge, and Safari */
