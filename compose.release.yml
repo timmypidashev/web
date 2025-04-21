@@ -10,7 +10,7 @@ services:
     networks:
       - proxy_network
     depends_on:
-      - timmypidashev.dev
+      - timmypidashev
       
   watchtower:
     container_name: updates
