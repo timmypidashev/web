@@ -529,6 +529,24 @@ const Background: React.FC<BackgroundProps> = ({
     canvas.addEventListener('mouseup', handleMouseUp, { signal });
     canvas.addEventListener('mouseleave', handleMouseLeave, { signal });
 
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        // Tab is hidden
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+          animationFrameRef.current = undefined;
+        }
+      } else {
+        // Tab is visible again
+        if (!animationFrameRef.current) {
+          // Reset timing references to prevent catching up
+          lastUpdateTimeRef.current = performance.now();
+          lastCycleTimeRef.current = performance.now();
+          animationFrameRef.current = requestAnimationFrame(animate);
+        }
+      }
+    };
+
     const animate = (currentTime: number) => {
       if (signal.aborted) return;
       
@@ -540,6 +558,10 @@ const Background: React.FC<BackgroundProps> = ({
       
       // Calculate time since last frame
       const deltaTime = currentTime - lastUpdateTimeRef.current;
+      
+      // Limit delta time to prevent large jumps when tab becomes active again
+      const clampedDeltaTime = Math.min(deltaTime, 100);
+      
       lastUpdateTimeRef.current = currentTime;
       
       // Calculate time since last cycle update
@@ -552,7 +574,7 @@ const Background: React.FC<BackgroundProps> = ({
           lastCycleTimeRef.current = currentTime;
         }
         
-        updateCellAnimations(gridRef.current, deltaTime);
+        updateCellAnimations(gridRef.current, clampedDeltaTime);
       }
       
       // Draw frame
@@ -641,11 +663,13 @@ const Background: React.FC<BackgroundProps> = ({
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
+    document.addEventListener('visibilitychange', handleVisibilityChange, { signal });
     window.addEventListener('resize', handleResize, { signal });
     animate(performance.now());
 
     return () => {
       controller.abort();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('resize', handleResize);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
