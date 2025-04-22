@@ -2,7 +2,6 @@
 import "@/style/globals.css";
 import { ClientRouter } from "astro:transitions";
 
-import Cursor from "@/components/cursor";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Background from "@/components/background";
@@ -53,7 +52,6 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
     </style>
   </head>
   <body class="bg-background text-foreground min-h-screen flex flex-col">
-    <Cursor client:only="react" />
     <Header client:load />
     <main class="flex-1 flex flex-col">
       <div class="max-w-5xl mx-auto pt-12 px-4 py-8 flex-1">

@@ -18,6 +18,8 @@ interface Cell {
   transitioning: boolean;
   transitionComplete: boolean;
   rippleEffect: number; // For ripple animation
+  rippleStartTime: number; // When ripple started
+  rippleDistance: number; // Distance from ripple center
 }
 
 interface Grid {
@@ -42,16 +44,19 @@ interface BackgroundProps {
   position?: 'left' | 'right';
 }
 
-const CELL_SIZE = 25;
+const CELL_SIZE_MOBILE = 15;
+const CELL_SIZE_DESKTOP = 25;
+const TARGET_FPS = 60; // Target frame rate
+const CYCLE_TIME = 3000; // 3 seconds per full cycle, regardless of FPS
 const TRANSITION_SPEED = 0.05;
 const SCALE_SPEED = 0.05;
-const CYCLE_FRAMES = 180;
 const INITIAL_DENSITY = 0.15;
 const SIDEBAR_WIDTH = 240;
 const MOUSE_INFLUENCE_RADIUS = 150; // Radius of mouse influence in pixels
 const COLOR_SHIFT_AMOUNT = 30; // Maximum color shift amount
-const RIPPLE_SPEED = 0.2; // Speed of ripple propagation
-const ELEVATION_FACTOR = 15; // Max height for 3D effect
+const RIPPLE_SPEED = 0.02; // Speed of ripple propagation
+const RIPPLE_ELEVATION_FACTOR = 4; // Height of ripple wave
+const ELEVATION_FACTOR = 8; // Max height for 3D effect - reduced for more subtle effect
 
 const Background: React.FC<BackgroundProps> = ({ 
   layout = 'index',
@@ -60,7 +65,8 @@ const Background: React.FC<BackgroundProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gridRef = useRef<Grid>();
   const animationFrameRef = useRef<number>();
-  const frameCount = useRef(0);
+  const lastUpdateTimeRef = useRef<number>(0);
+  const lastCycleTimeRef = useRef<number>(0);
   const resizeTimeoutRef = useRef<NodeJS.Timeout>();
   const mouseRef = useRef<MousePosition>({
     x: -1000,
@@ -83,11 +89,18 @@ const Background: React.FC<BackgroundProps> = ({
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
+  const getCellSize = () => {
+    // Check if we're on mobile based on screen width
+    const isMobile = window.innerWidth <= 768;
+    return isMobile ? CELL_SIZE_MOBILE : CELL_SIZE_DESKTOP;
+  };
+
   const calculateGridDimensions = (width: number, height: number) => {
-    const cols = Math.floor(width / CELL_SIZE);
-    const rows = Math.floor(height / CELL_SIZE);
-    const offsetX = Math.floor((width - (cols * CELL_SIZE)) / 2);
-    const offsetY = Math.floor((height - (rows * CELL_SIZE)) / 2);
+    const cellSize = getCellSize();
+    const cols = Math.floor(width / cellSize);
+    const rows = Math.floor(height / cellSize);
+    const offsetX = Math.floor((width - (cols * cellSize)) / 2);
+    const offsetY = Math.floor((height - (rows * cellSize)) / 2);
     return { cols, rows, offsetX, offsetY };
   };
 
@@ -114,7 +127,9 @@ const Background: React.FC<BackgroundProps> = ({
           targetElevation: 0,
           transitioning: false,
           transitionComplete: false,
-          rippleEffect: 0
+          rippleEffect: 0,
+          rippleStartTime: 0,
+          rippleDistance: 0
         };
       })
     );
@@ -224,7 +239,7 @@ const Background: React.FC<BackgroundProps> = ({
   };
 
   const createRippleEffect = (grid: Grid, centerX: number, centerY: number) => {
-    const maxDistance = Math.max(grid.cols, grid.rows) / 2;
+    const currentTime = Date.now();
     
     for (let i = 0; i < grid.cols; i++) {
       for (let j = 0; j < grid.rows; j++) {
@@ -237,15 +252,9 @@ const Background: React.FC<BackgroundProps> = ({
         
         // Only apply ripple to visible cells
         if (cell.opacity > 0.1) {
-          // Delayed animation based on distance from center
-          setTimeout(() => {
-            cell.rippleEffect = 1; // Start ripple
-            
-            // After a short time, reset ripple
-            setTimeout(() => {
-              cell.rippleEffect = 0;
-            }, 300 + distance * 50);
-          }, distance * 100);
+          cell.rippleStartTime = currentTime + distance * 100; // Delayed start based on distance
+          cell.rippleDistance = distance;
+          cell.rippleEffect = 0;
         }
       }
     }
@@ -272,51 +281,51 @@ const Background: React.FC<BackgroundProps> = ({
     }
   };
 
-  const updateCellAnimations = (grid: Grid) => {
+  const updateCellAnimations = (grid: Grid, deltaTime: number) => {
     const mouseX = mouseRef.current.x;
     const mouseY = mouseRef.current.y;
+    const cellSize = getCellSize();
+    
+    // Adjust transition speeds based on time
+    const transitionFactor = TRANSITION_SPEED * (deltaTime / (1000 / TARGET_FPS));
+    const scaleFactor = SCALE_SPEED * (deltaTime / (1000 / TARGET_FPS));
     
     for (let i = 0; i < grid.cols; i++) {
       for (let j = 0; j < grid.rows; j++) {
         const cell = grid.cells[i][j];
         
         // Smooth transitions
-        cell.opacity += (cell.targetOpacity - cell.opacity) * TRANSITION_SPEED;
-        cell.scale += (cell.targetScale - cell.scale) * SCALE_SPEED;
-        cell.elevation += (cell.targetElevation - cell.elevation) * SCALE_SPEED;
+        cell.opacity += (cell.targetOpacity - cell.opacity) * transitionFactor;
+        cell.scale += (cell.targetScale - cell.scale) * scaleFactor;
+        cell.elevation += (cell.targetElevation - cell.elevation) * scaleFactor;
         
         // Apply mouse interaction
-        const cellCenterX = grid.offsetX + i * CELL_SIZE + CELL_SIZE / 2;
-        const cellCenterY = grid.offsetY + j * CELL_SIZE + CELL_SIZE / 2;
+        const cellCenterX = grid.offsetX + i * cellSize + cellSize / 2;
+        const cellCenterY = grid.offsetY + j * cellSize + cellSize / 2;
         const dx = cellCenterX - mouseX;
         const dy = cellCenterY - mouseY;
         const distanceToMouse = Math.sqrt(dx * dx + dy * dy);
         
-        // Color wave effect based on mouse position
+        // 3D hill effect based on mouse position
         if (distanceToMouse < MOUSE_INFLUENCE_RADIUS && cell.opacity > 0.1) {
-          // Calculate color adjustment based on distance
-          const influenceFactor = 1 - (distanceToMouse / MOUSE_INFLUENCE_RADIUS);
+          // Calculate height based on distance - peak at center, gradually decreasing
+          const influenceFactor = Math.cos((distanceToMouse / MOUSE_INFLUENCE_RADIUS) * Math.PI / 2);
+          // Only positive elevation (growing upward)
+          cell.targetElevation = ELEVATION_FACTOR * influenceFactor * influenceFactor; // squared for more pronounced effect
           
-          // Wave effect with sine function
-          const waveOffset = (frameCount.current * 0.05 + distanceToMouse * 0.05) % (Math.PI * 2);
-          const waveFactor = (Math.sin(waveOffset) * 0.5 + 0.5) * influenceFactor;
-          
-          // Adjust color based on wave
+          // Slight color shift as cells rise
+          const colorShift = influenceFactor * COLOR_SHIFT_AMOUNT * 0.5;
           cell.color = [
-            Math.min(255, Math.max(0, cell.baseColor[0] + COLOR_SHIFT_AMOUNT * waveFactor)),
-            Math.min(255, Math.max(0, cell.baseColor[1] - COLOR_SHIFT_AMOUNT * waveFactor)),
-            Math.min(255, Math.max(0, cell.baseColor[2] + COLOR_SHIFT_AMOUNT * waveFactor))
+            Math.min(255, Math.max(0, cell.baseColor[0] + colorShift)),
+            Math.min(255, Math.max(0, cell.baseColor[1] + colorShift)),
+            Math.min(255, Math.max(0, cell.baseColor[2] + colorShift))
           ] as [number, number, number];
-          
-          // 3D elevation effect when mouse is close
-          cell.targetElevation = ELEVATION_FACTOR * influenceFactor;
         } else {
-          // Gradually return to base color when mouse is away
+          // Gradually return to base color and zero elevation when mouse is away
           cell.color[0] += (cell.baseColor[0] - cell.color[0]) * 0.1;
           cell.color[1] += (cell.baseColor[1] - cell.color[1]) * 0.1;
           cell.color[2] += (cell.baseColor[2] - cell.color[2]) * 0.1;
           
-          // Reset elevation when mouse moves away
           cell.targetElevation = 0;
         }
         
@@ -339,9 +348,34 @@ const Background: React.FC<BackgroundProps> = ({
           }
         }
         
-        // Gradually decrease ripple effect
-        if (cell.rippleEffect > 0) {
-          cell.rippleEffect = Math.max(0, cell.rippleEffect - RIPPLE_SPEED);
+        // Handle ripple animation
+        if (cell.rippleStartTime > 0) {
+          const elapsedTime = Date.now() - cell.rippleStartTime;
+          if (elapsedTime > 0) {
+            // Calculate ripple progress (0 to 1)
+            const rippleProgress = elapsedTime / 1000; // 1 second for full animation
+            
+            if (rippleProgress < 1) {
+              // Create a smooth wave effect
+              const wavePhase = rippleProgress * Math.PI * 2;
+              const waveHeight = Math.sin(wavePhase) * Math.exp(-rippleProgress * 4);
+              
+              // Apply wave height to cell elevation only if it's not being overridden by mouse
+              if (distanceToMouse >= MOUSE_INFLUENCE_RADIUS) {
+                cell.rippleEffect = waveHeight;
+                cell.targetElevation = RIPPLE_ELEVATION_FACTOR * waveHeight;
+              } else {
+                cell.rippleEffect = waveHeight * 0.3; // Reduced effect when mouse is influencing
+              }
+            } else {
+              // Reset ripple effects
+              cell.rippleEffect = 0;
+              cell.rippleStartTime = 0;
+              if (distanceToMouse >= MOUSE_INFLUENCE_RADIUS) {
+                cell.targetElevation = 0;
+              }
+            }
+          }
         }
       }
     }
@@ -354,6 +388,7 @@ const Background: React.FC<BackgroundProps> = ({
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
+    const cellSize = getCellSize();
     
     mouseRef.current.isDown = true;
     mouseRef.current.lastClickTime = Date.now();
@@ -361,8 +396,8 @@ const Background: React.FC<BackgroundProps> = ({
     const grid = gridRef.current;
     
     // Calculate which cell was clicked
-    const cellX = Math.floor((mouseX - grid.offsetX) / CELL_SIZE);
-    const cellY = Math.floor((mouseY - grid.offsetY) / CELL_SIZE);
+    const cellX = Math.floor((mouseX - grid.offsetX) / cellSize);
+    const cellY = Math.floor((mouseY - grid.offsetY) / cellSize);
     
     if (cellX >= 0 && cellX < grid.cols && cellY >= 0 && cellY < grid.rows) {
       mouseRef.current.cellX = cellX;
@@ -381,13 +416,37 @@ const Background: React.FC<BackgroundProps> = ({
   };
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || !gridRef.current) return;
     
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
+    const cellSize = getCellSize();
     
     mouseRef.current.x = e.clientX - rect.left;
     mouseRef.current.y = e.clientY - rect.top;
+    
+    // Drawing functionality - place cells while dragging
+    if (mouseRef.current.isDown) {
+      const grid = gridRef.current;
+      
+      // Calculate which cell the mouse is over
+      const cellX = Math.floor((mouseRef.current.x - grid.offsetX) / cellSize);
+      const cellY = Math.floor((mouseRef.current.y - grid.offsetY) / cellSize);
+      
+      // Only draw if we're on a new cell
+      if (cellX !== mouseRef.current.cellX || cellY !== mouseRef.current.cellY) {
+        mouseRef.current.cellX = cellX;
+        mouseRef.current.cellY = cellY;
+        
+        // Spawn cell at this position if it's empty
+        if (cellX >= 0 && cellX < grid.cols && cellY >= 0 && cellY < grid.rows) {
+          const cell = grid.cells[cellX][cellY];
+          if (!cell.alive && !cell.transitioning) {
+            spawnCellAtPosition(grid, cellX, cellY);
+          }
+        }
+      }
+    }
   };
 
   const handleMouseUp = () => {
@@ -439,12 +498,15 @@ const Background: React.FC<BackgroundProps> = ({
         const ctx = setupCanvas(canvas, displayWidth, displayHeight);
         if (!ctx) return;
 
-        frameCount.current = 0;
+        lastUpdateTimeRef.current = 0;
+        lastCycleTimeRef.current = 0;
+        
+        const cellSize = getCellSize();
         
         // Only initialize new grid if one doesn't exist or dimensions changed
         if (!gridRef.current || 
-            gridRef.current.cols !== Math.floor(displayWidth / CELL_SIZE) || 
-            gridRef.current.rows !== Math.floor(displayHeight / CELL_SIZE)) {
+            gridRef.current.cols !== Math.floor(displayWidth / cellSize) || 
+            gridRef.current.rows !== Math.floor(displayHeight / cellSize)) {
           gridRef.current = initGrid(displayWidth, displayHeight);
         }
       }, 250);
@@ -467,18 +529,30 @@ const Background: React.FC<BackgroundProps> = ({
     canvas.addEventListener('mouseup', handleMouseUp, { signal });
     canvas.addEventListener('mouseleave', handleMouseLeave, { signal });
 
-    const animate = () => {
+    const animate = (currentTime: number) => {
       if (signal.aborted) return;
       
-      frameCount.current++;
+      // Initialize timing if first frame
+      if (!lastUpdateTimeRef.current) {
+        lastUpdateTimeRef.current = currentTime;
+        lastCycleTimeRef.current = currentTime;
+      }
+      
+      // Calculate time since last frame
+      const deltaTime = currentTime - lastUpdateTimeRef.current;
+      lastUpdateTimeRef.current = currentTime;
+      
+      // Calculate time since last cycle update
+      const cycleElapsed = currentTime - lastCycleTimeRef.current;
       
       if (gridRef.current) {
-        // Every CYCLE_FRAMES, compute the next state
-        if (frameCount.current % CYCLE_FRAMES === 0) {
+        // Check if it's time for the next life cycle
+        if (cycleElapsed >= CYCLE_TIME) {
           computeNextState(gridRef.current);
+          lastCycleTimeRef.current = currentTime;
         }
         
-        updateCellAnimations(gridRef.current);
+        updateCellAnimations(gridRef.current, deltaTime);
       }
       
       // Draw frame
@@ -487,8 +561,9 @@ const Background: React.FC<BackgroundProps> = ({
 
       if (gridRef.current) {
         const grid = gridRef.current;
-        const cellSize = CELL_SIZE * 0.8;
-        const roundness = cellSize * 0.2;
+        const cellSize = getCellSize();
+        const displayCellSize = cellSize * 0.8;
+        const roundness = displayCellSize * 0.2;
 
         for (let i = 0; i < grid.cols; i++) {
           for (let j = 0; j < grid.rows; j++) {
@@ -496,71 +571,38 @@ const Background: React.FC<BackgroundProps> = ({
             // Draw all transitioning cells, even if they're fading out
             if ((cell.alive || cell.targetOpacity > 0) && cell.opacity > 0.01) {
               const [r, g, b] = cell.color;
-              ctx.fillStyle = `rgb(${r},${g},${b})`;
               
-              // Apply ripple and elevation effects to opacity
-              const rippleBoost = cell.rippleEffect * 0.4; // Boost opacity during ripple
-              ctx.globalAlpha = Math.min(1, cell.opacity * 0.8 + rippleBoost);
+              // Base opacity
+              ctx.globalAlpha = cell.opacity * 0.9;
 
-              const scaledSize = cellSize * cell.scale;
-              const xOffset = (cellSize - scaledSize) / 2;
-              const yOffset = (cellSize - scaledSize) / 2;
+              const scaledSize = displayCellSize * cell.scale;
+              const xOffset = (displayCellSize - scaledSize) / 2;
+              const yOffset = (displayCellSize - scaledSize) / 2;
               
               // Apply 3D elevation effect
               const elevationOffset = cell.elevation;
               
-              const x = grid.offsetX + i * CELL_SIZE + (CELL_SIZE - cellSize) / 2 + xOffset;
-              const y = grid.offsetY + j * CELL_SIZE + (CELL_SIZE - cellSize) / 2 + yOffset - elevationOffset;
+              const x = grid.offsetX + i * cellSize + (cellSize - displayCellSize) / 2 + xOffset;
+              const y = grid.offsetY + j * cellSize + (cellSize - displayCellSize) / 2 + yOffset - elevationOffset;
               const scaledRoundness = roundness * cell.scale;
 
-              // Draw shadow for 3D effect if cell has elevation
-              if (elevationOffset > 1) {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+              // Draw shadow for 3D effect when cell is elevated
+              if (elevationOffset > 0.5) {
+                ctx.fillStyle = `rgba(0, 0, 0, ${0.2 * (elevationOffset / ELEVATION_FACTOR)})`;
                 ctx.beginPath();
-                ctx.moveTo(x + scaledRoundness, y + elevationOffset + 5);
-                ctx.lineTo(x + scaledSize - scaledRoundness, y + elevationOffset + 5);
-                ctx.quadraticCurveTo(x + scaledSize, y + elevationOffset + 5, x + scaledSize, y + elevationOffset + 5 + scaledRoundness);
-                ctx.lineTo(x + scaledSize, y + elevationOffset + 5 + scaledSize - scaledRoundness);
-                ctx.quadraticCurveTo(x + scaledSize, y + elevationOffset + 5 + scaledSize, x + scaledSize - scaledRoundness, y + elevationOffset + 5 + scaledSize);
-                ctx.lineTo(x + scaledRoundness, y + elevationOffset + 5 + scaledSize);
-                ctx.quadraticCurveTo(x, y + elevationOffset + 5 + scaledSize, x, y + elevationOffset + 5 + scaledSize - scaledRoundness);
-                ctx.lineTo(x, y + elevationOffset + 5 + scaledRoundness);
-                ctx.quadraticCurveTo(x, y + elevationOffset + 5, x + scaledRoundness, y + elevationOffset + 5);
-                ctx.fill();
-                
-                // Draw side of elevated cell
-                const sideHeight = elevationOffset;
-                ctx.fillStyle = `rgba(${r*0.7}, ${g*0.7}, ${b*0.7}, ${ctx.globalAlpha})`;
-                
-                // Left side
-                ctx.beginPath();
-                ctx.moveTo(x, y + scaledRoundness);
-                ctx.lineTo(x, y + scaledSize - scaledRoundness + sideHeight);
-                ctx.lineTo(x + scaledRoundness, y + scaledSize + sideHeight);
-                ctx.lineTo(x + scaledRoundness, y + scaledSize);
-                ctx.lineTo(x, y + scaledSize - scaledRoundness);
-                ctx.fill();
-                
-                // Right side
-                ctx.beginPath();
-                ctx.moveTo(x + scaledSize, y + scaledRoundness);
-                ctx.lineTo(x + scaledSize, y + scaledSize - scaledRoundness + sideHeight);
-                ctx.lineTo(x + scaledSize - scaledRoundness, y + scaledSize + sideHeight);
-                ctx.lineTo(x + scaledSize - scaledRoundness, y + scaledSize);
-                ctx.lineTo(x + scaledSize, y + scaledSize - scaledRoundness);
-                ctx.fill();
-                
-                // Bottom side
-                ctx.fillStyle = `rgba(${r*0.5}, ${g*0.5}, ${b*0.5}, ${ctx.globalAlpha})`;
-                ctx.beginPath();
-                ctx.moveTo(x + scaledRoundness, y + scaledSize);
-                ctx.lineTo(x + scaledSize - scaledRoundness, y + scaledSize);
-                ctx.lineTo(x + scaledSize - scaledRoundness, y + scaledSize + sideHeight);
-                ctx.lineTo(x + scaledRoundness, y + scaledSize + sideHeight);
+                ctx.moveTo(x + scaledRoundness, y + elevationOffset * 1.1);
+                ctx.lineTo(x + scaledSize - scaledRoundness, y + elevationOffset * 1.1);
+                ctx.quadraticCurveTo(x + scaledSize, y + elevationOffset * 1.1, x + scaledSize, y + elevationOffset * 1.1 + scaledRoundness);
+                ctx.lineTo(x + scaledSize, y + elevationOffset * 1.1 + scaledSize - scaledRoundness);
+                ctx.quadraticCurveTo(x + scaledSize, y + elevationOffset * 1.1 + scaledSize, x + scaledSize - scaledRoundness, y + elevationOffset * 1.1 + scaledSize);
+                ctx.lineTo(x + scaledRoundness, y + elevationOffset * 1.1 + scaledSize);
+                ctx.quadraticCurveTo(x, y + elevationOffset * 1.1 + scaledSize, x, y + elevationOffset * 1.1 + scaledSize - scaledRoundness);
+                ctx.lineTo(x, y + elevationOffset * 1.1 + scaledRoundness);
+                ctx.quadraticCurveTo(x, y + elevationOffset * 1.1, x + scaledRoundness, y + elevationOffset * 1.1);
                 ctx.fill();
               }
               
-              // Draw main cell with original color
+              // Draw main cell
               ctx.fillStyle = `rgb(${r},${g},${b})`;
               ctx.beginPath();
               ctx.moveTo(x + scaledRoundness, y);
@@ -574,9 +616,9 @@ const Background: React.FC<BackgroundProps> = ({
               ctx.quadraticCurveTo(x, y, x + scaledRoundness, y);
               ctx.fill();
               
-              // Draw highlight on top for 3D effect
-              if (elevationOffset > 1) {
-                ctx.fillStyle = `rgba(255, 255, 255, ${0.2 * elevationOffset / ELEVATION_FACTOR})`;
+              // Draw highlight on elevated cells
+              if (elevationOffset > 0.5) {
+                ctx.fillStyle = `rgba(255, 255, 255, ${0.1 * (elevationOffset / ELEVATION_FACTOR)})`;
                 ctx.beginPath();
                 ctx.moveTo(x + scaledRoundness, y);
                 ctx.lineTo(x + scaledSize - scaledRoundness, y);
@@ -588,23 +630,7 @@ const Background: React.FC<BackgroundProps> = ({
                 ctx.fill();
               }
               
-              // Draw ripple effect
-              if (cell.rippleEffect > 0) {
-                const rippleRadius = cell.rippleEffect * cellSize * 2;
-                const rippleAlpha = (1 - cell.rippleEffect) * 0.5;
-                
-                ctx.strokeStyle = `rgba(255, 255, 255, ${rippleAlpha})`;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(
-                  x + scaledSize / 2, 
-                  y + scaledSize / 2, 
-                  rippleRadius, 
-                  0, 
-                  Math.PI * 2
-                );
-                ctx.stroke();
-              }
+              // No need for separate ripple drawing since the elevation handles the 3D ripple effect
             }
           }
         }
@@ -616,7 +642,7 @@ const Background: React.FC<BackgroundProps> = ({
     };
 
     window.addEventListener('resize', handleResize, { signal });
-    animate();
+    animate(performance.now());
 
     return () => {
       controller.abort();
@@ -645,7 +671,8 @@ const Background: React.FC<BackgroundProps> = ({
     <div className={getContainerClasses()}>
       <canvas
         ref={canvasRef}
-        className="w-full h-full bg-black cursor-pointer"
+        className="w-full h-full bg-black"
+        style={{ cursor: 'default' }} // Changed from cursor-pointer to default
       />
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm pointer-events-none" />
     </div>
