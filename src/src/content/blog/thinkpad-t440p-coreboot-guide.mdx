@@ -1,0 +1,78 @@
+---
+title: Thinkpad T440p Coreboot Guide
+description: The definitive guide on corebooting a Thinkpad T440p
+author: Timothy Pidashev
+tags: [t440p, coreboot, thinkpad]
+date: 2025-01-15
+image: "/blog/thinkpad-t440p-coreboot-guide/thumbnail.png"
+---
+
+import { Commands, Command } from "@/components/mdx/command";
+
+> **Interactive Script Available!**  
+> Want to skip the manual steps in this guide? 
+> I've created an interactive script that can automate the entire process step by step as you follow along.
+> This script supports Arch, Debian, Fedora, Gentoo, and Nix!
+
+<Command 
+  description="Interactive script"
+  command="curl -fsSL https://timmypidashev.dev/scripts/run.sh | sh -s -- -t coreboot-t440p"
+  client:load
+/>
+
+## Getting Started 
+The Thinkpad T440p is a powerful and versatile laptop that can be further enhanced by installing coreboot, 
+an open-source BIOS replacement. This guide will walk you through the process of corebooting your T440p, 
+including flashing the BIOS chip and installing the necessary software.
+
+## What You'll Need
+
+Before getting started corebooting your T440p, make sure you have the following:
+
+- **Thinkpad T440p**: This guide is specifically for the T440p model.
+- **CH341A Programmer**: This is a USB device used to flash the BIOS chip.
+- **Screwdriver**: A torx screwdriver is needed to open the laptop.
+
+## Installing Dependencies
+
+Install the following programs. These will be needed to compile coreboot and flash the BIOS.
+
+<Commands
+  description="Install prerequisite packages"
+  archCommand="sudo pacman -S base-devel curl git gcc-ada ncurses zlib nasm sharutils unzip flashrom"
+  debianCommand="sudo apt install build-essential curl git gnat libncurses-dev zlib1g-dev nasm sharutils unzip flashrom"
+  fedoraCommand="sudo dnf install @development-tools curl git gcc-gnat ncurses-devel zlib-devel nasm sharutils unzip flashrom"
+  gentooCommand="sudo emerge --ask sys-devel/base-devel net-misc/curl dev-vcs/git sys-devel/gcc ncurses dev-libs/zlib dev-lang/nasm app-arch/sharutils app-arch/unzip sys-apps/flashrom"
+  nixCommand="nix-env -i stdenv curl git gcc gnat ncurses zlib nasm sharutils unzip flashrom"
+  client:load
+/>
+
+## Disassembling the Laptop
+1. **Power off your laptop**: Make sure your T440p is completely powered off and unplugged from any power source.
+2. **Remove the battery**: Flip the laptop over and remove the battery by sliding the latch to the unlock position and lifting it out.
+3. **Unscrew the back panel**: Use a torx screwdriver to remove the screws securing the back panel.
+
+## Locating the EEPROM Chips
+
+In order to flash the laptop, you will need to have access to two EEPROM chips located next to the sodimm RAM.
+
+![EEPROM Chips Location](/blog/thinkpad-t440p-coreboot-guide/eeprom_chips_location.png)
+
+## Assembling the SPI Flasher
+
+Place the SPI flasher ribbon cable into the correct slot and make sure its the 3.3v variant
+
+![SPI Flasher Assembly](/blog/thinkpad-t440p-coreboot-guide/spi_flasher_assembly.png)
+
+After the flasher is ready, connect it to your machine and ensure its ready to use:
+
+<Command 
+  description="Ensure the CH341A flasher is being detected"
+  command="flashrom --programmer ch341a_spi"
+/>
+
+Flashrom should report that programmer initialization was a success.
+
+## Extracting Original BIOS
+
+
