@@ -26,7 +26,7 @@ export const Comments = () => {
           emitMetadata="0"
           inputPosition="bottom"
           lang="en"
-          loading="lazy"
+          loading="eager"
         />
       ) : null}
     </div>
