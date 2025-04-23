@@ -7,7 +7,7 @@ date: 2025-01-15
 image: "/blog/thinkpad-t440p-coreboot-guide/thumbnail.png"
 ---
 
-import { Commands, Command } from "@/components/mdx/command";
+import { Commands, Command, CommandSequence } from "@/components/mdx/command";
 
 > **Interactive Script Available!**  
 > Want to skip the manual steps in this guide? 
@@ -75,4 +75,230 @@ Flashrom should report that programmer initialization was a success.
 
 ## Extracting Original BIOS
 
+To begin, first create a clean directory where all work to coreboot
+the T440p will be done.
 
+<Command 
+  description="Create a directory where all work will be done"
+  command="mkdir ~/t440p-coreboot"
+  client:load
+/>
+
+Next, extract the original rom from both EEPROM chips. This is 
+done by attaching the programmer to the correct chip and running
+the subsequent commands. It may take longer than expected, and 
+ensuring the bios was properly extracted is important before proceeding
+further.
+
+<CommandSequence 
+  commands={[
+    "sudo flashrom --programmer ch341a_spi -r 4mb_backup1.bin",
+    "sudo flashrom --programmer ch341a_spi -r 4mb_backup2.bin",
+    "diff 4mb_backup1.bin 4mb_backup2.bin"
+  ]}
+  description="Backup and verify 4MB chip"
+  client:load
+/>
+
+<CommandSequence
+  commands={[
+    "sudo flashrom --programmer ch341a_spi -r 8mb_backup1.bin",
+    "sudo flashrom --programmer ch341a_spi -r 8mb_backup2.bin",
+    "diff 8mb_backup1.bin 8mb_backup2.bin"
+  ]}
+  description="Backup and verify 8MB chip"
+  client:load
+/>
+
+If the diff checks pass, combine both files into one ROM.
+
+<Command
+  description="Combine 4MB & 8MB into one ROM"
+  command="cat 8mb_backup_1.bin 4mb_backup1.bin > t440p-original.rom"
+  client:load
+/>
+
+## Building Required Tools
+
+Now that the original bios has been successfuly extracted, it is time 
+to clone the coreboot repository and build every tool needed to build
+a new bios image.
+
+<CommandSequence
+  commands={[
+    "git clone https://review.coreboot.org/coreboot ~/t440p-coreboot/coreboot",
+    "cd ~/t440p-coreboot/coreboot",
+    "git checkout e1e762716cf925c621d58163133ed1c3e006a903",
+    "git submodule update --init --checkout"
+  ]}
+  description="Clone coreboot and checkout to the correct commit"
+  client:load
+/>
+
+We will need to build `idftool`, which will be used to export all necessary blobs
+from our original bios, and `cbfstool`, which will be used to extract __mrc.bin__(a blob 
+from a haswell chromebook peppy image).
+
+<Command 
+  description="Build util/ifdtool"
+  command="cd ~/t440p-coreboot/coreboot/util/ifdtool && make"
+  client:load
+/>
+
+<Command
+  description="Build util/cbfstool"
+  command="cd ~/t440p-coreboot/coreboot/ && make -C util/cbfstool"
+  client:load
+/>
+
+## Exporting Firmware Blobs
+
+Once the necessary tools have been built, we can export the
+3 flash regions from our original bios image.
+
+<CommandSequence
+  commands={[
+    "cd ~/t440p-coreboot/coreboot/util/ifdtool",
+    "./ifdtool -x ~/t440p-coreboot/t440p-original.rom",
+    "mv flashregion_0_flashdescriptor.bin ~/t440p-coreboot/ifd.bin",
+    "mv flashregion_2_intel_me.bin ~/t440p-coreboot/me.bin",
+    "mv flashregion_3_gbe.bin ~/t440p-coreboot/gbe.bin"
+  ]}
+  description="Export firmware blobs"
+  client:load
+/>
+
+## Obtaining mrc.bin
+
+In order to obtain __mrc.bin__, we need the chromeos peppy image.
+This can be pulled by running the `crosfirmware.sh` script found in util/chromeos.
+
+<Command
+  description="Download peppy chromeos image"
+  command="cd ~/t440p-coreboot/coreboot/util/chromeos && ./crosfirmware.sh peppy"
+  client:load
+/>
+
+
+We can now obtain __mrc.bin__ using cbfstool to extract the blob from the image.
+
+<CommandSequence
+  commands={[
+    "cd ~/t440p-coreboot/coreboot/util/chromeos",
+    "../cbfstool/cbfstool coreboot-*.bin extract -f mrc.bin -n mrc.bin -r RO_SECTION",
+    "mv mrc.bin ~/t440p-coreboot/mrc.bin"
+  ]}
+  description="Extract mrc.bin using cbfstool"
+  client:load
+/>
+
+## Configuring Coreboot
+
+Configuring coreboot is really where most of your time will be spent. To help out, 
+I've created several handy configs that should suit most use cases, and can be easily
+tweaked to your liking. Here is a list of whats available:
+
+1. GRUB2
+
+    This configuration features GRUB2 as the bootloader, and contains 3 secondary payloads, 
+    which the user can opt in/out of:
+    
+    * memtest built in
+    * nvramcui built in 
+    * coreinfo built in
+
+    This configuration also includes the dGPU option rom as well for T440p's featuring the gt730m on board.
+
+2. SeaBIOS
+
+3. edk2
+
+> NOTE: Show the user how to choose the appropriate config, as well as building a custom config below.
+
+## Building and Flashing 
+
+After configuring coreboot, it is time to build and flash it onto your unsuspecting T440p :D
+
+<CommandSequence
+  commands={[
+    "cd ~/t440p-coreboot/coreboot",
+    "make crossgcc-i386 CPUS=$(nproc)",
+    "make"
+  ]}
+  description="Build coreboot"
+  client:load 
+/>
+
+Once the coreboot build has completed, split the built ROM for the 8MB(bottom) chip & 4MB(top) chip.
+
+<CommandSequence
+  commands={[
+    "cd ~/t440p-coreboot/coreboot/build",
+    "dd if=coreboot.rom of=bottom.rom bs=1M count=8",
+    "dd if=coreboot.rom of=top.rom bs=1M skin=8"
+  ]}
+  description="Split the built ROM for both EEPROM chips"
+  client:load
+/>
+
+Now flash the new bios onto your thinkpad!
+
+<Command
+  description="Flash the 4MB chip"
+  command="sudo flashrom --programmer ch341a_spi -w top.rom"
+/>
+
+<Command
+  description="Flash the 8MB chip"
+  command="sudo flashrom --programmer ch341a_spi -w bottom.rom"
+/>
+
+Thats it! If done properly, your thinkpad should now boot!
+
+## Reverting to Original
+
+If for some reason you feel the need to revert back, or your T440p can't boot, 
+here are the steps needed to flash the original image back.
+
+### Can't Boot
+
+<CommandSequence 
+  commands={[
+    "cd ~/t440p-coreboot/",
+    "dd if=t440p-original.rom of=bottom.rom bs=1M count=8",
+    "dd if=t440p-original.rom of=top.rom bs=1M skip=8"
+  ]}
+  description="Split original bios image for both EEPROM chips"
+  client:load
+/>
+
+<Command 
+  description="Flash the 4MB chip"
+  command="sudo flashrom --programmer ch341a_spi -w top.rom"
+/>
+
+<Command 
+  description="Flash the 8MB chip"
+  command="sudo flashrom --programmer ch341a_spi -w bottom.rom"
+/>
+
+### Can Boot
+
+<CommandSequence
+  commands={[
+    "sudo sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/\"/ iomem=relaxed\"/2' /etc/default/grub",
+    "sudo grub-mkconfig -o /boot/grub/grub.cfg",
+  ]}
+  description="Set kernel flag iomem=relaxed and update grub config"
+  client:load
+/>
+
+Reboot to apply `iomem=relaxed`
+
+<Command
+  description="Flash the original bios"
+  command="sudo flashrom -p internal:laptop=force_I_want_a_brick -r ~/t440p-coreboot/t440p-original.rom"
+/>
+
+And that about wraps it up! If you liked the guide, leave a reaction or comment any changes or fixes
+I should make below. Your feedback is greatly appreciated!
