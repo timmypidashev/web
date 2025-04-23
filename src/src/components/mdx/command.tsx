@@ -29,7 +29,7 @@ const CommandSequence = ({
   };
 
   return (
-    <div className="w-full rounded-md overflow-hidden border border-foreground/20 bg-background my-4">
+    <div className="w-full rounded-md overflow-hidden border border-foreground/20 bg-background my-4" style={{ maxWidth: '95vw' }}>
       {/* Header with Terminal Icon and Copy Button */}
       <div className="bg-background border-b border-foreground/20 text-foreground p-2 flex items-center justify-between">
         <div className="flex items-center">
@@ -141,7 +141,7 @@ const Commands = ({
   };
 
   return (
-    <div className="w-full rounded-md overflow-hidden border border-foreground/20 bg-background my-4">
+    <div className="w-full rounded-md overflow-hidden border border-foreground/20 bg-background my-4" style={{ maxWidth: '95vw' }}>
       {/* Header with Terminal Icon and Copy Button */}
       <div className="bg-background border-b border-foreground/20 text-foreground p-2 flex items-center justify-between">
         <div className="flex items-center">
@@ -225,7 +225,7 @@ const Command = ({
   };
 
   return (
-    <div className="w-full rounded-md overflow-hidden border border-foreground/20 bg-background my-4">
+    <div className="w-full rounded-md overflow-hidden border border-foreground/20 bg-background my-4" style={{ maxWidth: '95vw' }}>
       {/* Header with Terminal Icon and Copy Button */}
       <div className="bg-background border-b border-foreground/20 text-foreground p-2 flex items-center justify-between">
         <div className="flex items-center">
