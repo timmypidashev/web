@@ -1,6 +1,6 @@
 PROJECT_NAME							:= "timmypidashev.dev"
 PROJECT_AUTHORS 						:= "Timothy Pidashev (timmypidashev) <pidashev.tim@gmail.com>"
-PROJECT_VERSION 						:= "v1.0.2"
+PROJECT_VERSION 						:= "v2.1.1"
 PROJECT_LICENSE 						:= "MIT"
 PROJECT_SOURCES							:= "https://github.com/timmypidashev/web"
 PROJECT_REGISTRY						:= "ghcr.io/timmypidashev"
