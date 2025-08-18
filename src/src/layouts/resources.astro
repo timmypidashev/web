@@ -1,0 +1,71 @@
+---
+import "@/style/globals.css";
+import { ClientRouter } from "astro:transitions";
+
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import Background from "@/components/background";
+
+export interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const ogImage = "https://timmypidashev.dev/og-image.jpg";
+---
+
+<html lang="en">
+  <head>
+    <title>{title}</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <!-- OpenGraph -->
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:description" content={description} />
+    <!-- Basic meta description for search engines -->
+    <meta name="description" content={description} />
+    <!-- Also used in OpenGraph for social media sharing -->
+    <meta property="og:description" content={description} />
+    <link rel="icon" type="image/jpeg" href="/me.jpeg" />
+    <ClientRouter 
+      defaultTransition={false}
+      handleFocus={false}
+    />
+    <style>
+      ::view-transition-new(:root) {
+        animation: none;
+      }
+      
+      ::view-transition-old(:root) {
+        animation: 90ms ease-out both fade-out;
+      }
+      @keyframes fade-out {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+    </style>
+  </head>
+  <body class="bg-background text-foreground min-h-screen flex flex-col">
+    <main class="flex-1 flex flex-col">
+      <div class="max-w-5xl mx-auto pt-12 px-4 py-8 flex-1">
+        <Background layout="content" position="right" client:only="react" transition:persist />
+        <div>
+          <slot />
+        </div>
+        <Background layout="content" position="left" client:only="react" transition:persist />
+      </div>
+    </main>
+    <script>
+      document.addEventListener("astro:after-navigation", () => {
+        window.scrollTo(0, 0);
+      });
+    </script>
+  </body>
+</html>
+
