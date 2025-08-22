@@ -6,84 +6,51 @@ duration: "2 hours"
 tags: ["python", "programming", "beginner", "fundamentals"]
 ---
 
-import { Slide } from "@/components/presentation/Slide";
-import { FadeIn } from "@/components/presentation/FadeIn";
-import { Highlight } from "@/components/presentation/Highlight";
-import { TwoColumn } from "@/components/presentation/TwoColumn";
+import Slide from "@/components/presentation/Slide.astro";
 
-<Slide title="Introduction to Python Programming" centered>
-
+<Slide centered>
 # Welcome to Python! 🐍
 
 **A beginner-friendly programming language**
-
-<FadeIn delay={500}>
 
 - Easy to learn and read
 - Powerful and versatile
 - Great for beginners
 - Used by major companies
-
-</FadeIn>
-
 </Slide>
 
-<Slide title="What is Python?">
-
+<Slide>
 ## What is Python?
 
-<FadeIn>
-
-Python is a <Highlight color="yellow">high-level programming language</Highlight> that emphasizes:
+Python is a **high-level programming language** that emphasizes:
 
 - **Readability** - Code that looks like English
 - **Simplicity** - Easy to learn and use
 - **Versatility** - Can be used for many things
 
-</FadeIn>
-
-<FadeIn delay={600}>
-
 ### Created by Guido van Rossum in 1991
 
 Named after "Monty Python's Flying Circus" 🎭
-
-</FadeIn>
-
 </Slide>
 
-<Slide title="Why Learn Python?">
-
+<Slide>
 ## Why Learn Python?
 
-<TwoColumn 
-  left={
-    <FadeIn>
-      <h3>🌐 Web Development</h3>
-      <p>Build websites and web applications</p>
-      
-      <h3>🤖 Data Science & AI</h3>
-      <p>Analyze data and build machine learning models</p>
-    </FadeIn>
-  }
-  right={
-    <FadeIn delay={300}>
-      <h3>🎮 Game Development</h3>
-      <p>Create games and interactive applications</p>
-      
-      <h3>🔧 Automation</h3>
-      <p>Automate repetitive tasks</p>
-    </FadeIn>
-  }
-/>
+### 🌐 Web Development
+Build websites and web applications
 
+### 🤖 Data Science & AI
+Analyze data and build machine learning models
+
+### 🎮 Game Development
+Create games and interactive applications
+
+### 🔧 Automation
+Automate repetitive tasks
 </Slide>
 
-<Slide title="Your First Python Program">
-
+<Slide>
 ## Your First Python Program
-
-<FadeIn>
 
 Let's write the classic "Hello, World!" program:
 
@@ -91,25 +58,15 @@ Let's write the classic "Hello, World!" program:
 print("Hello, World!")
 ```
 
-</FadeIn>
-
-<FadeIn delay={500}>
-
 ### How to run it:
 1. Open a text editor
 2. Type the code above
 3. Save as `hello.py`
 4. Run with: `python hello.py`
-
-</FadeIn>
-
 </Slide>
 
-<Slide title="Variables and Data Types">
-
+<Slide>
 ## Variables and Data Types
-
-<FadeIn>
 
 ### Creating Variables
 ```python
@@ -119,33 +76,184 @@ height = 5.6         # Float
 is_student = True    # Boolean
 ```
 
-</FadeIn>
-
-<FadeIn delay={400}>
-
-### Python is <Highlight color="green">dynamically typed</Highlight>
+### Python is **dynamically typed**
 You don't need to declare the type!
 
 ```python
 x = 42        # x is an integer
 x = "Hello"   # Now x is a string
 ```
-
-</FadeIn>
-
 </Slide>
 
-<Slide title="Next Steps" centered>
+<Slide>
+## Working with Strings
 
+### String Operations
+```python
+# Creating strings
+greeting = "Hello"
+name = "World"
+
+# Concatenation
+message = greeting + ", " + name + "!"
+print(message)  # Output: Hello, World!
+
+# String methods
+text = "python programming"
+print(text.upper())      # PYTHON PROGRAMMING
+print(text.capitalize()) # Python programming
+print(text.replace("python", "Python"))  # Python programming
+```
+</Slide>
+
+<Slide>
+## Numbers and Math
+
+### Basic Math Operations
+```python
+# Arithmetic operators
+a = 10
+b = 3
+
+print(a + b)    # Addition: 13
+print(a - b)    # Subtraction: 7
+print(a * b)    # Multiplication: 30
+print(a / b)    # Division: 3.333...
+print(a // b)   # Floor division: 3
+print(a % b)    # Modulo (remainder): 1
+print(a ** b)   # Exponentiation: 1000
+```
+</Slide>
+
+<Slide>
+## Lists - Storing Multiple Values
+
+### Creating and Using Lists
+```python
+# Creating a list
+fruits = ["apple", "banana", "orange"]
+numbers = [1, 2, 3, 4, 5]
+
+# Accessing items (indexing starts at 0)
+print(fruits[0])    # apple
+print(fruits[-1])   # orange (last item)
+
+# Adding items
+fruits.append("grape")
+fruits.insert(1, "strawberry")
+
+# List methods
+print(len(fruits))     # Length of list
+print("apple" in fruits)  # Check if item exists
+```
+</Slide>
+
+<Slide>
+## Control Flow - Making Decisions
+
+### If Statements
+```python
+age = 18
+
+if age >= 18:
+    print("You can vote!")
+elif age >= 16:
+    print("You can drive!")
+else:
+    print("You're still young!")
+
+# Comparison operators
+# == (equal), != (not equal)
+# > (greater), < (less)
+# >= (greater or equal), <= (less or equal)
+```
+</Slide>
+
+<Slide>
+## Loops - Repeating Actions
+
+### For Loops
+```python
+# Loop through a list
+fruits = ["apple", "banana", "orange"]
+for fruit in fruits:
+    print(f"I like {fruit}")
+
+# Loop through numbers
+for i in range(5):
+    print(f"Count: {i}")  # 0, 1, 2, 3, 4
+```
+
+### While Loops
+```python
+count = 0
+while count < 3:
+    print(f"Count is {count}")
+    count += 1  # Same as count = count + 1
+```
+</Slide>
+
+<Slide>
+## Functions - Organizing Your Code
+
+### Creating Functions
+```python
+def greet(name):
+    """This function greets someone"""
+    return f"Hello, {name}!"
+
+def add_numbers(a, b):
+    """Add two numbers and return the result"""
+    result = a + b
+    return result
+
+# Using functions
+message = greet("Alice")
+print(message)  # Hello, Alice!
+
+sum_result = add_numbers(5, 3)
+print(sum_result)  # 8
+```
+</Slide>
+
+<Slide>
+## Practice Exercise
+
+### Build a Simple Calculator
+```python
+def calculator():
+    print("Simple Calculator")
+    print("Operations: +, -, *, /")
+    
+    num1 = float(input("Enter first number: "))
+    operation = input("Enter operation (+, -, *, /): ")
+    num2 = float(input("Enter second number: "))
+    
+    if operation == "+":
+        result = num1 + num2
+    elif operation == "-":
+        result = num1 - num2
+    elif operation == "*":
+        result = num1 * num2
+    elif operation == "/":
+        if num2 != 0:
+            result = num1 / num2
+        else:
+            return "Error: Division by zero!"
+    else:
+        return "Error: Invalid operation!"
+    
+    return f"Result: {result}"
+
+# Run the calculator
+print(calculator())
+```
+</Slide>
+
+<Slide centered>
 ## 🎉 Congratulations!
 
-<FadeIn>
-
 You've learned the basics of Python programming!
-
-</FadeIn>
-
-<FadeIn delay={400}>
 
 ### What's Next?
 - Practice with small projects
@@ -153,14 +261,7 @@ You've learned the basics of Python programming!
 - Explore Python libraries
 - Build something cool!
 
-</FadeIn>
-
-<FadeIn delay={800}>
-
 **Ready to code? Let's build something amazing! 🚀**
-
-</FadeIn>
-
 </Slide>
 
 ## Course Materials
@@ -169,7 +270,7 @@ This curriculum covers the fundamentals of Python programming in an interactive,
 
 ### Getting Started
 
-Before we dive into the presentation slides above, let's set up our development environment and understand what we'll be covering in this course.
+The presentation above covers all the core concepts you need to start programming in Python. Each slide builds upon the previous one, taking you from basic concepts to writing your first functional program.
 
 #### What You'll Need
 
@@ -178,4 +279,13 @@ Before we dive into the presentation slides above, let's set up our development 
 - Terminal/command prompt access
 - About 2 hours of focused time
 
-Ready to start? Click the "Start Presentation" button above to begin with the interactive slides!
+#### Course Objectives
+
+By the end of this presentation, you'll be able to:
+- Understand Python syntax and basic programming concepts
+- Work with variables, strings, numbers, and lists
+- Use conditional statements and loops
+- Create and use functions
+- Build a simple calculator program
+
+The presentation automatically starts when you visit this page. Use arrow keys to navigate between slides, or escape to exit presentati

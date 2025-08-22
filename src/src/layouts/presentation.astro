@@ -1,0 +1,43 @@
+---
+// src/layouts/presentation.astro
+import "@/style/globals.css";
+import { ClientRouter } from "astro:transitions";
+
+export interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const ogImage = "https://timmypidashev.dev/og-image.jpg";
+---
+
+<html lang="en">
+  <head>
+    <title>{title}</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <!-- OpenGraph -->
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:description" content={description} />
+    <!-- Basic meta description for search engines -->
+    <meta name="description" content={description} />
+    <!-- Also used in OpenGraph for social media sharing -->
+    <meta property="og:description" content={description} />
+    <link rel="icon" type="image/jpeg" href="/me.jpeg" />
+    <ClientRouter 
+      defaultTransition={false}
+      handleFocus={false}
+    />
+  </head>
+  <body class="bg-background text-foreground min-h-screen">
+    <main class="w-full h-screen">
+      <slot />
+    </main>
+  </body>
+</html>

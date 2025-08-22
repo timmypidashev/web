@@ -1,11 +1,11 @@
 ---
 import { getCollection } from "astro:content";
 import ContentLayout from "@/layouts/content.astro";
-import { Presentation } from "@/components/presentation/Presentation";
+import PresentationLayout from "@/layouts/presentation.astro";
+import Presentation from "@/components/presentation/Presentation.astro";
 
 const { slug } = Astro.params;
 
-// Same pattern as your blog
 const resources = await getCollection("resources");
 const resource = resources.find(item => item.slug === slug);
 
@@ -23,51 +23,19 @@ const formattedDate = new Date(resource.data.date).toLocaleDateString("en-US", {
   month: "long",
   day: "numeric"
 });
+
+// Check if this is a curriculum resource to auto-start presentation
+const isCurriculum = resource.slug.includes('curriculum');
+const LayoutComponent = isCurriculum ? PresentationLayout : ContentLayout;
 ---
 
-<ContentLayout
+<LayoutComponent
   title={`${resource.data.title} | Timothy Pidashev`}
   description={resource.data.description}
 >
-  <Presentation title="Start Presentation" />
+  <Presentation autoStart={isCurriculum} title="Start Presentation" />
   
   <div class="relative max-w-8xl mx-auto">
-    <article class="prose prose-invert prose-lg mx-auto max-w-4xl">
-      
-      {resource.data.image && (
-        <div class="-mx-4 sm:mx-0 mb-8">
-          <img
-            src={resource.data.image}
-            alt={resource.data.title}
-            class="w-full h-auto rounded-lg object-cover"
-          />
-        </div>
-      )}
-      
-      <h1 class="text-3xl pt-4">{resource.data.title}</h1>
-      <p class="lg:text-2xl sm:text-lg">{resource.data.description}</p>
-      
-      <div class="mt-4 md:mt-6">
-        <div class="flex flex-wrap items-center gap-2 md:gap-3 text-sm md:text-base text-foreground/80">
-          <span class="text-purple">{resource.data.duration}</span>
-          <span class="text-foreground/50">•</span>
-          <time dateTime={resource.data.date instanceof Date ? resource.data.date.toISOString() : resource.data.date} class="text-blue">
-            {formattedDate}
-          </time>
-        </div>
-      </div>
-      
-      <div class="flex flex-wrap gap-2 mt-4 md:mt-6">
-        {resource.data.tags.map((tag) => (
-          <span class="text-xs md:text-base text-aqua hover:text-aqua-bright transition-colors duration-200">
-            #{tag}
-          </span>
-        ))}
-      </div>
-      
-      <div class="prose prose-invert prose-lg max-w-none">
-        <Content />
-      </div>
-    </article>
+    <Content />
   </div>
-</ContentLayout>
+</LayoutComponent>
