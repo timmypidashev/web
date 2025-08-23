@@ -1,41 +1,31 @@
 ---
+export const prerender = true;
+
 import { getCollection } from "astro:content";
-import ContentLayout from "@/layouts/content.astro";
-import PresentationLayout from "@/layouts/presentation.astro";
-import Presentation from "@/components/presentation/Presentation.astro";
 
-const { slug } = Astro.params;
+import ResourceLayout from "@/layouts/resource.astro";
 
-const resources = await getCollection("resources");
-const resource = resources.find(item => item.slug === slug);
-
-if (!resource) {
-  return new Response(null, {
-    status: 404,
-    statusText: 'Not found'
-  });
+export async function getStaticPaths() {
+  const resources = await getCollection("resources");
+  return resources.map(resource => ({
+    params: { slug: resource.slug },
+    props: { resource },
+  }));
 }
 
+const { resource } = Astro.props;
 const { Content } = await resource.render();
-
-const formattedDate = new Date(resource.data.date).toLocaleDateString("en-US", {
-  year: "numeric",
-  month: "long",
-  day: "numeric"
-});
-
-// Check if this is a curriculum resource to auto-start presentation
-const isCurriculum = resource.slug.includes('curriculum');
-const LayoutComponent = isCurriculum ? PresentationLayout : ContentLayout;
 ---
 
-<LayoutComponent
-  title={`${resource.data.title} | Timothy Pidashev`}
-  description={resource.data.description}
->
-  <Presentation autoStart={isCurriculum} title="Start Presentation" />
-  
-  <div class="relative max-w-8xl mx-auto">
+<ResourceLayout title={`${resource.data.title} | Timothy Pidashev`}>
+  <article class="w-full mx-auto px-4 pt-6 sm:pt-12">
+  <header class="mb-8">
+    <h1 class="text-3xl sm:text-4xl font-bold text-yellow-bright mb-4">
+      {resource.data.title}
+    </h1>
+  </header>
+  <div class="prose prose-invert prose-lg max-w-none">
     <Content />
   </div>
-</LayoutComponent>
+  </article>
+</ResourceLayout>

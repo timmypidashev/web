@@ -4,8 +4,7 @@ export interface Props {
   highlight?: boolean
   large?: boolean
 }
-
-const { centered, highlight, large} = Astro.props
+const { centered = true, highlight, large } = Astro.props
 ---
 
 <section class="presentation-slide" class:list={{ centered, highlight, large }}>
