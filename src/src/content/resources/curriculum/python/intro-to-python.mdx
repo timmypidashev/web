@@ -14,84 +14,99 @@ import Presentation from "@/components/resources/presentation.astro";
 <Slide large>
 # Welcome to Python! 🐍
 
-**A beginner-friendly programming language**
+<div step="1" animation="fade-in">**A beginner-friendly programming language**</div>
 
-- Easy to learn and read
-- Powerful and versatile
-- Great for beginners
-- Used by major companies
+<div step="2" animation="slide-in-left">- Easy to learn and read</div>
+<div step="3" animation="slide-in-left">- Powerful and versatile</div>
+<div step="4" animation="slide-in-left">- Great for beginners</div>
+<div step="5" animation="bounce-in">- Used by major companies</div>
 </Slide>
 
 <Slide>
 ## What is Python?
 
-Python is a **high-level programming language** that emphasizes:
+<div step="1" animation="fade-in">Python is a **high-level programming language** that emphasizes:</div>
 
-- **Readability** - Code that looks like English
-- **Simplicity** - Easy to learn and use
-- **Versatility** - Can be used for many things
+<div step="2" animation="slide-in-up">- **Readability** - Code that looks like English</div>
+<div step="3" animation="slide-in-up">- **Simplicity** - Easy to learn and use</div>
+<div step="4" animation="slide-in-up">- **Versatility** - Can be used for many things</div>
 
-### Created by Guido van Rossum in 1991
+<div step="5" animation="scale-in">### Created by Guido van Rossum in 1991</div>
 
-Named after "Monty Python's Flying Circus" 🎭
+<div step="6" animation="type-in">Named after "Monty Python's Flying Circus" 🎭</div>
 </Slide>
 
 <Slide>
 ## Why Learn Python?
 
+<div step="1" animation="slide-in-left">
 ### 🌐 Web Development
 Build websites and web applications
+</div>
 
+<div step="2" animation="slide-in-right">
 ### 🤖 Data Science & AI
 Analyze data and build machine learning models
+</div>
 
+<div step="3" animation="slide-in-left">
 ### 🎮 Game Development
 Create games and interactive applications
+</div>
 
+<div step="4" animation="slide-in-right">
 ### 🔧 Automation
 Automate repetitive tasks
+</div>
 </Slide>
 
 <Slide>
 ## Your First Python Program
 
-Let's write the classic "Hello, World!" program:
+<div step="1" animation="fade-in">Let's write the classic "Hello, World!" program:</div>
 
+<div step="2" animation="scale-in">
 ```python
 print("Hello, World!")
 ```
+</div>
 
-### How to run it:
-1. Open a text editor
-2. Type the code above
-3. Save as `hello.py`
-4. Run with: `python hello.py`
+<div step="3" animation="slide-in-up">### How to run it:</div>
+<div step="4" animation="slide-in-up">1. Open a text editor</div>
+<div step="5" animation="slide-in-up">2. Type the code above</div>
+<div step="6" animation="slide-in-up">3. Save as `hello.py`</div>
+<div step="7" animation="bounce-in">4. Run with: `python hello.py`</div>
 </Slide>
 
 <Slide>
 ## Variables and Data Types
 
-### Creating Variables
+<div step="1" animation="fade-in">### Creating Variables</div>
+<div step="2" animation="type-in">
 ```python
 name = "Alice"        # String
 age = 25             # Integer
 height = 5.6         # Float
 is_student = True    # Boolean
 ```
+</div>
 
-### Python is **dynamically typed**
-You don't need to declare the type!
+<div step="3" animation="slide-in-left">### Python is **dynamically typed**</div>
+<div step="4" animation="slide-in-left">You don't need to declare the type!</div>
 
+<div step="5" animation="scale-in">
 ```python
 x = 42        # x is an integer
 x = "Hello"   # Now x is a string
 ```
+</div>
 </Slide>
 
 <Slide>
 ## Working with Strings
 
-### String Operations
+<div data-step="1" data-animation="fade-in">### String Operations</div>
+<div data-step="2" data-animation="slide-in-up">
 ```python
 # Creating strings
 greeting = "Hello"
@@ -100,47 +115,72 @@ name = "World"
 # Concatenation
 message = greeting + ", " + name + "!"
 print(message)  # Output: Hello, World!
+```
+</div>
 
+<div data-step="3" data-animation="slide-in-up">
+```python
 # String methods
 text = "python programming"
 print(text.upper())      # PYTHON PROGRAMMING
 print(text.capitalize()) # Python programming
 print(text.replace("python", "Python"))  # Python programming
 ```
+</div>
 </Slide>
 
 <Slide>
 ## Numbers and Math
 
-### Basic Math Operations
+<div data-step="1" data-animation="fade-in">### Basic Math Operations</div>
+<div data-step="2" data-animation="type-in">
 ```python
 # Arithmetic operators
 a = 10
 b = 3
+```
+</div>
 
+<div data-step="3" data-animation="slide-in-left">
+```python
 print(a + b)    # Addition: 13
 print(a - b)    # Subtraction: 7
 print(a * b)    # Multiplication: 30
 print(a / b)    # Division: 3.333...
+```
+</div>
+
+<div data-step="4" data-animation="slide-in-right">
+```python
 print(a // b)   # Floor division: 3
 print(a % b)    # Modulo (remainder): 1
 print(a ** b)   # Exponentiation: 1000
 ```
+</div>
 </Slide>
 
 <Slide>
 ## Lists - Storing Multiple Values
 
-### Creating and Using Lists
+<div data-step="1" data-animation="fade-in">### Creating and Using Lists</div>
+<div data-step="2" data-animation="slide-in-up">
 ```python
 # Creating a list
 fruits = ["apple", "banana", "orange"]
 numbers = [1, 2, 3, 4, 5]
+```
+</div>
 
+<div data-step="3" data-animation="slide-in-up">
+```python
 # Accessing items (indexing starts at 0)
 print(fruits[0])    # apple
 print(fruits[-1])   # orange (last item)
+```
+</div>
 
+<div data-step="4" data-animation="slide-in-up">
+```python
 # Adding items
 fruits.append("grape")
 fruits.insert(1, "strawberry")
@@ -149,12 +189,14 @@ fruits.insert(1, "strawberry")
 print(len(fruits))     # Length of list
 print("apple" in fruits)  # Check if item exists
 ```
+</div>
 </Slide>
 
 <Slide>
 ## Control Flow - Making Decisions
 
-### If Statements
+<div data-step="1" data-animation="fade-in">### If Statements</div>
+<div data-step="2" data-animation="type-in">
 ```python
 age = 18
 
@@ -164,65 +206,89 @@ elif age >= 16:
     print("You can drive!")
 else:
     print("You're still young!")
+```
+</div>
 
+<div data-step="3" data-animation="bounce-in">
+```python
 # Comparison operators
 # == (equal), != (not equal)
 # > (greater), < (less)
 # >= (greater or equal), <= (less or equal)
 ```
+</div>
 </Slide>
 
 <Slide>
 ## Loops - Repeating Actions
 
-### For Loops
+<div data-step="1" data-animation="fade-in">### For Loops</div>
+<div data-step="2" data-animation="slide-in-left">
 ```python
 # Loop through a list
 fruits = ["apple", "banana", "orange"]
 for fruit in fruits:
     print(f"I like {fruit}")
+```
+</div>
 
+<div data-step="3" data-animation="slide-in-right">
+```python
 # Loop through numbers
 for i in range(5):
     print(f"Count: {i}")  # 0, 1, 2, 3, 4
 ```
+</div>
 
-### While Loops
+<div data-step="4" data-animation="scale-in">### While Loops</div>
+<div data-step="5" data-animation="slide-in-up">
 ```python
 count = 0
 while count < 3:
     print(f"Count is {count}")
     count += 1  # Same as count = count + 1
 ```
+</div>
 </Slide>
 
 <Slide>
 ## Functions - Organizing Your Code
 
-### Creating Functions
+<div data-step="1" data-animation="fade-in">### Creating Functions</div>
+<div data-step="2" data-animation="type-in">
 ```python
 def greet(name):
     """This function greets someone"""
     return f"Hello, {name}!"
+```
+</div>
 
+<div data-step="3" data-animation="slide-in-up">
+```python
 def add_numbers(a, b):
     """Add two numbers and return the result"""
     result = a + b
     return result
+```
+</div>
 
-# Using functions
+<div data-step="4" data-animation="bounce-in">### Using functions</div>
+<div data-step="5" data-animation="slide-in-up">
+```python
 message = greet("Alice")
 print(message)  # Hello, Alice!
 
 sum_result = add_numbers(5, 3)
 print(sum_result)  # 8
 ```
+</div>
 </Slide>
 
 <Slide>
 ## Practice Exercise
 
-### Build a Simple Calculator
+<div data-step="1" data-animation="fade-in">### Build a Simple Calculator</div>
+<div data-step="2" data-animation="type-in">
 ```python
 def calculator():
     print("Simple Calculator")
@@ -231,7 +297,11 @@ def calculator():
     num1 = float(input("Enter first number: "))
     operation = input("Enter operation (+, -, *, /): ")
     num2 = float(input("Enter second number: "))
-    
+```
+</div>
+
+<div data-step="3" data-animation="slide-in-up">
+```python    
     if operation == "+":
         result = num1 + num2
     elif operation == "-":
@@ -247,24 +317,29 @@ def calculator():
         return "Error: Invalid operation!"
     
     return f"Result: {result}"
+```
+</div>
 
+<div data-step="4" data-animation="bounce-in">
+```python
 # Run the calculator
 print(calculator())
 ```
+</div>
 </Slide>
 
 <Slide >
 ## 🎉 Congratulations!
 
-You've learned the basics of Python programming!
+<div data-step="1" data-animation="scale-in">You've learned the basics of Python programming!</div>
 
-### What's Next?
-- Practice with small projects
-- Learn about modules and packages
-- Explore Python libraries
-- Build something cool!
+<div data-step="2" data-animation="fade-in">### What's Next?</div>
+<div data-step="3" data-animation="slide-in-left">- Practice with small projects</div>
+<div data-step="4" data-animation="slide-in-left">- Learn about modules and packages</div>
+<div data-step="5" data-animation="slide-in-left">- Explore Python libraries</div>
+<div data-step="6" data-animation="slide-in-left">- Build something cool!</div>
 
-**Ready to code? Let's build something amazing! 🚀**
+<div data-step="7" data-animation="bounce-in">**Ready to code? Let's build something amazing! 🚀**</div>
 </Slide>
 
 ## Course Materials
@@ -291,4 +366,4 @@ By the end of this presentation, you'll be able to:
 - Create and use functions
 - Build a simple calculator program
 
-The presentation automatically starts when you visit this page. Use arrow keys to navigate between slides, or escape to exit presentati
+The presentation automatically starts when you visit this page. Use arrow keys to navigate between slides and steps, or escape to exit presentation mode.

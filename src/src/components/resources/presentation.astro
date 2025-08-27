@@ -1,3 +1,4 @@
+// src/components/resources/presentation.astro
 <button id="presentation-button" class="presentation-hidden" type="button"
   >Start Presentation</button
 >
@@ -12,6 +13,7 @@
   let slides = Array.from(document.querySelectorAll(".presentation-slide"));
 
   let slide = 0;
+  let step = 0; // Current step within the slide
   let presenter = false;
 
   const presentationId = window.location.href;
@@ -20,7 +22,6 @@
     if (slide === slides.length - 1) {
       return slide;
     }
-
     return slide + 1;
   };
 
@@ -28,7 +29,6 @@
     if (slide === 0) {
       return slide;
     }
-
     return slide - 1;
   };
 
@@ -38,9 +38,182 @@
 
   const transitionClasses = [nextClass, currClass, prevClass];
 
-  const keyHandlers: Record<string, () => number> = {
-    ArrowRight: nextSlide,
-    ArrowLeft: prevSlide,
+  // Animation classes for step-through content
+  const animationClasses = {
+    'fade-in': 'animate-fade-in-step',
+    'slide-in-left': 'animate-slide-in-left-step',
+    'slide-in-right': 'animate-slide-in-right-step',
+    'slide-in-up': 'animate-slide-in-up-step',
+    'slide-in-down': 'animate-slide-in-down-step',
+    'type-in': 'animate-type-in-step',
+    'scale-in': 'animate-scale-in-step',
+    'bounce-in': 'animate-bounce-in-step'
+  };
+
+  const getCurrentSlideSteps = () => {
+    const currentSlide = slides[slide];
+    return Array.from(currentSlide.querySelectorAll('[step]'))
+      .sort((a, b) => {
+        const stepA = parseInt((a as HTMLElement).getAttribute('step') || '0');
+        const stepB = parseInt((b as HTMLElement).getAttribute('step') || '0');
+        return stepA - stepB;
+      });
+  };
+
+  const getMaxSteps = () => {
+    const steps = getCurrentSlideSteps();
+    if (steps.length === 0) return 0;
+    const lastStep = steps[steps.length - 1] as HTMLElement;
+    return parseInt(lastStep.getAttribute('step') || '0');
+  };
+
+  const showStepsUpTo = (targetStep: number, isReverse: boolean = false) => {
+    const steps = getCurrentSlideSteps();
+    
+    steps.forEach((stepElement) => {
+      const element = stepElement as HTMLElement;
+      const elementStep = parseInt(element.getAttribute('step') || '0');
+      const animationType = element.getAttribute('animation') || 'fade-in';
+      
+      // Remove all animation classes first
+      Object.values(animationClasses).forEach(cls => {
+        element.classList.remove(cls);
+        element.classList.remove(cls.replace('-step', '-reverse-step'));
+      });
+      element.classList.remove('step-hidden', 'step-visible');
+      
+      if (elementStep <= targetStep) {
+        // Show this step with animation
+        element.classList.add('step-visible');
+        if (elementStep === targetStep) {
+          // Apply animation only to the current step
+          const baseAnimationClass = animationClasses[animationType as keyof typeof animationClasses] || animationClasses['fade-in'];
+          const animationClass = isReverse ? baseAnimationClass.replace('-step', '-reverse-step') : baseAnimationClass;
+          
+          // Special handling for type-in animation
+          if (animationType === 'type-in') {
+            if (isReverse) {
+              startTypeAnimation(element, false);
+            } else {
+              startTypeAnimation(element, true);
+            }
+          } else {
+            element.classList.add(animationClass);
+          }
+        }
+      } else {
+        // Hide this step
+        element.classList.add('step-hidden');
+      }
+    });
+  };
+
+  const startTypeAnimation = (element: HTMLElement, isForward: boolean) => {
+    const text = element.textContent || '';
+    const duration = isForward ? 1500 : 1000; // ms
+    const steps = Math.max(text.length, 1);
+    const stepDuration = duration / steps;
+    
+    if (isForward) {
+      // Type in: reveal characters one by one
+      element.textContent = '';
+      element.style.opacity = '1';
+      
+      let currentIndex = 0;
+      const typeInterval = setInterval(() => {
+        if (currentIndex < text.length) {
+          element.textContent = text.substring(0, currentIndex + 1);
+          currentIndex++;
+        } else {
+          clearInterval(typeInterval);
+        }
+      }, stepDuration);
+      
+      // Store interval reference for cleanup
+      (element as any)._typeInterval = typeInterval;
+    } else {
+      // Type out: hide characters one by one from the end
+      let currentLength = text.length;
+      const typeInterval = setInterval(() => {
+        if (currentLength > 0) {
+          element.textContent = text.substring(0, currentLength - 1);
+          currentLength--;
+        } else {
+          clearInterval(typeInterval);
+          element.style.opacity = '0';
+        }
+      }, stepDuration);
+      
+      // Store interval reference for cleanup
+      (element as any)._typeInterval = typeInterval;
+    }
+  };
+
+  const resetSlideSteps = () => {
+    const steps = getCurrentSlideSteps();
+    steps.forEach((stepElement) => {
+      const element = stepElement as HTMLElement;
+      
+      // Clear any running type animations
+      if ((element as any)._typeInterval) {
+        clearInterval((element as any)._typeInterval);
+        (element as any)._typeInterval = null;
+      }
+      
+      Object.values(animationClasses).forEach(cls => {
+        element.classList.remove(cls);
+        element.classList.remove(cls.replace('-step', '-reverse-step'));
+      });
+      element.classList.remove('step-hidden', 'step-visible');
+      element.classList.add('step-hidden');
+      
+      // Reset text content and styles for type-in elements
+      if (element.getAttribute('animation') === 'type-in') {
+        element.style.opacity = '0';
+      }
+    });
+  };
+
+  const nextStep = () => {
+    const maxSteps = getMaxSteps();
+    
+    if (step < maxSteps) {
+      step++;
+      showStepsUpTo(step, false);
+      return { slide, step };
+    } else {
+      // Move to next slide
+      if (slide < slides.length - 1) {
+        const nextSlideIndex = nextSlide();
+        return { slide: nextSlideIndex, step: 0 };
+      }
+      return { slide, step };
+    }
+  };
+
+  const prevStep = () => {
+    if (step > 0) {
+      step--;
+      showStepsUpTo(step, true);
+      return { slide, step };
+    } else {
+      // Move to previous slide
+      if (slide > 0) {
+        const prevSlideIndex = prevSlide();
+        // Set to max steps of previous slide
+        const tempSlide = slide;
+        slide = prevSlideIndex;
+        const maxSteps = getMaxSteps();
+        slide = tempSlide;
+        return { slide: prevSlideIndex, step: maxSteps };
+      }
+      return { slide, step };
+    }
+  };
+
+  const keyHandlers: Record<string, () => { slide: number, step: number }> = {
+    ArrowRight: nextStep,
+    ArrowLeft: prevStep,
   };
 
   const displaySlides = () => {
@@ -49,8 +222,15 @@
 
       if (i === slide) {
         slides[i].classList.add("active", currClass);
+        // Show steps for current slide
+        showStepsUpTo(step, false);
       } else {
         slides[i].classList.add("inactive");
+        // Reset steps for non-current slides
+        const tempSlide = slide;
+        slide = i;
+        resetSlideSteps();
+        slide = tempSlide;
 
         if (i > slide) {
           slides[i].classList.add(nextClass);
@@ -61,62 +241,89 @@
     }
   };
 
-  let presenting = false
+  let presenting = false;
   const startPresentation = () => {
     button.innerHTML = "Resume presentation";
     document.body.classList.add("presentation-overflow-hidden");
 
-    presenting = true
+    presenting = true;
+    step = 0; // Reset step
     displaySlides();
     setProgress();
-    initListeners()
+    initListeners();
   };
 
   const endPresentation = () => {
     document.body.classList.remove("presentation-overflow-hidden");
 
-    presenting = false
-    slides.map((s) =>
-      s.classList.remove("active", "inactive", ...transitionClasses)
-    );
+    presenting = false;
+    step = 0;
+    slides.map((s) => {
+      s.classList.remove("active", "inactive", ...transitionClasses);
+      // Reset all steps
+      const tempSlide = slide;
+      slides.forEach((_, i) => {
+        slide = i;
+        resetSlideSteps();
+      });
+      slide = tempSlide;
+    });
   };
 
   const setPresenter = () => {
     presenter = true;
-    document.body.classList.add("presentation-presenter")
+    document.body.classList.add("presentation-presenter");
   };
 
   const setProgress = () => {
-    const progress = ((slide+1)/slides.length)*100;
-    document.body.style.setProperty('--presentation-progress', `${progress}%`)
-  }
+    const maxSteps = getMaxSteps();
+    const totalSteps = slides.reduce((acc, _, i) => {
+      const tempSlide = slide;
+      slide = i;
+      const steps = getMaxSteps();
+      slide = tempSlide;
+      return acc + Math.max(1, steps);
+    }, 0);
+    
+    let currentProgress = 0;
+    for (let i = 0; i < slide; i++) {
+      const tempSlide = slide;
+      slide = i;
+      const steps = getMaxSteps();
+      slide = tempSlide;
+      currentProgress += Math.max(1, steps);
+    }
+    currentProgress += step;
+    
+    const progress = (currentProgress / totalSteps) * 100;
+    document.body.style.setProperty('--presentation-progress', `${progress}%`);
+  };
 
-  const transition = (nextSlide: number) => {
+  const transition = (nextSlide: number, nextStep: number = 0) => {
     if (!presenting) {
-      return
+      return;
     }
 
-    if (slide === nextSlide) {
+    if (slide === nextSlide && step === nextStep) {
       return;
     }
 
     slides.forEach((s) => s.classList.remove(...transitionClasses));
 
-
     slide = nextSlide;
+    step = nextStep;
 
     displaySlides();
     setProgress();
   };
 
-
-  let listenersInitialized = false
+  let listenersInitialized = false;
   const initListeners = () => {
-     if (listenersInitialized) {
-      return
-     }
+    if (listenersInitialized) {
+      return;
+    }
 
-     listenersInitialized= true
+    listenersInitialized = true;
     window.addEventListener("keyup", (ev) => {
       ev.preventDefault();
       const isEscape = ev.key === "Escape";
@@ -131,19 +338,19 @@
         return;
       }
 
-      const getSlide = keyHandlers[ev.key];
+      const getNextPosition = keyHandlers[ev.key];
 
-      if (!getSlide) {
+      if (!getNextPosition) {
         return;
       }
 
-      const nextSlide = getSlide();
-      transition(nextSlide);
+      const { slide: nextSlideIndex, step: nextStepIndex } = getNextPosition();
+      transition(nextSlideIndex, nextStepIndex);
     });
 
     let touchstartX = 0;
     let touchendX = 0;
-    const handleGesure = () => {
+    const handleGesture = () => {
       const magnitude = Math.abs(touchstartX - touchendX);
 
       if (magnitude < 40) {
@@ -152,10 +359,12 @@
       }
 
       if (touchendX < touchstartX) {
-        transition(nextSlide());
+        const { slide: nextSlideIndex, step: nextStepIndex } = nextStep();
+        transition(nextSlideIndex, nextStepIndex);
       }
       if (touchendX > touchstartX) {
-        transition(prevSlide());
+        const { slide: prevSlideIndex, step: prevStepIndex } = prevStep();
+        transition(prevSlideIndex, prevStepIndex);
       }
     };
 
@@ -171,11 +380,11 @@
       "touchend",
       (event) => {
         touchendX = event.changedTouches[0].screenX;
-        handleGesure();
+        handleGesture();
       },
       false
     );
-  }
+  };
 
   // If there is no presentation on the page then we don't initialize
   if (slides.length) {
@@ -187,6 +396,259 @@
 <style is:global>
   .presentation-progress {
     display: none;
+  }
+
+  /* Step animation styles */
+  .step-hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .step-visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Animation keyframes */
+  @keyframes fadeInStep {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeOutStep {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes slideInLeftStep {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideOutLeftStep {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+  }
+
+  @keyframes slideInRightStep {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideOutRightStep {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+  }
+
+  @keyframes slideInUpStep {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideOutUpStep {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+  }
+
+  @keyframes slideInDownStep {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideOutDownStep {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+  }
+
+  @keyframes scaleInStep {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes scaleOutStep {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+  }
+
+  @keyframes bounceInStep {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    70% {
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes bounceOutStep {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    30% {
+      transform: scale(1.05);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+  }
+
+  @keyframes typeInStep {
+    /* This is now unused - keeping for backward compatibility */
+    from { opacity: 1; }
+    to { opacity: 1; }
+  }
+
+  @keyframes typeOutStep {
+    /* This is now unused - keeping for backward compatibility */
+    from { opacity: 1; }
+    to { opacity: 1; }
+  }
+
+  /* Animation classes */
+  .animate-fade-in-step {
+    animation: fadeInStep 0.6s ease-out forwards;
+  }
+
+  .animate-fade-in-reverse-step {
+    animation: fadeOutStep 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-left-step {
+    animation: slideInLeftStep 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-left-reverse-step {
+    animation: slideOutLeftStep 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-right-step {
+    animation: slideInRightStep 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-right-reverse-step {
+    animation: slideOutRightStep 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-up-step {
+    animation: slideInUpStep 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-up-reverse-step {
+    animation: slideOutUpStep 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-down-step {
+    animation: slideInDownStep 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-down-reverse-step {
+    animation: slideOutDownStep 0.6s ease-out forwards;
+  }
+
+  .animate-scale-in-step {
+    animation: scaleInStep 0.6s ease-out forwards;
+  }
+
+  .animate-scale-in-reverse-step {
+    animation: scaleOutStep 0.6s ease-out forwards;
+  }
+
+  .animate-bounce-in-step {
+    animation: bounceInStep 0.8s ease-out forwards;
+  }
+
+  .animate-bounce-in-reverse-step {
+    animation: bounceOutStep 0.8s ease-out forwards;
+  }
+
+  .animate-type-in-step {
+    /* JavaScript-controlled animation - no CSS animation needed */
+  }
+
+  .animate-type-in-reverse-step {
+    /* JavaScript-controlled animation - no CSS animation needed */
   }
 
   .presentation-overflow-hidden {
