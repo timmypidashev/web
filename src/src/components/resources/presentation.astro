@@ -1,9 +1,24 @@
 // src/components/resources/presentation.astro
+---
+import Background from "@/components/background";
+---
+
 <button id="presentation-button" class="presentation-hidden" type="button"
   >Start Presentation</button
 >
 
 <div class="presentation-progress"></div>
+
+<!-- Background components for presentation mode -->
+<div class="presentation-backgrounds">
+  <Background layout="content" position="right" client:only="react" transition:persist />
+  <Background layout="content" position="left" client:only="react" transition:persist />
+</div>
+
+<!-- Fullscreen preview background -->
+<div id="fullscreen-preview" class="fullscreen-preview-hidden">
+  <Background layout="index" client:only="react" />
+</div>
 
 <script>
   const button = document.getElementById(
@@ -15,6 +30,7 @@
   let slide = 0;
   let step = 0; // Current step within the slide
   let presenter = false;
+  let fullscreenPreview = false;
 
   const presentationId = window.location.href;
 
@@ -211,9 +227,26 @@
     }
   };
 
-  const keyHandlers: Record<string, () => { slide: number, step: number }> = {
+  const toggleFullscreenPreview = () => {
+    const previewElement = document.getElementById('fullscreen-preview');
+    if (!previewElement) return;
+    
+    fullscreenPreview = !fullscreenPreview;
+    
+    if (fullscreenPreview) {
+      previewElement.classList.remove('fullscreen-preview-hidden');
+      previewElement.classList.add('fullscreen-preview-visible');
+    } else {
+      previewElement.classList.remove('fullscreen-preview-visible');
+      previewElement.classList.add('fullscreen-preview-hidden');
+    }
+  };
+
+  const keyHandlers: Record<string, () => { slide: number, step: number } | void> = {
     ArrowRight: nextStep,
     ArrowLeft: prevStep,
+    p: toggleFullscreenPreview,
+    P: toggleFullscreenPreview,
   };
 
   const displaySlides = () => {
@@ -258,6 +291,15 @@
 
     presenting = false;
     step = 0;
+    fullscreenPreview = false;
+    
+    // Hide fullscreen preview if active
+    const previewElement = document.getElementById('fullscreen-preview');
+    if (previewElement) {
+      previewElement.classList.remove('fullscreen-preview-visible');
+      previewElement.classList.add('fullscreen-preview-hidden');
+    }
+    
     slides.map((s) => {
       s.classList.remove("active", "inactive", ...transitionClasses);
       // Reset all steps
@@ -344,8 +386,11 @@
         return;
       }
 
-      const { slide: nextSlideIndex, step: nextStepIndex } = getNextPosition();
-      transition(nextSlideIndex, nextStepIndex);
+      const result = getNextPosition();
+      if (result && 'slide' in result) {
+        const { slide: nextSlideIndex, step: nextStepIndex } = result;
+        transition(nextSlideIndex, nextStepIndex);
+      }
     });
 
     let touchstartX = 0;
@@ -396,6 +441,51 @@
 <style is:global>
   .presentation-progress {
     display: none;
+  }
+
+  /* Presentation background positioning */
+  .presentation-backgrounds {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 5; /* Below slides but above normal content */
+    pointer-events: none;
+  }
+
+  .presentation-overflow-hidden .presentation-backgrounds {
+    display: block;
+    visibility: visible;
+  }
+
+  .presentation-overflow-hidden:not(.presentation-presenter) .presentation-backgrounds {
+    z-index: 5; /* Ensure it's visible during presentation */
+  }
+  .fullscreen-preview-hidden {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    pointer-events: none;
+  }
+
+  .fullscreen-preview-visible {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    pointer-events: none;
   }
 
   /* Step animation styles */
