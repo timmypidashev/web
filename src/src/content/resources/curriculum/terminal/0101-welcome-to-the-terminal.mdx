@@ -1,0 +1,236 @@
+---
+title: "0101 - Welcome to the Terminal"
+description: "Week 1 | Lesson 1"
+date: 2025-09-27
+duration: "45 minutes"
+tags: ["terminal"]
+---
+
+import Slide from "@/components/resources/slide.astro";
+import Presentation from "@/components/resources/presentation.astro";
+
+import { Video } from "@/components/mdx/video";
+
+<Presentation />
+
+<Slide large>
+* The terminal is a way to **talk to your computer** using words instead of clicking.
+* It’s like giving your computer instructions directly.
+* Powerful, fast, and used by programmers every day!
+* It's sometimes called a **command-line** because it accepts commands as instructions
+
+---
+</Slide>
+
+<Slide large>
+## Video Introduction
+<Video client:load
+    title="What is the terminal and why should I use it? // Developer Fundamentals"
+    url="https://timmypidashev.us-sea-1.linodeobjects.com/curriculum%2Fterminal%2F01.mp4"
+    attribution="https://www.youtube.com/watch?v=lZ7Kix9bjPI"
+/>
+
+---
+</Slide>
+
+<Slide large>
+## Opening the Terminal
+
+1. Open your laptops and power them on
+2. When prompted to login, enter your credentials:
+**Username:** your first and last name (all lowercase, no spaces) `timothypidashev`
+**Password:** your birthday in MMDDYYYY format (without slashes) `08052004`
+> Once logged in, help the person to your right and left, 
+> we will continue when everybody is ready!
+
+---
+</Slide>
+
+<Slide large>
+## It's Lonely in Here...
+
+Now you should see a **prompt** that looks something like this:
+```fish
+timothypidashev@laptop1 ~>
+```
+This might look intimidating, but it's actually telling you useful information!
+
+---
+</Slide>
+
+<Slide large>
+## Understanding the Prompt
+
+```fish
+timothypidashev@laptop1 ~>
+```
+
+Breaking it down:
+- **`timothypidashev`** - This is **your username**. It tells you who is currently using the computer
+- **`@laptop1`** - This is the **computer's name** (hostname). Useful when working with multiple computers!
+- **`~`** - This is your **current location** in the computer. The `~` symbol means you're in your "home" folder
+- **`>`** - This is the **prompt symbol**. It's waiting for you to type a command!
+
+---
+</Slide>
+
+<Slide large>
+## Your First Command - `whoami`
+
+Let's try our first command! Type this and press **Enter**:
+
+```fish
+whoami
+```
+
+- This command asks the computer: "Who am I?"
+- The computer should respond with your username!
+
+> **Try it!** Type `whoami` and press Enter
+
+---
+</Slide>
+
+<Slide>
+## Where Am I? - The `pwd` Command
+
+Now let's find out exactly where we are in the computer. Type:
+
+```fish
+pwd
+```
+
+- `pwd` stands for **"Print Working Directory"**
+- It tells you the **full path** to where you currently are
+- You should see something like: `/home/timothypidashev`
+
+> **Try it!** Type `pwd` and press Enter
+
+---
+</Slide>
+
+<Slide>
+## Looking Around - The `ls` Command
+
+Let's see what's in our current location. Type:
+
+```fish
+ls
+```
+
+- `ls` stands for **"list"** - it shows you all the files and folders in your current location
+- You might see folders like `Desktop`, `Documents`, `Downloads`, etc.
+
+> **Try it!** Type `ls` and press Enter. What do you see?
+
+---
+</Slide>
+
+<Slide>
+## Making Your Mark - The `mkdir` Command
+
+Let's create your first folder using the terminal! Type:
+
+```fish
+mkdir my-first-folder
+```
+
+- `mkdir` stands for **"make directory"** (folder and directory mean the same thing)
+- Now type `ls` again to see your new folder appear!
+
+> **Try it!** Create a folder, then list the contents to see it
+
+---
+</Slide>
+
+<Slide large>
+## Moving Around - The `cd` Command
+
+Let's go inside the folder we just created. Type:
+
+```bash
+cd my-first-folder
+```
+
+- `cd` stands for **"change directory"** - it moves you to a different location
+- Notice how your prompt changes! The `~` might change to show your new location
+- Type `pwd` to confirm where you are now
+
+> **Try it!** Move into your folder and check your location
+
+---
+</Slide>
+
+<Slide large>
+## Going Back - `cd ..`
+
+To go back to the previous folder (your home), type:
+
+```bash
+cd ..
+```
+
+- The `..` means **"parent directory"** - the folder that contains your current folder
+- You can also type `cd ~` or just `cd` to go back to your home folder anytime
+
+> **Try it!** Go back to your home folder
+
+---
+</Slide>
+
+<Slide large>
+## Creating Files - The `touch` Command
+
+Let's create your first file using the terminal. Type:
+
+```bash
+touch hello.txt
+```
+
+- `touch` creates a new, empty file
+- Type `ls` to see your new file appear alongside your folder
+
+> **Try it!** Create a file and list the contents to see it
+
+---
+</Slide>
+
+<Slide large>
+## Cleaning Up - The `rm` Command
+
+Let's clean up by removing the file we just created:
+
+```bash
+rm hello.txt
+```
+
+- `rm` stands for **"remove"** - it deletes files
+- ⚠️ **Warning**: `rm` permanently deletes files - there's no trash can in the terminal!
+- Type `ls` to confirm the file is gone
+
+> **Try it!** Remove your file and verify it's deleted
+
+---
+</Slide>
+
+<Slide large>
+
+## Command Summary
+
+Here are the commands we learned today:
+
+| Command | Purpose |
+|---------|---------|
+| `whoami` | Shows your username |
+| `pwd` | Shows your current location |
+| `ls` | Lists files and folders |
+| `mkdir` | Creates a new folder |
+| `cd` | Changes to a different folder |
+| `cd ..` | Goes to the parent folder |
+| `touch` | Creates a new file |
+| `rm` | Removes/deletes a file |
+
+> BYTE! | Create a file named `.hidden` and see if you can find it with `ls -a`! 
+
+---
+</Slide>
