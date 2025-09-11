@@ -24,17 +24,5 @@ export const collections = {
       date: z.string(),
       image: z.string().optional(),
     }),
-  }),
-  resources: defineCollection({
-    schema: z.object({
-      title: z.string(),
-      description: z.string(),
-      date: z.coerce.date().transform((date) => {
-        return new Date(date.setUTCHours(12, 0, 0, 0));
-      }),
-      duration: z.string(),
-      image: z.string().optional(),
-      tags: z.array(z.string()),
-    }),
-  }),
+  })
 };
