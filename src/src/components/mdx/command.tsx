@@ -45,12 +45,10 @@ const CommandSequence = ({
           {copied ? (
             <>
               <Check size={14} className="mr-1 text-green-bright" />
-              <span>Copied</span>
             </>
           ) : (
             <>
               <Copy size={14} className="mr-1 text-foreground/70" />
-              <span>Copy All</span>
             </>
           )}
         </button>
@@ -241,12 +239,10 @@ const Command = ({
           {copied ? (
             <>
               <Check size={14} className="mr-1 text-green-bright" />
-              <span>Copied</span>
             </>
           ) : (
             <>
               <Copy size={14} className="mr-1 text-foreground/70" />
-              <span>Copy</span>
             </>
           )}
         </button>
