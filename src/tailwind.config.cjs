@@ -96,6 +96,56 @@ module.exports = {
               transition: "all 0.2s ease-in-out",
             },
 
+            // Code
+            'code:not([data-language])': {
+              color: theme('colors.purple.bright'),
+              backgroundColor: '#282828',
+              padding: '0',
+              borderRadius: '0.25rem',
+              fontFamily: 'Comic Code, monospace',
+              fontWeight: '400',
+              fontSize: 'inherit', // Match the parent text size
+              '&::before': { content: 'none' },
+              '&::after': { content: 'none' },
+            },
+
+            'pre': {
+              backgroundColor: '#282828',
+              color: theme("colors.foreground"),
+              borderRadius: '0.5rem',
+              overflow: 'visible', // This allows the copy button to be positioned outside
+              position: 'relative', // For the copy button positioning
+              marginTop: '1.5rem', // Space for the copy button and language label
+              fontSize: 'inherit', // Match the parent font size
+            },
+
+            'pre code': {
+              display: 'block',
+              fontFamily: 'Comic Code, monospace',
+              fontSize: '1em', // This will inherit from the prose-lg setting
+              padding: '0',
+              overflow: 'auto', // Enable horizontal scrolling
+              whiteSpace: 'pre',
+              '&::before': { content: 'none' },
+              '&::after': { content: 'none' },
+            },
+
+
+            '[data-rehype-pretty-code-fragment]:nth-of-type(2) pre': {
+              '[data-line]::before': {
+                content: 'counter(line)',
+                counterIncrement: 'line',
+                display: 'inline-block',
+                width: '1rem',
+                marginRight: '1rem',
+                textAlign: 'right',
+                color: '#86e1fc',
+              },
+              '[data-highlighted-line]::before': {
+                color: '#86e1fc',
+              },
+            },
+
             // Bold
             strong: {
               color: theme("colors.orange.bright"),
@@ -121,54 +171,6 @@ module.exports = {
                 "&::before": { content: "none" },
                 "&::after": { content: "none" },
               },
-            },
-
-            // Code
-            'code:not([data-language])': {
-              color: theme('colors.purple.bright'),
-              backgroundColor: '#282828',
-              padding: '0.2em 0.4em',
-              borderRadius: '0.25rem',
-              fontFamily: 'Comic Code, monospace',
-              fontWeight: '400',
-              fontSize: 'inherit', // Match the parent text size
-              '&::before': { content: 'none' },
-              '&::after': { content: 'none' },
-            },
-
-            'pre': {
-              backgroundColor: '#282828',
-              color: theme("colors.foreground"),
-              borderRadius: '0.5rem',
-              overflow: 'visible', // This allows the copy button to be positioned outside
-              position: 'relative', // For the copy button positioning
-              marginTop: '1.5rem', // Space for the copy button and language label
-              fontSize: 'inherit', // Match the parent font size
-            },
-
-            'pre code': {
-              display: 'block',
-              fontFamily: 'Comic Code, monospace',
-              fontSize: '1em', // This will inherit from the prose-lg setting
-              padding: '1.25rem',
-              overflow: 'auto', // Enable horizontal scrolling
-              whiteSpace: 'pre',
-              '&::before': { content: 'none' },
-              '&::after': { content: 'none' },
-            },
-
-            '.highlighted': {
-              backgroundColor: theme('colors.foreground/5'),
-              paddingLeft: '1rem',
-              paddingRight: '1rem',
-              marginLeft: '-1rem',
-              marginRight: '-1rem',
-            },
-
-            '.word': {
-              backgroundColor: theme('colors.foreground/20'),
-              padding: '0.2em',
-              borderRadius: '0.25rem',
             },
 
             // Horizontal rules

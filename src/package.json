@@ -8,22 +8,23 @@
     "preview": "astro preview"
   },
   "devDependencies": {
-    "@astrojs/react": "^4.3.0",
+    "@astrojs/react": "^4.3.1",
     "@astrojs/tailwind": "^6.0.2",
     "@tailwindcss/typography": "^0.5.16",
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.6",
-    "astro": "^5.13.2",
+    "astro": "^5.13.7",
     "tailwindcss": "^3.4.17"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.4",
-    "@astrojs/node": "^9.4.2",
+    "@astrojs/mdx": "^4.3.5",
+    "@astrojs/node": "^9.4.3",
     "@astrojs/rss": "^4.0.12",
-    "@astrojs/sitemap": "^3.5.0",
+    "@astrojs/sitemap": "^3.5.1",
     "@giscus/react": "^3.1.0",
     "@pilcrowjs/object-parser": "^0.0.4",
     "@react-hook/intersection-observer": "^3.1.2",
+    "@rehype-pretty/transformers": "^0.13.2",
     "arctic": "^3.6.0",
     "lucide-react": "^0.468.0",
     "marked": "^15.0.8",
@@ -35,6 +36,7 @@
     "rehype-pretty-code": "^0.14.1",
     "rehype-slug": "^6.0.0",
     "schema-dts": "^1.1.5",
+    "shiki": "^3.12.2",
     "typewriter-effect": "^2.21.0",
     "unist-util-visit": "^5.0.0"
   }
