@@ -8,19 +8,19 @@
     "preview": "astro preview"
   },
   "devDependencies": {
-    "@astrojs/react": "^4.3.1",
+    "@astrojs/react": "^4.4.0",
     "@astrojs/tailwind": "^6.0.2",
     "@tailwindcss/typography": "^0.5.16",
     "@types/react": "^18.3.20",
     "@types/react-dom": "^18.3.6",
-    "astro": "^5.13.7",
+    "astro": "^5.14.1",
     "tailwindcss": "^3.4.17"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.5",
-    "@astrojs/node": "^9.4.3",
+    "@astrojs/mdx": "^4.3.6",
+    "@astrojs/node": "^9.4.4",
     "@astrojs/rss": "^4.0.12",
-    "@astrojs/sitemap": "^3.5.1",
+    "@astrojs/sitemap": "^3.6.0",
     "@giscus/react": "^3.1.0",
     "@pilcrowjs/object-parser": "^0.0.4",
     "@react-hook/intersection-observer": "^3.1.2",
