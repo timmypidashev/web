@@ -13,10 +13,10 @@ const { slug } = Astro.params;
 const posts = await getCollection("blog");
 const post = posts.find(post => post.slug === slug);
 
-if (!post) {
+if (!post || post.data.isDraft === true) {
   return new Response(null, {
     status: 404,
-    statusText: 'Not found'
+    statusText: "Not found"
   });
 }
 

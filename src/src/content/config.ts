@@ -12,6 +12,7 @@ export const collections = {
       }),
       image: z.string().optional(),
       imagePosition: z.string().optional(),
+      isDraft: z.boolean().optional()
     }),
   }),
   projects: defineCollection({
@@ -22,7 +23,7 @@ export const collections = {
       demoUrl: z.string().url().optional(),
       techStack: z.array(z.string()),
       date: z.string(),
-      image: z.string().optional(),
+      image: z.string().optional()
     }),
   })
 };
