@@ -3,7 +3,14 @@ import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async () => {
   const WAKATIME_API_KEY = import.meta.env.WAKATIME_API_KEY;
-  
+
+  if (!WAKATIME_API_KEY) {
+    return new Response(
+      JSON.stringify({ error: "WAKATIME_API_KEY not configured" }),
+      { status: 503, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
   try {
     const response = await fetch(
       'https://wakatime.com/api/v1/users/current/stats/last_7_days?timeout=15', {

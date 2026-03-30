@@ -8,7 +8,7 @@ import Timeline from "@/components/about/timeline";
 import CurrentFocus from "@/components/about/current-focus";
 import OutsideCoding from "@/components/about/outside-coding";
 ---
-<ContentLayout 
+<ContentLayout
   title="About | Timothy Pidashev"
   description="A software engineer passionate about the web, open source, and building innovative solutions."
 >
@@ -17,23 +17,23 @@ import OutsideCoding from "@/components/about/outside-coding";
       <Intro client:load />
     </section>
 
-    <section class="flex items-center justify-center py-16">
-      <AllTimeStats client:only="react" />
+    <section class="min-h-[60vh] flex items-center justify-center py-16">
+      <AllTimeStats client:load />
     </section>
 
-    <section class="flex items-center justify-center py-16">
-      <DetailedStats client:only="react" />
+    <section class="min-h-screen flex items-center justify-center py-16">
+      <DetailedStats client:load />
     </section>
-    
-    <section class="flex items-center justify-center py-16">
+
+    <section class="min-h-[80vh] flex items-center justify-center py-16">
       <Timeline client:load />
     </section>
 
-    <section class="flex items-center justify-center py-16">
+    <section class="min-h-[80vh] flex items-center justify-center py-16">
       <CurrentFocus client:load />
     </section>
 
-    <section class="flex items-center justify-center py-16">
+    <section class="min-h-[50vh] flex items-center justify-center py-16">
       <OutsideCoding client:load />
     </section>
   </div>

@@ -1,56 +1,98 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@/components/icons";
 
 export default function Intro() {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight && rect.bottom > 0;
+    const isReload = performance.getEntriesByType?.("navigation")?.[0]?.type === "reload";
+
+    if (inView && isReload) {
+      setVisible(true);
+      return;
+    }
+    if (inView) {
+      // Fresh navigation — animate in
+      requestAnimationFrame(() => setVisible(true));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const scrollToNext = () => {
     const nextSection = document.querySelector("section")?.nextElementSibling;
     if (nextSection) {
-      const offset = nextSection.offsetTop - (window.innerHeight - nextSection.offsetHeight) / 2; // Center the section
-      window.scrollTo({
-        top: offset,
-        behavior: "smooth"
-      });
+      const offset = (nextSection as HTMLElement).offsetTop - (window.innerHeight - (nextSection as HTMLElement).offsetHeight) / 2;
+      window.scrollTo({ top: offset, behavior: "smooth" });
     }
   };
 
+  const anim = (delay: number) =>
+    ({
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translateY(0)" : "translateY(20px)",
+      transition: `all 0.7s ease-out ${delay}ms`,
+    }) as React.CSSProperties;
+
   return (
-    <div className="w-full max-w-4xl px-4">
+    <div ref={ref} className="w-full max-w-4xl px-4">
       <div className="space-y-8 md:space-y-12">
         <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center gap-8 sm:gap-16">
-          <div className="w-32 h-32 sm:w-48 sm:h-48 shrink-0">
+          <div
+            className="w-32 h-32 sm:w-48 sm:h-48 shrink-0"
+            style={anim(0)}
+          >
             <img
               src="/me.jpeg"
               alt="Timothy Pidashev"
               className="rounded-lg object-cover w-full h-full ring-2 ring-yellow-bright hover:ring-orange-bright transition-all duration-300"
             />
           </div>
-          <div className="text-center sm:text-left space-y-4 sm:space-y-6">
+          <div className="text-center sm:text-left space-y-4 sm:space-y-6" style={anim(150)}>
             <h2 className="text-xl sm:text-5xl font-bold text-yellow-bright">
               Timothy Pidashev
             </h2>
             <div className="text-sm sm:text-xl text-foreground/70 space-y-2 sm:space-y-3">
-              <p className="flex items-center justify-center font-bold sm:justify-start gap-2">
+              <p className="flex items-center justify-center font-bold sm:justify-start gap-2" style={anim(300)}>
                 <span className="text-blue">Software Systems Engineer</span>
               </p>
-              <p className="flex items-center justify-center font-bold sm:justify-start gap-2">
+              <p className="flex items-center justify-center font-bold sm:justify-start gap-2" style={anim(450)}>
                 <span className="text-green">Open Source Enthusiast</span>
               </p>
-              <p className="flex items-center justify-center font-bold sm:justify-start gap-2">
+              <p className="flex items-center justify-center font-bold sm:justify-start gap-2" style={anim(600)}>
                 <span className="text-yellow">Coffee Connoisseur</span>
               </p>
             </div>
           </div>
         </div>
-        <div className="space-y-8">
+        <div className="space-y-8" style={anim(750)}>
           <p className="text-foreground/80 text-center text-base sm:text-2xl italic max-w-3xl mx-auto font-medium">
-            "Turning coffee into code" isn't just a clever phrase – 
+            "Turning coffee into code" isn't just a clever phrase –
             <span className="text-aqua-bright"> it's how I approach each project:</span>
             <span className="text-purple-bright"> methodically,</span>
             <span className="text-blue-bright"> with attention to detail,</span>
             <span className="text-green-bright"> and a refined process.</span>
           </p>
-          <div className="flex justify-center">
-            <button 
+          <div className="flex justify-center" style={anim(900)}>
+            <button
               onClick={scrollToNext}
               className="text-foreground/50 hover:text-yellow-bright transition-colors duration-300"
               aria-label="Scroll to next section"

@@ -383,13 +383,20 @@ const Background: React.FC<BackgroundProps> = ({
 
   const handleMouseDown = (e: MouseEvent) => {
     if (!gridRef.current || !canvasRef.current) return;
-    
+
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
+
+    // Ignore clicks outside the canvas bounds
+    if (mouseX < 0 || mouseX > rect.width || mouseY < 0 || mouseY > rect.height) return;
+
+    // Prevent text selection when interacting with the canvas
+    e.preventDefault();
+
     const cellSize = getCellSize();
-    
+
     mouseRef.current.isDown = true;
     mouseRef.current.lastClickTime = Date.now();
     
@@ -523,11 +530,10 @@ const Background: React.FC<BackgroundProps> = ({
       gridRef.current = initGrid(displayWidth, displayHeight);
     }
 
-    // Add mouse event listeners
-    canvas.addEventListener('mousedown', handleMouseDown, { signal });
-    canvas.addEventListener('mousemove', handleMouseMove, { signal });
-    canvas.addEventListener('mouseup', handleMouseUp, { signal });
-    canvas.addEventListener('mouseleave', handleMouseLeave, { signal });
+    // Bind to window so mouse events work even when content overlays the canvas
+    window.addEventListener('mousedown', handleMouseDown, { signal });
+    window.addEventListener('mousemove', handleMouseMove, { signal });
+    window.addEventListener('mouseup', handleMouseUp, { signal });
 
     const handleVisibilityChange = () => {
       if (document.hidden) {

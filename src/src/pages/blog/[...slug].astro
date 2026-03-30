@@ -65,7 +65,7 @@ const jsonLd = {
   <div class="relative max-w-8xl mx-auto">
     <article class="prose prose-invert prose-lg mx-auto max-w-4xl">
       {post.data.image && (
-        <div class="-mx-4 sm:mx-0 mb-8">
+        <div class="-mx-4 sm:mx-0 mb-4">
           <Image
             src={post.data.image}
             alt={post.data.title}
@@ -76,20 +76,18 @@ const jsonLd = {
           />
         </div>
       )}
-      <h1 class="text-3xl pt-4">{post.data.title}</h1>
-      <p class="lg:text-2xl sm:text-lg">{post.data.description}</p>
-      <div class="mt-4 md:mt-6">
-        <div class="flex flex-wrap items-center gap-2 md:gap-3 text-sm md:text-base text-foreground/80">
-          <span class="text-orange">{post.data.author}</span>
-          <span class="text-foreground/50">•</span>
-          <time dateTime={post.data.date instanceof Date ? post.data.date.toISOString() : post.data.date} class="text-blue">
-            {formattedDate}
-          </time>
-        </div>
+      <h1 class="text-3xl !mt-2 !mb-2">{post.data.title}</h1>
+      <p class="lg:text-2xl sm:text-lg !mt-0 !mb-3">{post.data.description}</p>
+      <div class="flex flex-wrap items-center gap-2 md:gap-3 text-sm md:text-base text-foreground/80">
+        <span class="text-orange">{post.data.author}</span>
+        <span class="text-foreground/50">•</span>
+        <time dateTime={post.data.date instanceof Date ? post.data.date.toISOString() : post.data.date} class="text-blue">
+          {formattedDate}
+        </time>
       </div>
-      <div class="flex flex-wrap gap-2 mt-4 md:mt-6">
+      <div class="flex flex-wrap gap-2 mt-2">
         {post.data.tags.map((tag) => (
-          <span 
+          <span
             class="text-xs md:text-base text-aqua hover:text-aqua-bright transition-colors duration-200"
             onclick={`window.location.href='/blog/tag/${tag}'`}
           >

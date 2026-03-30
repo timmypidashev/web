@@ -1,35 +1,66 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Clock, CalendarClock, CodeXml, Computer } from "lucide-react";
-
 import { ActivityGrid } from "@/components/about/stats-activity";
 
 const DetailedStats = () => {
-  const [stats, setStats] = useState(null);
-  const [activity, setActivity] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [stats, setStats] = useState<any>(null);
+  const [activity, setActivity] = useState<any>(null);
+  const [error, setError] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [skipAnim, setSkipAnim] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/wakatime/detailed")
-      .then(res => res.json())
-      .then(data => {
-        setStats(data.data);
-        setIsVisible(true);
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
       })
-      .catch(error => {
-        console.error("Error fetching stats:", error);
-      });
+      .then((data) => setStats(data.data))
+      .catch(() => setError(true));
 
-     fetch("/api/wakatime/activity")
-      .then(res => res.json())
-      .then(data => {
-        setActivity(data.data);
+    fetch("/api/wakatime/activity")
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
       })
-      .catch(error => {
-        console.error("Error fetching activity:", error);
-      });
+      .then((data) => setActivity(data.data))
+      .catch(() => {});
   }, []);
 
-  if (!stats) return null;
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight && rect.bottom > 0;
+    const isReload = performance.getEntriesByType?.("navigation")?.[0]?.type === "reload";
+
+    if (inView && isReload) {
+      setSkipAnim(true);
+      setVisible(true);
+      return;
+    }
+    if (inView) {
+      requestAnimationFrame(() => setVisible(true));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: "-15% 0px" }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [stats]);
+
+  if (error) return null;
 
   const progressColors = [
     "bg-red-bright",
@@ -38,138 +69,163 @@ const DetailedStats = () => {
     "bg-green-bright",
     "bg-blue-bright",
     "bg-purple-bright",
-    "bg-aqua-bright"
+    "bg-aqua-bright",
   ];
 
+  const statCards = stats
+    ? [
+        {
+          title: "Total Time",
+          value: `${Math.round((stats.total_seconds / 3600) * 10) / 10}`,
+          unit: "hours",
+          subtitle: "this week",
+          color: "text-yellow-bright",
+          borderHover: "hover:border-yellow-bright/50",
+          icon: Clock,
+          iconColor: "stroke-yellow-bright",
+        },
+        {
+          title: "Daily Average",
+          value: `${Math.round((stats.daily_average / 3600) * 10) / 10}`,
+          unit: "hours",
+          subtitle: "per day",
+          color: "text-orange-bright",
+          borderHover: "hover:border-orange-bright/50",
+          icon: CalendarClock,
+          iconColor: "stroke-orange-bright",
+        },
+        {
+          title: "Primary Editor",
+          value: stats.editors?.[0]?.name || "None",
+          unit: `${Math.round(stats.editors?.[0]?.percent || 0)}%`,
+          subtitle: "of the time",
+          color: "text-blue-bright",
+          borderHover: "hover:border-blue-bright/50",
+          icon: CodeXml,
+          iconColor: "stroke-blue-bright",
+        },
+        {
+          title: "Operating System",
+          value: stats.operating_systems?.[0]?.name || "None",
+          unit: `${Math.round(stats.operating_systems?.[0]?.percent || 0)}%`,
+          subtitle: "of the time",
+          color: "text-green-bright",
+          borderHover: "hover:border-green-bright/50",
+          icon: Computer,
+          iconColor: "stroke-green-bright",
+        },
+      ]
+    : [];
+
+  const languages =
+    stats?.languages?.slice(0, 7).map((lang: any, index: number) => ({
+      name: lang.name,
+      percent: Math.round(lang.percent),
+      time: Math.round((lang.total_seconds / 3600) * 10) / 10 + " hrs",
+      color: progressColors[index % progressColors.length],
+    })) || [];
+
   return (
-    <div className="flex flex-col gap-10 md:py-32 w-full max-w-[1200px] mx-auto px-4">
-      <h2 className="text-2xl md:text-4xl font-bold text-center text-yellow-bright">
-        Weekly Statistics
-      </h2>
+    <div ref={containerRef} className="flex flex-col gap-10 md:py-32 w-full max-w-[1200px] mx-auto px-4 min-h-[50vh]">
+      {!stats ? null : (
+        <>
+          {/* Header */}
+          <h2
+            className={`text-2xl md:text-4xl font-bold text-center text-yellow-bright ${skipAnim ? "" : "transition-all duration-700 ease-out"}`}
+            style={skipAnim ? {} : {
+              opacity: visible ? 1 : 0,
+              transform: visible ? "translateY(0)" : "translateY(20px)",
+            }}
+          >
+            Weekly Statistics
+          </h2>
 
-      {/* Top Stats Grid */}
-      <div className={`
-        grid grid-cols-1 md:grid-cols-2 gap-8
-        transition-all duration-700 transform
-        ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}
-      `}>
-        {/* Total Time */}
-        <StatsCard
-          title="Total Time"
-          value={`${Math.round(stats.total_seconds / 3600 * 10) / 10}`}
-          unit="hours"
-          subtitle="this week"
-          color="text-yellow-bright"
-          icon={Clock}
-          iconColor="stroke-yellow-bright"
-        />
+          {/* Stat Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {statCards.map((card, i) => {
+              const Icon = card.icon;
+              return (
+                <div
+                  key={card.title}
+                  className={`bg-background border border-foreground/10 rounded-lg p-6 ${card.borderHover} ${skipAnim ? "" : "transition-all duration-500 ease-out"}`}
+                  style={skipAnim ? {} : {
+                    transitionDelay: `${150 + i * 100}ms`,
+                    opacity: visible ? 1 : 0,
+                    transform: visible ? "translateY(0)" : "translateY(24px)",
+                  }}
+                >
+                  <div className="flex gap-4 items-center">
+                    <div className="p-3 rounded-lg bg-foreground/5">
+                      <Icon className={`w-6 h-6 ${card.iconColor}`} strokeWidth={1.5} />
+                    </div>
+                    <div className="flex flex-col">
+                      <div className={`${card.color} text-sm mb-1`}>{card.title}</div>
+                      <div className="flex items-baseline gap-2">
+                        <div className="text-2xl font-bold">{card.value}</div>
+                        <div className="text-lg opacity-80">{card.unit}</div>
+                      </div>
+                      <div className="text-xs opacity-50 mt-0.5">{card.subtitle}</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
 
-        {/* Daily Average */}
-        <StatsCard
-          title="Daily Average"
-          value={`${Math.round(stats.daily_average / 3600 * 10) / 10}`}
-          unit="hours"
-          subtitle="per day"
-          color="text-orange-bright"
-          icon={CalendarClock}
-          iconColor="stroke-orange-bright"
-        />
+          {/* Languages */}
+          <div
+            className={`bg-background border border-foreground/10 rounded-lg p-6 hover:border-purple-bright/50 ${skipAnim ? "" : "transition-all duration-700 ease-out"}`}
+            style={skipAnim ? {} : {
+              transitionDelay: "550ms",
+              opacity: visible ? 1 : 0,
+              transform: visible ? "translateY(0)" : "translateY(24px)",
+            }}
+          >
+            <div className="text-purple-bright mb-6 text-lg">Languages</div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5">
+              {languages.map((lang: any, i: number) => (
+                <div key={lang.name} className="flex flex-col gap-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium">{lang.name}</span>
+                    <span className="text-sm opacity-70 tabular-nums">{lang.time}</span>
+                  </div>
+                  <div className="flex gap-3 items-center">
+                    <div className="flex-grow h-2 bg-foreground/5 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full ${lang.color} rounded-full`}
+                        style={{
+                          width: visible ? `${lang.percent}%` : "0%",
+                          opacity: 0.85,
+                          transition: skipAnim ? "none" : `width 1s ease-out ${700 + i * 80}ms`,
+                        }}
+                      />
+                    </div>
+                    <span className="text-xs text-foreground/50 min-w-[36px] text-right tabular-nums">
+                      {lang.percent}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-        {/* Editors */}
-        <StatsCard
-          title="Primary Editor"
-          value={stats.editors?.[0]?.name || "None"}
-          unit={`${Math.round(stats.editors?.[0]?.percent || 0)}%`}
-          subtitle="of the time"
-          color="text-blue-bright"
-          icon={CodeXml}
-          iconColor="stroke-blue-bright"
-        />
-
-        {/* OS */}
-        <StatsCard
-          title="Operating System"
-          value={stats.operating_systems?.[0]?.name || "None"}
-          unit={`${Math.round(stats.operating_systems?.[0]?.percent || 0)}%`}
-          subtitle="of the time"
-          color="text-green-bright"
-          icon={Computer}
-          iconColor="stroke-green-bright"
-        />
-      </div>
-
-      {/* Languages */}
-      <div className={`
-        transition-all duration-700 delay-200 transform
-        ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}
-      `}>
-        <DetailCard
-          title="Languages"
-          items={stats.languages?.slice(0, 7).map((lang, index) => ({
-            name: lang.name,
-            value: Math.round(lang.percent) + '%',
-            time: Math.round(lang.total_seconds / 3600 * 10) / 10 + ' hrs',
-            color: progressColors[index % progressColors.length]
-          })) || []}
-          titleColor="text-purple-bright"
-        />
-        
-        {/* Activity Grid */}
-        {activity && (
-        <div className={`
-          transition-all duration-700 delay-300 transform
-          ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}
-        `}>
-          <ActivityGrid data={activity} />
-        </div>
+          {/* Activity Grid */}
+          {activity && (
+            <div
+              className={skipAnim ? "" : "transition-all duration-700 ease-out"}
+              style={skipAnim ? {} : {
+                transitionDelay: "750ms",
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(24px)",
+              }}
+            >
+              <ActivityGrid data={activity} />
+            </div>
+          )}
+        </>
       )}
-      </div>
     </div>
   );
 };
-
-const StatsCard = ({ title, value, unit, subtitle, color, icon: Icon, iconColor }) => (
-  <div className="bg-background border border-foreground/10 rounded-lg p-6 hover:border-yellow transition-colors flex items-center justify-center">
-    <div className="flex gap-3 items-center">
-      <Icon className={`w-6 h-6 ${iconColor}`} strokeWidth={1.5} />
-      <div className="flex flex-col items-center">
-        <div className={`${color} text-lg mb-1`}>{title}</div>
-        <div className="flex items-baseline gap-2">
-          <div className="text-2xl font-bold">{value}</div>
-          <div className="text-lg opacity-80">{unit}</div>
-        </div>
-        <div className="text-sm opacity-60 mt-1">{subtitle}</div>
-      </div>
-    </div>
-  </div>
-);
-
-const DetailCard = ({ title, items, titleColor }) => (
-  <div className="bg-background border border-foreground/10 rounded-lg p-6 hover:border-yellow transition-colors">
-    <div className={`${titleColor} mb-6 text-lg`}>{title}</div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
-      {items.map((item) => (
-        <div key={item.name} className="flex flex-col gap-2">
-          <div className="flex justify-between items-center">
-            <span className="text-base font-medium">{item.name}</span>
-            <span className="text-base opacity-80">{item.value}</span>
-          </div>
-          <div className="flex gap-3 items-center">
-            <div className="flex-grow h-2 bg-foreground/5 rounded-full overflow-hidden">
-              <div 
-                className={`h-full ${item.color} rounded-full transition-all duration-1000`}
-                style={{ 
-                  width: item.value,
-                  opacity: '0.8'
-                }}
-              />
-            </div>
-            <span className="text-sm text-foreground/60 min-w-[70px] text-right">{item.time}</span>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-);
 
 export default DetailedStats;
