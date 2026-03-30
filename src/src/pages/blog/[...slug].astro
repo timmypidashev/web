@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import { Image } from "astro:assets";
 import ContentLayout from "@/layouts/content.astro";
 import { getArticleSchema } from "@/lib/structuredData";
@@ -11,9 +11,9 @@ const { slug } = Astro.params;
 
 // Fetch blog posts
 const posts = await getCollection("blog");
-const post = posts.find(post => post.slug === slug);
+const post = posts.find(post => post.id === slug);
 
-if (!post || post.data.isDraft === true) {
+if (!post || (!import.meta.env.DEV && post.data.isDraft === true)) {
   return new Response(null, {
     status: 404,
     statusText: "Not found"
@@ -21,7 +21,7 @@ if (!post || post.data.isDraft === true) {
 }
 
 // Dynamically render the content
-const { Content } = await post.render();
+const { Content } = await render(post);
 
 // Format the date
 const formattedDate = new Date(post.data.date).toLocaleDateString("en-US", {
@@ -46,7 +46,7 @@ const breadcrumbsStructuredData = {
       "@type": "ListItem",
       position: 2,
       name: post.data.title,
-      item: `${import.meta.env.SITE}/blog/${post.slug}/`,
+      item: `${import.meta.env.SITE}/blog/${post.id}/`,
     },
   ],
 };

@@ -1,7 +1,7 @@
 ---
 export const prerender = true;
 
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 
 import ContentLayout from "@/layouts/content.astro";
 import { Comments } from "@/components/blog/comments";
@@ -9,13 +9,13 @@ import { Comments } from "@/components/blog/comments";
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
   return projects.map(project => ({
-    params: { slug: project.slug },
+    params: { slug: project.id },
     props: { project },
   }));
 }
 
 const { project } = Astro.props;
-const { Content } = await project.render();
+const { Content } = await render(project);
 ---
 
 <ContentLayout title={`${project.data.title} | Timothy Pidashev`}>

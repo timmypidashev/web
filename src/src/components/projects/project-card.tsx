@@ -11,7 +11,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <article className="group relative h-full">
       <a 
-        href={`/projects/${project.slug}`}
+        href={`/projects/${project.id}`}
         className="block rounded-lg border-2 border-foreground/20 
                  hover:border-blue transition-all duration-300 
                  bg-background overflow-hidden h-full flex flex-col"

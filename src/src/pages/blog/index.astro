@@ -5,7 +5,7 @@ import { BlogHeader } from "@/components/blog/header";
 import { BlogPostList } from "@/components/blog/post-list";
 
 const posts = (await getCollection("blog", ({ data }) => {
-  return data.isDraft !== true;
+  return import.meta.env.DEV || data.isDraft !== true;
 })).sort((a, b) => {
   return b.data.date.valueOf() - a.data.date.valueOf()
 }).map(post => ({

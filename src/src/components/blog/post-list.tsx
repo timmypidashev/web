@@ -1,7 +1,7 @@
 import React from "react";
 
 type BlogPost = {
-  slug: string;
+  id: string;
   data: {
     title: string;
     author: string;
@@ -30,9 +30,9 @@ export const BlogPostList = ({ posts }: BlogPostListProps) => {
     <div className="w-full max-w-6xl mx-auto"> 
       <ul className="space-y-6 md:space-y-10">
         {posts.map((post) => (
-          <li key={post.slug} className="group px-4 md:px-0">
+          <li key={post.id} className="group px-4 md:px-0">
             <a 
-              href={`/blog/${post.slug}`}
+              href={`/blog/${post.id}`}
               className="block"
             >
               <article className="flex flex-col md:flex-row gap-4 md:gap-8 pb-6 md:pb-10 border-b border-foreground/20 last:border-b-0 p-2 md:p-4 rounded-lg group-hover:outline group-hover:outline-2 group-hover:outline-purple transition-all duration-200">

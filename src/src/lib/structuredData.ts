@@ -41,7 +41,7 @@ export function getArticleSchema(post: CollectionEntry<"blog">) {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.data.title,
-    url: `${import.meta.env.SITE}/blog/${post.slug}/`,
+    url: `${import.meta.env.SITE}/blog/${post.id}/`,
     description: post.data.excerpt,
     datePublished: post.data.date.toString(),
     publisher: {

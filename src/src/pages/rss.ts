@@ -16,11 +16,11 @@ export async function GET(context: APIContext) {
       title: post.data.title,
       pubDate: post.data.date,
       description: post.data.description,
-      link: `/blog/${post.slug}/`,
+      link: `/blog/${post.id}/`,
       author: post.data.author,
       categories: post.data.tags,
       enclosure: post.data.image ? {
-        url: new URL(`blog/${post.slug}/thumbnail.png`, context.site).toString(),
+        url: new URL(`blog/${post.id}/thumbnail.png`, context.site).toString(),
         type: 'image/jpeg',
         length: 0
       } : undefined
