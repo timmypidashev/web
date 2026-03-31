@@ -2,13 +2,12 @@
 import { getCollection } from "astro:content";
 import ContentLayout from "@/layouts/content.astro";
 import { BlogHeader } from "@/components/blog/header";
-import TagList from "@/components/blog/tag-list";
+import { BlogPostList } from "@/components/blog/post-list";
+import { getAllViews } from "@/lib/views";
 
 const posts = (await getCollection("blog", ({ data }) => {
   return import.meta.env.DEV || data.isDraft !== true;
-})).sort((a, b) => {
-  return b.data.date.valueOf() - a.data.date.valueOf()
-}).map(post => ({
+})).map(post => ({
   ...post,
   data: {
     ...post.data,
@@ -19,11 +18,15 @@ const posts = (await getCollection("blog", ({ data }) => {
     })
   }
 }));
+
+// Get view counts and sort by popularity
+const views = await getAllViews(posts.map(p => p.id));
+const sorted = [...posts].sort((a, b) => (views[b.id] || 0) - (views[a.id] || 0));
 ---
 <ContentLayout
-  title="Browse Tags | Blog | Timothy Pidashev"
-  description="Browse blog posts by tag."
+  title="Most Popular | Blog | Timothy Pidashev"
+  description="Most popular blog posts by view count."
 >
   <BlogHeader client:load />
-  <TagList posts={posts} client:load />
+  <BlogPostList posts={sorted} client:load />
 </ContentLayout>

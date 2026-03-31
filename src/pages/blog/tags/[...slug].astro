@@ -1,0 +1,38 @@
+---
+import { getCollection } from "astro:content";
+import ContentLayout from "@/layouts/content.astro";
+import TaggedPosts from "@/components/blog/tagged-posts";
+
+const { slug } = Astro.params;
+const tag = decodeURIComponent(slug || "");
+
+if (!tag) {
+  return Astro.redirect("/blog/tags");
+}
+
+const filteredPosts = (await getCollection("blog", ({ data }) => {
+  return (import.meta.env.DEV || data.isDraft !== true) && data.tags.includes(tag);
+})).sort((a, b) => {
+  return b.data.date.valueOf() - a.data.date.valueOf();
+}).map(post => ({
+  ...post,
+  data: {
+    ...post.data,
+    date: post.data.date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    })
+  }
+}));
+
+if (filteredPosts.length === 0) {
+  return Astro.redirect("/blog/tags");
+}
+---
+<ContentLayout
+  title={`#${tag} | Blog | Timothy Pidashev`}
+  description={`Blog posts tagged with "${tag}".`}
+>
+  <TaggedPosts tag={tag} posts={filteredPosts} client:load />
+</ContentLayout>

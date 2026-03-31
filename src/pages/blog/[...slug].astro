@@ -5,6 +5,7 @@ import ContentLayout from "@/layouts/content.astro";
 import { getArticleSchema } from "@/lib/structuredData";
 import { blogWebsite } from "@/lib/structuredData";
 import { Comments } from "@/components/blog/comments";
+import { incrementViews, getViews } from "@/lib/views";
 
 // This is a dynamic route in SSR mode
 const { slug } = Astro.params;
@@ -18,6 +19,14 @@ if (!post || (!import.meta.env.DEV && post.data.isDraft === true)) {
     status: 404,
     statusText: "Not found"
   });
+}
+
+// Track page view and get count
+let views = 0;
+if (!import.meta.env.DEV) {
+  views = await incrementViews(post.id);
+} else {
+  views = await getViews(post.id);
 }
 
 // Dynamically render the content
@@ -84,12 +93,18 @@ const jsonLd = {
         <time dateTime={post.data.date instanceof Date ? post.data.date.toISOString() : post.data.date} class="text-blue">
           {formattedDate}
         </time>
+        {views > 0 && (
+          <>
+            <span class="text-foreground/50">•</span>
+            <span class="text-green">{views.toLocaleString()} view{views !== 1 ? "s" : ""}</span>
+          </>
+        )}
       </div>
       <div class="flex flex-wrap gap-2 mt-2">
         {post.data.tags.map((tag) => (
           <span
             class="text-xs md:text-base text-aqua hover:text-aqua-bright transition-colors duration-200"
-            onclick={`window.location.href='/blog/tag/${tag}'`}
+            onclick={`window.location.href='/blog/tags/${encodeURIComponent(tag)}'`}
           >
             #{tag}
           </span>
