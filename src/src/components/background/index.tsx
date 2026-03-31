@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { GameOfLifeEngine } from "./engines/game-of-life";
 import { LavaLampEngine } from "./engines/lava-lamp";
+import { ConfettiEngine } from "./engines/confetti";
 import { getStoredAnimationId } from "@/lib/animations/engine";
 import type { AnimationEngine } from "@/lib/animations/types";
 import type { AnimationId } from "@/lib/animations";
@@ -16,6 +17,8 @@ function createEngine(id: AnimationId): AnimationEngine {
   switch (id) {
     case "lava-lamp":
       return new LavaLampEngine();
+    case "confetti":
+      return new ConfettiEngine();
     case "game-of-life":
     default:
       return new GameOfLifeEngine();
