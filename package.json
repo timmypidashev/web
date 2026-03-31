@@ -1,6 +1,6 @@
 {
-  "name": "src",
-  "version": "2.1.1",
+  "name": "timmypidashev-web",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "dev": "astro dev --host",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.3",
-    "@astrojs/node": "^10.0.4",
+    "@astrojs/vercel": "^10.0.3",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
     "@giscus/react": "^3.1.0",
