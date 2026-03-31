@@ -16,7 +16,7 @@ interface ConfettiParticle {
   burst: boolean;
 }
 
-const BASE_CONFETTI = 350;
+const BASE_CONFETTI = 385;
 const BASE_AREA = 1920 * 1080;
 const PI_2 = 2 * Math.PI;
 const TARGET_FPS = 60;
@@ -45,6 +45,7 @@ export class ConfettiEngine implements AnimationEngine {
   private mouseY = -1000;
   private mouseXNorm = 0.5;
   private elapsed = 0;
+  private exiting = false;
 
   init(
     width: number,
@@ -58,6 +59,30 @@ export class ConfettiEngine implements AnimationEngine {
     this.elapsed = 0;
     this.mouseXNorm = 0.5;
     this.initParticles();
+  }
+
+  beginExit(): void {
+    if (this.exiting) return;
+    this.exiting = true;
+
+    // Stagger fade-out over 3 seconds
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
+      p.staggerDelay = -1; // ensure visible
+      // Random delay before fade starts, stored as negative dop
+      const delay = Math.random() * 3000;
+      setTimeout(() => {
+        p.dop = -0.02;
+      }, delay);
+    }
+  }
+
+  isExitComplete(): boolean {
+    if (!this.exiting) return false;
+    for (let i = 0; i < this.particles.length; i++) {
+      if (this.particles[i].opacity > 0.01) return false;
+    }
+    return true;
   }
 
   cleanup(): void {
@@ -140,15 +165,18 @@ export class ConfettiEngine implements AnimationEngine {
       p.x += p.vx * dt;
       p.y += p.vy * dt;
 
-      // Fade in only (no fade-out cycle)
-      if (p.opacity < 1) {
+      // Fade in, or fade out during exit
+      if (this.exiting && p.dop < 0) {
+        p.opacity += p.dop * dt;
+        if (p.opacity < 0) p.opacity = 0;
+      } else if (p.opacity < 1) {
         p.opacity += Math.abs(p.dop) * dt;
         if (p.opacity > 1) p.opacity = 1;
       }
 
-      // Past the bottom: burst particles get removed, base particles recycle
+      // Past the bottom: burst particles removed, base particles recycle (or remove during exit)
       if (p.y > this.height + p.r) {
-        if (p.burst) {
+        if (p.burst || this.exiting) {
           this.particles.splice(i, 1);
           i--;
         } else {
@@ -230,7 +258,7 @@ export class ConfettiEngine implements AnimationEngine {
       }
 
       // Main circle
-      ctx.globalAlpha = p.opacity * 0.9;
+      ctx.globalAlpha = p.opacity;
       ctx.fillStyle = `rgb(${r},${g},${b})`;
       ctx.beginPath();
       ctx.arc(drawX, drawY, p.r, 0, PI_2);
@@ -254,29 +282,8 @@ export class ConfettiEngine implements AnimationEngine {
   handleResize(width: number, height: number): void {
     this.width = width;
     this.height = height;
-    const target = this.getParticleCount();
-    while (this.particles.length < target) {
-      const baseColor = this.randomColor();
-      const r = ~~range(3, 8);
-      this.particles.push({
-        x: range(-r * 2, width - r * 2),
-        y: range(-20, height - r * 2),
-        vx: (range(0, 2) + 8 * 0.5 - 5) * SPEED_FACTOR,
-        vy: (0.7 * r + range(-1, 1)) * SPEED_FACTOR,
-        r,
-        color: [...baseColor],
-        baseColor,
-        opacity: 0,
-        dop: 0.03 * range(1, 4) * SPEED_FACTOR,
-        elevation: 0,
-        targetElevation: 0,
-        staggerDelay: -1,
-        burst: false,
-      });
-    }
-    if (this.particles.length > target) {
-      this.particles.length = target;
-    }
+    this.elapsed = 0;
+    this.initParticles();
   }
 
   handleMouseMove(x: number, y: number, _isDown: boolean): void {
@@ -303,7 +310,7 @@ export class ConfettiEngine implements AnimationEngine {
         color: [...baseColor],
         baseColor,
         opacity: 1,
-        dop: 0,
+        dop: this.exiting ? -0.02 : 0,
         elevation: 0,
         targetElevation: 0,
         staggerDelay: -1,
@@ -322,8 +329,8 @@ export class ConfettiEngine implements AnimationEngine {
 
   updatePalette(palette: [number, number, number][], _bgColor: string): void {
     this.palette = palette;
-    for (const p of this.particles) {
-      p.baseColor = palette[Math.floor(Math.random() * palette.length)];
+    for (let i = 0; i < this.particles.length; i++) {
+      this.particles[i].baseColor = palette[i % palette.length];
     }
   }
 }

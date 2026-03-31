@@ -59,6 +59,7 @@ export class GameOfLifeEngine implements AnimationEngine {
   private pendingTimeouts: ReturnType<typeof setTimeout>[] = [];
   private canvasWidth = 0;
   private canvasHeight = 0;
+  private exiting = false;
 
   init(
     width: number,
@@ -278,13 +279,60 @@ export class GameOfLifeEngine implements AnimationEngine {
     }
   }
 
+  beginExit(): void {
+    if (this.exiting || !this.grid) return;
+    this.exiting = true;
+
+    // Cancel all pending GOL transitions so they don't revive cells
+    for (const id of this.pendingTimeouts) {
+      clearTimeout(id);
+    }
+    this.pendingTimeouts = [];
+
+    const grid = this.grid;
+    for (let i = 0; i < grid.cols; i++) {
+      for (let j = 0; j < grid.rows; j++) {
+        const cell = grid.cells[i][j];
+        // Force cell into dying state, clear any pending transition
+        cell.next = false;
+        cell.transitioning = false;
+        cell.transitionComplete = false;
+
+        if (cell.opacity > 0.01) {
+          const delay = Math.random() * 3000;
+          const tid = setTimeout(() => {
+            cell.targetOpacity = 0;
+            cell.targetScale = 0;
+            cell.targetElevation = 0;
+          }, delay);
+          this.pendingTimeouts.push(tid);
+        }
+      }
+    }
+  }
+
+  isExitComplete(): boolean {
+    if (!this.exiting) return false;
+    if (!this.grid) return true;
+
+    const grid = this.grid;
+    for (let i = 0; i < grid.cols; i++) {
+      for (let j = 0; j < grid.rows; j++) {
+        if (grid.cells[i][j].opacity > 0.01) return false;
+      }
+    }
+    return true;
+  }
+
   update(deltaTime: number): void {
     if (!this.grid) return;
 
-    this.timeAccumulator += deltaTime;
-    if (this.timeAccumulator >= CYCLE_TIME) {
-      this.computeNextState(this.grid);
-      this.timeAccumulator -= CYCLE_TIME;
+    if (!this.exiting) {
+      this.timeAccumulator += deltaTime;
+      if (this.timeAccumulator >= CYCLE_TIME) {
+        this.computeNextState(this.grid);
+        this.timeAccumulator -= CYCLE_TIME;
+      }
     }
 
     this.updateCellAnimations(this.grid, deltaTime);
@@ -335,7 +383,15 @@ export class GameOfLifeEngine implements AnimationEngine {
           cell.targetElevation = 0;
         }
 
-        if (cell.transitioning) {
+        // During exit: snap to zero once close enough
+        if (this.exiting) {
+          if (cell.opacity < 0.05) {
+            cell.opacity = 0;
+            cell.scale = 0;
+            cell.elevation = 0;
+            cell.alive = false;
+          }
+        } else if (cell.transitioning) {
           if (!cell.next && cell.opacity < 0.01 && cell.scale < 0.01) {
             cell.alive = false;
             cell.transitioning = false;
@@ -532,7 +588,7 @@ export class GameOfLifeEngine implements AnimationEngine {
     this.mouseY = y;
     this.mouseIsDown = isDown;
 
-    if (isDown && this.grid) {
+    if (isDown && this.grid && !this.exiting) {
       const grid = this.grid;
       const cellSize = this.getCellSize();
       const cellX = Math.floor((x - grid.offsetX) / cellSize);
@@ -560,7 +616,7 @@ export class GameOfLifeEngine implements AnimationEngine {
   handleMouseDown(x: number, y: number): void {
     this.mouseIsDown = true;
 
-    if (!this.grid) return;
+    if (!this.grid || this.exiting) return;
     const grid = this.grid;
     const cellSize = this.getCellSize();
 
@@ -605,8 +661,7 @@ export class GameOfLifeEngine implements AnimationEngine {
         for (let j = 0; j < grid.rows; j++) {
           const cell = grid.cells[i][j];
           if (cell.alive && cell.opacity > 0.01) {
-            cell.baseColor =
-              palette[Math.floor(Math.random() * palette.length)];
+            cell.baseColor = palette[(i * grid.rows + j) % palette.length];
           }
         }
       }

@@ -29,5 +29,9 @@ export interface AnimationEngine {
 
   updatePalette(palette: [number, number, number][], bgColor: string): void;
 
+  beginExit(): void;
+
+  isExitComplete(): boolean;
+
   cleanup(): void;
 }

@@ -11,7 +11,7 @@ const LABELS: Record<string, string> = {
 
 export default function ThemeSwitcher() {
   const [hovering, setHovering] = useState(false);
-  const [nextLabel, setNextLabel] = useState("");
+  const [currentLabel, setCurrentLabel] = useState("");
 
   const maskRef = useRef<HTMLDivElement>(null);
   const animatingRef = useRef(false);
@@ -19,13 +19,13 @@ export default function ThemeSwitcher() {
 
   useEffect(() => {
     committedRef.current = getStoredThemeId();
-    setNextLabel(LABELS[getNextTheme(committedRef.current).id] ?? "");
+    setCurrentLabel(LABELS[committedRef.current] ?? "");
 
     const handleSwap = () => {
       const id = getStoredThemeId();
       applyTheme(id);
       committedRef.current = id;
-      setNextLabel(LABELS[getNextTheme(id).id] ?? "");
+      setCurrentLabel(LABELS[id] ?? "");
     };
 
     document.addEventListener("astro:after-swap", handleSwap);
@@ -54,7 +54,7 @@ export default function ThemeSwitcher() {
     const next = getNextTheme(committedRef.current);
     applyTheme(next.id);
     committedRef.current = next.id;
-    setNextLabel(LABELS[getNextTheme(next.id).id] ?? "");
+    setCurrentLabel(LABELS[next.id] ?? "");
 
     mask.offsetHeight;
 
@@ -84,7 +84,7 @@ export default function ThemeSwitcher() {
           className="text-foreground font-bold text-sm select-none transition-opacity duration-200"
           style={{ opacity: hovering ? 0.8 : 0.15 }}
         >
-          {nextLabel}
+          {currentLabel}
         </span>
       </div>
 

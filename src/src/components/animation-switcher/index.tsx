@@ -8,17 +8,17 @@ import { ANIMATION_LABELS } from "@/lib/animations";
 
 export default function AnimationSwitcher() {
   const [hovering, setHovering] = useState(false);
-  const [nextLabel, setNextLabel] = useState("");
+  const [currentLabel, setCurrentLabel] = useState("");
   const committedRef = useRef("");
 
   useEffect(() => {
     committedRef.current = getStoredAnimationId();
-    setNextLabel(ANIMATION_LABELS[getNextAnimation(committedRef.current)]);
+    setCurrentLabel(ANIMATION_LABELS[committedRef.current]);
 
     const handleSwap = () => {
       const id = getStoredAnimationId();
       committedRef.current = id;
-      setNextLabel(ANIMATION_LABELS[getNextAnimation(id)]);
+      setCurrentLabel(ANIMATION_LABELS[id]);
     };
 
     document.addEventListener("astro:after-swap", handleSwap);
@@ -33,7 +33,7 @@ export default function AnimationSwitcher() {
     );
     saveAnimation(nextId);
     committedRef.current = nextId;
-    setNextLabel(ANIMATION_LABELS[getNextAnimation(nextId)]);
+    setCurrentLabel(ANIMATION_LABELS[nextId]);
     document.dispatchEvent(
       new CustomEvent("animation-changed", { detail: { id: nextId } })
     );
@@ -51,7 +51,7 @@ export default function AnimationSwitcher() {
         className="text-foreground font-bold text-sm select-none transition-opacity duration-200"
         style={{ opacity: hovering ? 0.8 : 0.15 }}
       >
-        {nextLabel}
+        {currentLabel}
       </span>
     </div>
   );

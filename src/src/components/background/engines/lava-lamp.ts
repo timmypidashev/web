@@ -53,6 +53,7 @@ export class LavaLampEngine implements AnimationEngine {
   private shadowCtx: CanvasRenderingContext2D | null = null;
   private elapsed = 0;
   private nextCycleTime = 0;
+  private exiting = false;
 
   // Pre-allocated typed arrays for the inner render loop (avoid per-frame GC)
   private blobX: Float64Array = new Float64Array(0);
@@ -170,6 +171,27 @@ export class LavaLampEngine implements AnimationEngine {
     });
   }
 
+  beginExit(): void {
+    if (this.exiting) return;
+    this.exiting = true;
+
+    for (let i = 0; i < this.blobs.length; i++) {
+      const blob = this.blobs[i];
+      if (blob.staggerDelay >= 0) {
+        blob.staggerDelay = -1;
+      }
+      // Stagger the shrink over ~2 seconds
+      setTimeout(() => {
+        blob.targetRadiusScale = 0;
+      }, Math.random() * 2000);
+    }
+  }
+
+  isExitComplete(): boolean {
+    if (!this.exiting) return false;
+    return this.blobs.length === 0;
+  }
+
   cleanup(): void {
     this.blobs = [];
     this.offCanvas = null;
@@ -279,7 +301,7 @@ export class LavaLampEngine implements AnimationEngine {
     }
 
     // Natural spawn/despawn cycle — keeps the scene alive
-    if (this.elapsed >= this.nextCycleTime) {
+    if (!this.exiting && this.elapsed >= this.nextCycleTime) {
       // Pick a random visible blob to fade out (skip ones still staggering in)
       const visible = [];
       for (let i = 0; i < this.blobs.length; i++) {
@@ -433,12 +455,11 @@ export class LavaLampEngine implements AnimationEngine {
   handleResize(width: number, height: number): void {
     this.width = width;
     this.height = height;
+    this.elapsed = 0;
+    this.exiting = false;
+    this.nextCycleTime = CYCLE_MIN_MS + Math.random() * (CYCLE_MAX_MS - CYCLE_MIN_MS);
+    this.initBlobs();
     this.initOffscreenCanvas();
-
-    const { min, max } = this.getRadiusRange();
-    for (const blob of this.blobs) {
-      blob.baseRadius = min + Math.random() * (max - min);
-    }
   }
 
   private sampleColorAt(x: number, y: number): [number, number, number] | null {
@@ -475,6 +496,7 @@ export class LavaLampEngine implements AnimationEngine {
   }
 
   handleMouseDown(x: number, y: number): void {
+    if (this.exiting) return;
     this.spawnAt(x, y);
   }
 

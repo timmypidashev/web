@@ -27,6 +27,7 @@ export function previewTheme(id: string): void {
     root.style.setProperty(prop, theme.colors[key]);
   }
 
+
   document.dispatchEvent(new CustomEvent("theme-changed", { detail: { id } }));
 }
 
@@ -55,5 +56,6 @@ export function applyTheme(id: string): void {
   el.textContent = css;
 
   saveTheme(id);
+
   document.dispatchEvent(new CustomEvent("theme-changed", { detail: { id } }));
 }

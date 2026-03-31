@@ -2,6 +2,9 @@ import { useEffect, useRef } from "react";
 import { GameOfLifeEngine } from "./engines/game-of-life";
 import { LavaLampEngine } from "./engines/lava-lamp";
 import { ConfettiEngine } from "./engines/confetti";
+import { AsciiquariumEngine } from "./engines/asciiquarium";
+import { PipesEngine } from "./engines/pipes";
+import { ShuffleEngine } from "./engines/shuffle";
 import { getStoredAnimationId } from "@/lib/animations/engine";
 import type { AnimationEngine } from "@/lib/animations/types";
 import type { AnimationId } from "@/lib/animations";
@@ -11,6 +14,8 @@ const SIDEBAR_WIDTH = 240;
 const FALLBACK_PALETTE: [number, number, number][] = [
   [204, 36, 29], [152, 151, 26], [215, 153, 33],
   [69, 133, 136], [177, 98, 134], [104, 157, 106],
+  [251, 73, 52], [184, 187, 38], [250, 189, 47],
+  [131, 165, 152], [211, 134, 155], [142, 192, 124],
 ];
 
 function createEngine(id: AnimationId): AnimationEngine {
@@ -19,6 +24,12 @@ function createEngine(id: AnimationId): AnimationEngine {
       return new LavaLampEngine();
     case "confetti":
       return new ConfettiEngine();
+    case "asciiquarium":
+      return new AsciiquariumEngine();
+    case "pipes":
+      return new PipesEngine();
+    case "shuffle":
+      return new ShuffleEngine();
     case "game-of-life":
     default:
       return new GameOfLifeEngine();
@@ -31,6 +42,8 @@ function readPaletteFromCSS(): [number, number, number][] {
     const keys = [
       "--color-red", "--color-green", "--color-yellow",
       "--color-blue", "--color-purple", "--color-aqua",
+      "--color-red-bright", "--color-green-bright", "--color-yellow-bright",
+      "--color-blue-bright", "--color-purple-bright", "--color-aqua-bright",
     ];
     const palette: [number, number, number][] = [];
     for (const key of keys) {
@@ -140,11 +153,21 @@ const Background: React.FC<BackgroundProps> = ({
       signal,
     });
 
-    // Handle theme changes
+    // Handle theme changes — only update if palette actually changed
+    let currentPalette = palette;
     const handleThemeChanged = () => {
       const newPalette = readPaletteFromCSS();
       const newBg = readBgFromCSS();
-      if (engineRef.current) {
+      const same =
+        newPalette.length === currentPalette.length &&
+        newPalette.every(
+          (c, i) =>
+            c[0] === currentPalette[i][0] &&
+            c[1] === currentPalette[i][1] &&
+            c[2] === currentPalette[i][2]
+        );
+      if (!same && engineRef.current) {
+        currentPalette = newPalette;
         engineRef.current.updatePalette(newPalette, newBg);
       }
     };
@@ -183,7 +206,7 @@ const Background: React.FC<BackgroundProps> = ({
 
       // Don't spawn when clicking interactive elements
       const target = e.target as HTMLElement;
-      if (target.closest("a, button, [role='button'], input, select, textarea, [onclick]")) return;
+      if (target.closest("a, button, [role='button'], input, select, textarea, label, [onclick], [tabindex]")) return;
 
       const rect = canvas.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
@@ -324,6 +347,8 @@ const Background: React.FC<BackgroundProps> = ({
         style={{ cursor: "default" }}
       />
       <div className="absolute inset-0 bg-background/30 backdrop-blur-sm pointer-events-none" />
+      <div className="crt-scanlines absolute inset-0 pointer-events-none" />
+      <div className="crt-bloom absolute inset-0 pointer-events-none" />
     </div>
   );
 };
