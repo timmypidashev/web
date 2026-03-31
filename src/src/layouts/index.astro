@@ -8,6 +8,8 @@ import { ClientRouter } from "astro:transitions";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Background from "@/components/background";
+import ThemeSwitcher from "@/components/theme-switcher";
+import { THEME_LOADER_SCRIPT, THEME_NAV_SCRIPT } from "@/lib/themes/loader";
 
 export interface Props {
   title: string;
@@ -23,28 +25,27 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
     <title>{title}</title>
 		<meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <!-- OpenGraph -->
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:description" content={description} />
-    <!-- Basic meta description for search engines -->
     <meta name="description" content={description} />
-    <!-- Also used in OpenGraph for social media sharing -->
     <meta property="og:description" content={description} />
     <link rel="icon" type="image/jpeg" href="/me.jpeg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <ClientRouter />
+    <script is:inline set:html={THEME_LOADER_SCRIPT} />
 	</head>
   <body class="bg-background text-foreground">
-    <Header client:load />
+    <Header client:load transparent />
     <main transition:animate="fade">
       <Background layout="index" client:only="react" transition:persist />
       <slot />
     </main>
     <Footer client:load transition:persist fixed=true />
+    <ThemeSwitcher client:only="react" transition:persist />
+    <script is:inline set:html={THEME_NAV_SCRIPT} />
 	</body>
 </html>

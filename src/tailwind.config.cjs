@@ -6,35 +6,35 @@ module.exports = {
         "comic-code": ["Comic Code", "monospace"],
       },
       colors: {
-        background: "#000000",
-        foreground: "#ebdbb2",
+        background: "rgb(var(--color-background) / <alpha-value>)",
+        foreground: "rgb(var(--color-foreground) / <alpha-value>)",
         red: {
-          DEFAULT: "#cc241d",
-          bright: "#fb4934"
+          DEFAULT: "rgb(var(--color-red) / <alpha-value>)",
+          bright: "rgb(var(--color-red-bright) / <alpha-value>)"
         },
         orange: {
-          DEFAULT: "#d65d0e",
-          bright: "#fe8019"
+          DEFAULT: "rgb(var(--color-orange) / <alpha-value>)",
+          bright: "rgb(var(--color-orange-bright) / <alpha-value>)"
         },
         green: {
-          DEFAULT: "#98971a",
-          bright: "#b8bb26"
+          DEFAULT: "rgb(var(--color-green) / <alpha-value>)",
+          bright: "rgb(var(--color-green-bright) / <alpha-value>)"
         },
         yellow: {
-          DEFAULT: "#d79921",
-          bright: "#fabd2f"
+          DEFAULT: "rgb(var(--color-yellow) / <alpha-value>)",
+          bright: "rgb(var(--color-yellow-bright) / <alpha-value>)"
         },
         blue: {
-          DEFAULT: "#458588",
-          bright: "#83a598"
+          DEFAULT: "rgb(var(--color-blue) / <alpha-value>)",
+          bright: "rgb(var(--color-blue-bright) / <alpha-value>)"
         },
         purple: {
-          DEFAULT: "#b16286",
-          bright: "#d3869b"
+          DEFAULT: "rgb(var(--color-purple) / <alpha-value>)",
+          bright: "rgb(var(--color-purple-bright) / <alpha-value>)"
         },
         aqua: {
-          DEFAULT: "#689d6a",
-          bright: "#8ec07c"
+          DEFAULT: "rgb(var(--color-aqua) / <alpha-value>)",
+          bright: "rgb(var(--color-aqua-bright) / <alpha-value>)"
         }
       },
       keyframes: {
@@ -51,85 +51,81 @@ module.exports = {
         "draw-line": "draw-line 0.6s ease-out forwards",
         "fade-in": "fade-in 0.3s ease-in-out forwards"
       },
-      typography: (theme) => ({
+      typography: () => ({
         DEFAULT: {
           css: {
-            color: theme("colors.foreground"),
-            "--tw-prose-body": theme("colors.foreground"),
-            "--tw-prose-headings": theme("colors.yellow.bright"),
-            "--tw-prose-links": theme("colors.blue.bright"),
-            "--tw-prose-bold": theme("colors.orange.bright"),
-            "--tw-prose-quotes": theme("colors.green.bright"),
-            "--tw-prose-code": theme("colors.purple.bright"),
-            "--tw-prose-hr": theme("colors.foreground"),
-            "--tw-prose-bullets": theme("colors.foreground"),
-
-            // Base text color
-            color: theme("colors.foreground"),
+            color: "rgb(var(--color-foreground))",
+            "--tw-prose-body": "rgb(var(--color-foreground))",
+            "--tw-prose-headings": "rgb(var(--color-yellow-bright))",
+            "--tw-prose-links": "rgb(var(--color-blue-bright))",
+            "--tw-prose-bold": "rgb(var(--color-orange-bright))",
+            "--tw-prose-quotes": "rgb(var(--color-green-bright))",
+            "--tw-prose-code": "rgb(var(--color-purple-bright))",
+            "--tw-prose-hr": "rgb(var(--color-foreground))",
+            "--tw-prose-bullets": "rgb(var(--color-foreground))",
 
             // Headings
             h1: {
-              color: theme("colors.yellow.bright"),
+              color: "rgb(var(--color-yellow-bright))",
               fontWeight: "700",
             },
             h2: {
-              color: theme("colors.yellow.bright"),
+              color: "rgb(var(--color-yellow-bright))",
               fontWeight: "600",
             },
             h3: {
-              color: theme("colors.yellow.bright"),
+              color: "rgb(var(--color-yellow-bright))",
               fontWeight: "600",
             },
             h4: {
-              color: theme("colors.yellow.bright"),
+              color: "rgb(var(--color-yellow-bright))",
               fontWeight: "600",
             },
 
             // Links
             a: {
-              color: theme("colors.blue.bright"),
+              color: "rgb(var(--color-blue-bright))",
               "&:hover": {
-                color: theme("colors.blue.DEFAULT"),
+                color: "rgb(var(--color-blue))",
               },
               textDecoration: "none",
-              borderBottom: `1px solid ${theme("colors.blue.bright")}`,
+              borderBottom: "1px solid rgb(var(--color-blue-bright))",
               transition: "all 0.2s ease-in-out",
             },
 
             // Code
             'code:not([data-language])': {
-              color: theme('colors.purple.bright'),
-              backgroundColor: '#282828',
+              color: "rgb(var(--color-purple-bright))",
+              backgroundColor: "rgb(var(--color-surface))",
               padding: '0',
               borderRadius: '0.25rem',
               fontFamily: 'Comic Code, monospace',
               fontWeight: '400',
-              fontSize: 'inherit', // Match the parent text size
+              fontSize: 'inherit',
               '&::before': { content: 'none' },
               '&::after': { content: 'none' },
             },
 
             'pre': {
-              backgroundColor: '#282828',
-              color: theme("colors.foreground"),
+              backgroundColor: "rgb(var(--color-surface))",
+              color: "rgb(var(--color-foreground))",
               borderRadius: '0.5rem',
-              overflow: 'visible', // This allows the copy button to be positioned outside
-              position: 'relative', // For the copy button positioning
-              marginTop: '1.5rem', // Space for the copy button and language label
-              fontSize: 'inherit', // Match the parent font size
+              overflow: 'visible',
+              position: 'relative',
+              marginTop: '1.5rem',
+              fontSize: 'inherit',
             },
 
             'pre code': {
               display: 'block',
               fontFamily: 'Comic Code, monospace',
-              fontSize: '1em', // This will inherit from the prose-lg setting
+              fontSize: '1em',
               padding: '0',
-              overflow: 'auto', // Enable horizontal scrolling
+              overflow: 'auto',
               whiteSpace: 'pre',
               '&::before': { content: 'none' },
               '&::after': { content: 'none' },
             },
-
 
             '[data-rehype-pretty-code-fragment]:nth-of-type(2) pre': {
               '[data-line]::before': {
@@ -148,7 +144,7 @@ module.exports = {
 
             // Bold
             strong: {
-              color: theme("colors.orange.bright"),
+              color: "rgb(var(--color-orange-bright))",
               fontWeight: "600",
             },
 
@@ -156,15 +152,15 @@ module.exports = {
             ul: {
               li: {
                 "&::before": {
-                  backgroundColor: theme("colors.foreground"),
+                  backgroundColor: "rgb(var(--color-foreground))",
                 },
               },
             },
 
             // Blockquotes
             blockquote: {
-              borderLeftColor: theme("colors.green.bright"),
-              color: theme("colors.green.bright"),
+              borderLeftColor: "rgb(var(--color-green-bright))",
+              color: "rgb(var(--color-green-bright))",
               fontStyle: "italic",
               quotes: "\"\\201C\"\"\\201D\"\"\\2018\"\"\\2019\"",
               p: {
@@ -175,21 +171,21 @@ module.exports = {
 
             // Horizontal rules
             hr: {
-              borderColor: theme("colors.foreground"),
+              borderColor: "rgb(var(--color-foreground))",
               opacity: "0.2",
             },
 
             // Table
             table: {
               thead: {
-                borderBottomColor: theme("colors.foreground"),
+                borderBottomColor: "rgb(var(--color-foreground))",
                 th: {
-                  color: theme("colors.yellow.bright"),
+                  color: "rgb(var(--color-yellow-bright))",
                 },
               },
               tbody: {
                 tr: {
-                  borderBottomColor: theme("colors.foreground"),
+                  borderBottomColor: "rgb(var(--color-foreground))",
                 },
               },
             },
@@ -201,7 +197,7 @@ module.exports = {
 
             // Figures
             figcaption: {
-              color: theme("colors.foreground"),
+              color: "rgb(var(--color-foreground))",
               opacity: "0.8",
             },
           },

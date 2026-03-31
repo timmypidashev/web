@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Links } from "@/components/header/links";
 
-export default function Header() {
+export default function Header({ transparent = false }: { transparent?: boolean }) {
   const [isClient, setIsClient] = useState(false);
   const [visible, setVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -34,7 +34,7 @@ export default function Header() {
     return linkHref !== "/" && path.startsWith(linkHref);
   };
 
-  const isIndexPage = checkIsActive("/");
+  const isIndexPage = transparent || checkIsActive("/");
   const headerLinks = Links.map((link) => {
     const isActive = checkIsActive(link.href);
     
@@ -44,7 +44,7 @@ export default function Header() {
         className={`
           relative inline-block
           ${link.color}
-          ${!isIndexPage ? 'bg-black' : ''}
+          ${!isIndexPage ? 'bg-background' : ''}
         `}
       >
         <a 
@@ -94,13 +94,13 @@ export default function Header() {
       <div className={`
         w-full flex flex-row items-center justify-center
         pointer-events-none
-        ${!isIndexPage ? 'bg-black md:bg-transparent' : ''}
+        ${!isIndexPage ? 'bg-background md:bg-transparent' : ''}
       `}>
         <div className={`
           w-full md:w-auto flex flex-row pt-1 px-2 text-lg lg:text-3xl md:text-2xl
           items-center justify-between md:justify-center space-x-2 md:space-x-10 lg:space-x-20 md:py-2
           pointer-events-none [&_a]:pointer-events-auto
-          ${!isIndexPage ? 'bg-black md:px-20' : ''}
+          ${!isIndexPage ? 'bg-background md:px-20' : ''}
         `}>
           {headerLinks}
         </div>

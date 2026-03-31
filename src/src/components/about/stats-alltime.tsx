@@ -117,7 +117,14 @@ const Stats = () => {
 
       <style jsx>{`
         .bg-gradient-text {
-          background: linear-gradient(90deg, #fbbf24, #f59e0b, #d97706, #b45309, #f59e0b, #fbbf24);
+          background: linear-gradient(90deg,
+            rgb(var(--color-yellow-bright)),
+            rgb(var(--color-orange-bright)),
+            rgb(var(--color-orange)),
+            rgb(var(--color-yellow)),
+            rgb(var(--color-orange-bright)),
+            rgb(var(--color-yellow-bright))
+          );
           background-size: 200% auto;
           color: transparent;
           background-clip: text;

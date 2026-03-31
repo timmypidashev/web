@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 
+
 interface Cell {
   alive: boolean;
   next: boolean;
@@ -58,9 +59,46 @@ const RIPPLE_SPEED = 0.02; // Speed of ripple propagation
 const RIPPLE_ELEVATION_FACTOR = 4; // Height of ripple wave
 const ELEVATION_FACTOR = 8; // Max height for 3D effect - reduced for more subtle effect
 
-const Background: React.FC<BackgroundProps> = ({ 
+const FALLBACK_PALETTE: [number, number, number][] = [
+  [204, 36, 29], [152, 151, 26], [215, 153, 33],
+  [69, 133, 136], [177, 98, 134], [104, 157, 106]
+];
+
+// Read palette from current CSS variables
+function readPaletteFromCSS(): [number, number, number][] {
+  try {
+    const style = getComputedStyle(document.documentElement);
+    const keys = ["--color-red", "--color-green", "--color-yellow", "--color-blue", "--color-purple", "--color-aqua"];
+    const palette: [number, number, number][] = [];
+    for (const key of keys) {
+      const val = style.getPropertyValue(key).trim();
+      if (val) {
+        const parts = val.split(" ").map(Number);
+        if (parts.length === 3 && parts.every((n) => !isNaN(n))) {
+          palette.push([parts[0], parts[1], parts[2]]);
+        }
+      }
+    }
+    return palette.length > 0 ? palette : FALLBACK_PALETTE;
+  } catch {
+    return FALLBACK_PALETTE;
+  }
+}
+
+function readBgFromCSS(): string {
+  try {
+    const val = getComputedStyle(document.documentElement).getPropertyValue("--color-background").trim();
+    if (val) {
+      const [r, g, b] = val.split(" ");
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+  } catch {}
+  return "rgb(0, 0, 0)";
+}
+
+const Background: React.FC<BackgroundProps> = ({
   layout = 'index',
-  position = 'left' 
+  position = 'left'
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gridRef = useRef<Grid>();
@@ -68,6 +106,8 @@ const Background: React.FC<BackgroundProps> = ({
   const lastUpdateTimeRef = useRef<number>(0);
   const lastCycleTimeRef = useRef<number>(0);
   const resizeTimeoutRef = useRef<NodeJS.Timeout>();
+  const paletteRef = useRef<[number, number, number][]>(FALLBACK_PALETTE);
+  const bgColorRef = useRef<string>("rgb(0, 0, 0)");
   const mouseRef = useRef<MousePosition>({
     x: -1000,
     y: -1000,
@@ -78,15 +118,8 @@ const Background: React.FC<BackgroundProps> = ({
   });
 
   const randomColor = (): [number, number, number] => {
-    const colors = [
-      [204, 36, 29],   // red
-      [152, 151, 26],  // green
-      [215, 153, 33],  // yellow
-      [69, 133, 136],  // blue
-      [177, 98, 134],  // purple
-      [104, 157, 106]  // aqua
-    ];
-    return colors[Math.floor(Math.random() * colors.length)];
+    const palette = paletteRef.current;
+    return palette[Math.floor(Math.random() * palette.length)];
   };
 
   const getCellSize = () => {
@@ -515,7 +548,7 @@ const Background: React.FC<BackgroundProps> = ({
             gridRef.current.cols !== Math.floor(displayWidth / cellSize) || 
             gridRef.current.rows !== Math.floor(displayHeight / cellSize)) {
           gridRef.current = initGrid(displayWidth, displayHeight);
-        }
+              }
       }, 250);
     };
 
@@ -534,6 +567,31 @@ const Background: React.FC<BackgroundProps> = ({
     window.addEventListener('mousedown', handleMouseDown, { signal });
     window.addEventListener('mousemove', handleMouseMove, { signal });
     window.addEventListener('mouseup', handleMouseUp, { signal });
+
+    // Read theme colors from CSS variables
+    paletteRef.current = readPaletteFromCSS();
+    bgColorRef.current = readBgFromCSS();
+
+    // Listen for theme changes and update colors
+    const handleThemeChanged = () => {
+      paletteRef.current = readPaletteFromCSS();
+      bgColorRef.current = readBgFromCSS();
+
+      if (gridRef.current) {
+        const grid = gridRef.current;
+        const palette = paletteRef.current;
+        for (let i = 0; i < grid.cols; i++) {
+          for (let j = 0; j < grid.rows; j++) {
+            const cell = grid.cells[i][j];
+            if (cell.alive && cell.opacity > 0.01) {
+              cell.baseColor = palette[Math.floor(Math.random() * palette.length)];
+            }
+          }
+        }
+      }
+    };
+
+    document.addEventListener("theme-changed", handleThemeChanged, { signal });
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
@@ -584,7 +642,7 @@ const Background: React.FC<BackgroundProps> = ({
       }
       
       // Draw frame
-      ctx.fillStyle = '#000000';
+      ctx.fillStyle = bgColorRef.current;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       if (gridRef.current) {
@@ -701,10 +759,10 @@ const Background: React.FC<BackgroundProps> = ({
     <div className={getContainerClasses()}>
       <canvas
         ref={canvasRef}
-        className="w-full h-full bg-black"
+        className="w-full h-full bg-background"
         style={{ cursor: 'default' }} // Changed from cursor-pointer to default
       />
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm pointer-events-none" />
+      <div className="absolute inset-0 bg-background/30 backdrop-blur-sm pointer-events-none" />
     </div>
   );
 };
