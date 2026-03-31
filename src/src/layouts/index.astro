@@ -9,7 +9,9 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import Background from "@/components/background";
 import ThemeSwitcher from "@/components/theme-switcher";
+import AnimationSwitcher from "@/components/animation-switcher";
 import { THEME_LOADER_SCRIPT, THEME_NAV_SCRIPT } from "@/lib/themes/loader";
+import { ANIMATION_LOADER_SCRIPT, ANIMATION_NAV_SCRIPT } from "@/lib/animations/loader";
 
 export interface Props {
   title: string;
@@ -37,6 +39,7 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
     <link rel="sitemap" href="/sitemap-index.xml" />
     <ClientRouter />
     <script is:inline set:html={THEME_LOADER_SCRIPT} />
+    <script is:inline set:html={ANIMATION_LOADER_SCRIPT} />
 	</head>
   <body class="bg-background text-foreground">
     <Header client:load transparent />
@@ -46,6 +49,8 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
     </main>
     <Footer client:load transition:persist fixed=true />
     <ThemeSwitcher client:only="react" transition:persist />
+    <AnimationSwitcher client:only="react" transition:persist />
     <script is:inline set:html={THEME_NAV_SCRIPT} />
+    <script is:inline set:html={ANIMATION_NAV_SCRIPT} />
 	</body>
 </html>
