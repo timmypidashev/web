@@ -1,6 +1,6 @@
 import type { Theme } from "./types";
 
-export const DEFAULT_THEME_ID = "darkbox";
+export const DEFAULT_THEME_ID = "darkbox-retro";
 
 function theme(
   id: string,
