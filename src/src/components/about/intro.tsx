@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { ChevronDownIcon } from "@/components/icons";
+import { useEffect, useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
 
 export default function Intro() {
   const [visible, setVisible] = useState(false);
@@ -97,7 +97,7 @@ export default function Intro() {
               className="text-foreground/50 hover:text-yellow-bright transition-colors duration-300"
               aria-label="Scroll to next section"
             >
-              <ChevronDownIcon size={40} className="animate-bounce" />
+              <ChevronDown size={40} className="animate-bounce" />
             </button>
           </div>
         </div>

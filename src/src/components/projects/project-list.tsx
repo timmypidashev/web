@@ -1,4 +1,3 @@
-import React from "react";
 import type { CollectionEntry } from "astro:content";
 import { AnimateIn } from "@/components/animate-in";
 

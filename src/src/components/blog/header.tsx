@@ -1,4 +1,3 @@
-import React from "react";
 import { RssIcon, TagIcon, TrendingUpIcon } from "lucide-react";
 import { AnimateIn } from "@/components/animate-in";
 

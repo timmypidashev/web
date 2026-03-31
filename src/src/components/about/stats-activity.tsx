@@ -1,4 +1,3 @@
-import React from "react";
 
 interface ActivityDay {
   grand_total: { total_seconds: number };

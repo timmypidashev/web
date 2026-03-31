@@ -1,6 +1,6 @@
-import { THEMES, DEFAULT_THEME_ID } from "./index";
-import { CSS_PROPS } from "./props";
-import type { Theme } from "./types";
+import { THEMES, DEFAULT_THEME_ID } from "@/lib/themes";
+import { CSS_PROPS } from "@/lib/themes/props";
+import type { Theme } from "@/lib/themes/types";
 
 export function getStoredThemeId(): string {
   if (typeof window === "undefined") return DEFAULT_THEME_ID;

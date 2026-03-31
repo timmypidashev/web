@@ -1,4 +1,3 @@
-import React from "react";
 import { AnimateIn } from "@/components/animate-in";
 
 type BlogPost = {

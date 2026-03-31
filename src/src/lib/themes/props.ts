@@ -1,4 +1,4 @@
-import type { ThemeColors } from "./types";
+import type { ThemeColors } from "@/lib/themes/types";
 
 export const CSS_PROPS: [keyof ThemeColors, string][] = [
   ["background", "--color-background"],

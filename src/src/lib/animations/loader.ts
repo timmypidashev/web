@@ -1,4 +1,4 @@
-import { ANIMATION_IDS, DEFAULT_ANIMATION_ID } from "./index";
+import { ANIMATION_IDS, DEFAULT_ANIMATION_ID } from "@/lib/animations";
 
 const VALID_IDS = JSON.stringify(ANIMATION_IDS);
 

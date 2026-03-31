@@ -1,4 +1,3 @@
-import React from "react";
 import { Links } from "@/components/footer/links";
 
 export default function Footer({ fixed = false }) {

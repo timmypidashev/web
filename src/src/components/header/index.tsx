@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Links } from "@/components/header/links";
 
 export default function Header({ transparent = false }: { transparent?: boolean }) {

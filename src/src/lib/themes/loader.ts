@@ -3,8 +3,8 @@
  * Called at build time in Astro frontmatter.
  * The script reads "theme" from localStorage, looks up colors, injects a <style> tag.
  */
-import { THEMES } from "./index";
-import { CSS_PROPS } from "./props";
+import { THEMES } from "@/lib/themes";
+import { CSS_PROPS } from "@/lib/themes/props";
 
 // Pre-build a { prop: value } map for each theme at build time
 const themeVars: Record<string, Record<string, string>> = {};

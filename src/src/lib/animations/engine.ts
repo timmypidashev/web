@@ -1,5 +1,5 @@
-import { ANIMATION_IDS, DEFAULT_ANIMATION_ID } from "./index";
-import type { AnimationId } from "./index";
+import { ANIMATION_IDS, DEFAULT_ANIMATION_ID } from "@/lib/animations";
+import type { AnimationId } from "@/lib/animations";
 
 export function getStoredAnimationId(): AnimationId {
   if (typeof window === "undefined") return DEFAULT_ANIMATION_ID;

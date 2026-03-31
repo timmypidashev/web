@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
-import { GameOfLifeEngine } from "./engines/game-of-life";
-import { LavaLampEngine } from "./engines/lava-lamp";
-import { ConfettiEngine } from "./engines/confetti";
-import { AsciiquariumEngine } from "./engines/asciiquarium";
-import { PipesEngine } from "./engines/pipes";
-import { ShuffleEngine } from "./engines/shuffle";
+import { GameOfLifeEngine } from "@/components/background/engines/game-of-life";
+import { LavaLampEngine } from "@/components/background/engines/lava-lamp";
+import { ConfettiEngine } from "@/components/background/engines/confetti";
+import { AsciiquariumEngine } from "@/components/background/engines/asciiquarium";
+import { PipesEngine } from "@/components/background/engines/pipes";
+import { ShuffleEngine } from "@/components/background/engines/shuffle";
 import { getStoredAnimationId } from "@/lib/animations/engine";
 import type { AnimationEngine } from "@/lib/animations/types";
 import type { AnimationId } from "@/lib/animations";

@@ -1,9 +1,9 @@
 import type { AnimationEngine } from "@/lib/animations/types";
-import { GameOfLifeEngine } from "./game-of-life";
-import { LavaLampEngine } from "./lava-lamp";
-import { ConfettiEngine } from "./confetti";
-import { AsciiquariumEngine } from "./asciiquarium";
-import { PipesEngine } from "./pipes";
+import { GameOfLifeEngine } from "@/components/background/engines/game-of-life";
+import { LavaLampEngine } from "@/components/background/engines/lava-lamp";
+import { ConfettiEngine } from "@/components/background/engines/confetti";
+import { AsciiquariumEngine } from "@/components/background/engines/asciiquarium";
+import { PipesEngine } from "@/components/background/engines/pipes";
 
 type ChildId = "game-of-life" | "lava-lamp" | "confetti" | "asciiquarium" | "pipes";
 
