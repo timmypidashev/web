@@ -38,6 +38,18 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
     <link rel="icon" type="image/jpeg" href="/me.jpeg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <ClientRouter />
+    <script is:inline>
+      if (window.innerWidth < 1024) {
+        document.addEventListener('click', function(e) {
+          var a = e.target.closest('a[href]');
+          if (a && a.href && !a.target && a.origin === location.origin) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = a.href;
+          }
+        }, true);
+      }
+    </script>
     <script is:inline set:html={THEME_LOADER_SCRIPT} />
     <script is:inline set:html={ANIMATION_LOADER_SCRIPT} />
 	</head>
