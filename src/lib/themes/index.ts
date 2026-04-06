@@ -7,7 +7,6 @@ import { rosepine } from "./families/rosepine";
 import { kanagawa } from "./families/kanagawa";
 import { nord } from "./families/nord";
 import { tokyonight } from "./families/tokyonight";
-import { dracula } from "./families/dracula";
 import { solarized } from "./families/solarized";
 import { onedark } from "./families/onedark";
 import { monokai } from "./families/monokai";
@@ -23,7 +22,6 @@ export const FAMILIES: ThemeFamily[] = [
   kanagawa,
   nord,
   tokyonight,
-  dracula,
   solarized,
   onedark,
   monokai,
