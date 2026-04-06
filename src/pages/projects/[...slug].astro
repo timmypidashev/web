@@ -5,6 +5,7 @@ import { getCollection, render } from "astro:content";
 
 import ContentLayout from "@/layouts/content.astro";
 import { Comments } from "@/components/blog/comments";
+import { StreamContent } from "@/components/stream-content";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -60,9 +61,11 @@ const { Content } = await render(project);
       </div>
     </header>
 
-    <div class="prose prose-invert prose-lg max-w-none">
-      <Content />
-    </div>
+    <StreamContent client:load>
+      <div class="prose prose-invert prose-lg max-w-none">
+        <Content />
+      </div>
+    </StreamContent>
   </article>
   <Comments client:idle />
 </ContentLayout>

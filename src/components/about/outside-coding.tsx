@@ -1,57 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
 import { Cross, Fish, Mountain, Book } from "lucide-react";
-
-function AnimateIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  const [skip, setSkip] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const rect = el.getBoundingClientRect();
-    const inView = rect.top < window.innerHeight && rect.bottom > 0;
-    const isReload = performance.getEntriesByType?.("navigation")?.[0]?.type === "reload";
-
-    if (inView && isReload) {
-      setSkip(true);
-      setVisible(true);
-      return;
-    }
-    if (inView) {
-      requestAnimationFrame(() => setVisible(true));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className={skip ? "" : "transition-all duration-700 ease-out"}
-      style={skip ? {} : {
-        transitionDelay: `${delay}ms`,
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0) scale(1)" : "translateY(20px) scale(0.97)",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
+import { AnimateIn } from "@/components/animate-in";
 
 const interests = [
   {
@@ -86,12 +34,12 @@ export default function OutsideCoding() {
           </h2>
         </AnimateIn>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {interests.map((interest, i) => (
             <AnimateIn key={interest.title} delay={100 + i * 100}>
               <div
                 className="flex flex-col items-center text-center p-4 rounded-lg border border-foreground/10
-                           hover:border-yellow-bright/50 transition-all duration-300 bg-background/50 h-full"
+                           hover:border-yellow-bright/50 transition-colors duration-300 bg-background/50 h-full"
               >
                 <div className="mb-3">{interest.icon}</div>
                 <h3 className="font-bold text-foreground/90 mb-2">{interest.title}</h3>

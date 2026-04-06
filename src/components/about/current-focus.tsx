@@ -1,57 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
 import { Code2, BookOpen, RocketIcon, Compass } from "lucide-react";
-
-function AnimateIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  const [skip, setSkip] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const rect = el.getBoundingClientRect();
-    const inView = rect.top < window.innerHeight && rect.bottom > 0;
-    const isReload = performance.getEntriesByType?.("navigation")?.[0]?.type === "reload";
-
-    if (inView && isReload) {
-      setSkip(true);
-      setVisible(true);
-      return;
-    }
-    if (inView) {
-      requestAnimationFrame(() => setVisible(true));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className={skip ? "" : "transition-all duration-700 ease-out"}
-      style={skip ? {} : {
-        transitionDelay: `${delay}ms`,
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(24px)",
-      }}
-    >
-      {children}
-    </div>
-  );
-}
+import { AnimateIn } from "@/components/animate-in";
 
 export default function CurrentFocus() {
   const recentProjects = [
@@ -98,7 +46,7 @@ export default function CurrentFocus() {
                 <a
                   href={project.href}
                   className="block p-4 sm:p-6 rounded-lg border border-foreground/10 hover:border-yellow-bright/50
-                           transition-all duration-300 group bg-background/50 h-full"
+                           transition-colors duration-300 group bg-background/50 h-full"
                 >
                   <h4 className="font-bold text-lg group-hover:text-yellow-bright transition-colors">
                     {project.title}

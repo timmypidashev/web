@@ -1,4 +1,5 @@
 import { AnimateIn } from "@/components/animate-in";
+import { TypedText } from "@/components/typed-text";
 import { RssIcon, TagIcon, TrendingUpIcon } from "lucide-react";
 
 type BlogPost = {
@@ -30,12 +31,15 @@ const formatDate = (dateString: string) => {
 const TaggedPosts = ({ tag, posts }: TaggedPostsProps) => {
   return (
     <div className="w-full max-w-6xl mx-auto">
-      <div className="w-full px-4 pt-24 sm:pt-24">
-        <AnimateIn>
-          <h1 className="text-2xl sm:text-3xl font-bold text-purple mb-3 text-center px-4 leading-relaxed">
-            #{tag}
-          </h1>
-        </AnimateIn>
+      <div className="w-full px-4 pt-12 md:pt-24">
+        <div className="mb-3 text-center px-4">
+          <TypedText
+            text={`#${tag}`}
+            as="h1"
+            className="text-2xl sm:text-3xl font-bold text-purple leading-relaxed"
+            speed={20}
+          />
+        </div>
         <AnimateIn delay={100}>
           <div className="flex flex-wrap justify-center gap-4 mb-12 text-sm sm:text-base">
             <a
@@ -68,7 +72,7 @@ const TaggedPosts = ({ tag, posts }: TaggedPostsProps) => {
           <AnimateIn key={post.id} delay={200 + i * 80}>
             <li className="group px-4 md:px-0">
               <a href={`/blog/${post.id}`} className="block">
-                <article className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 p-2 md:p-4 border-b border-foreground/20 last:border-b-0 rounded-lg group-hover:outline group-hover:outline-2 group-hover:outline-purple transition-all duration-200">
+                <article className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 p-2 md:p-4 border-b border-foreground/20 last:border-b-0 rounded-lg group-hover:outline group-hover:outline-2 group-hover:outline-purple transition-[outline-color] duration-200">
                   <div className="w-full md:w-1/3 aspect-[16/9] overflow-hidden rounded-lg bg-background flex-shrink-0">
                     <img
                       src={post.data.image || "/blog/placeholder.png"}

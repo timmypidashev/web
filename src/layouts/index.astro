@@ -9,6 +9,7 @@ import Background from "@/components/background";
 import ThemeSwitcher from "@/components/theme-switcher";
 import AnimationSwitcher from "@/components/animation-switcher";
 import VercelAnalytics from "@/components/analytics";
+import MobileNav from "@/components/mobile-nav";
 import { THEME_LOADER_SCRIPT, THEME_NAV_SCRIPT } from "@/lib/themes/loader";
 import { ANIMATION_LOADER_SCRIPT, ANIMATION_NAV_SCRIPT } from "@/lib/animations/loader";
 
@@ -50,6 +51,7 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
     <ThemeSwitcher client:only="react" transition:persist />
     <AnimationSwitcher client:only="react" transition:persist />
     <VercelAnalytics client:load />
+    <MobileNav client:load transparent />
     <script is:inline set:html={THEME_NAV_SCRIPT} />
     <script is:inline set:html={ANIMATION_NAV_SCRIPT} />
 	</body>

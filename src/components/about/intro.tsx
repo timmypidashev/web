@@ -48,36 +48,37 @@ export default function Intro() {
   const anim = (delay: number) =>
     ({
       opacity: visible ? 1 : 0,
-      transform: visible ? "translateY(0)" : "translateY(20px)",
-      transition: `all 0.7s ease-out ${delay}ms`,
+      transform: visible ? "translate3d(0,0,0)" : "translate3d(0,20px,0)",
+      transition: `opacity 0.7s ease-out ${delay}ms, transform 0.7s ease-out ${delay}ms`,
+      willChange: "transform, opacity",
     }) as React.CSSProperties;
 
   return (
     <div ref={ref} className="w-full max-w-4xl px-4">
       <div className="space-y-8 md:space-y-12">
-        <div className="flex flex-col sm:flex-row items-center sm:items-center justify-center gap-8 sm:gap-16">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-16">
           <div
-            className="w-32 h-32 sm:w-48 sm:h-48 shrink-0"
+            className="w-44 h-44 sm:w-40 sm:h-40 lg:w-48 lg:h-48 shrink-0"
             style={anim(0)}
           >
             <img
               src="/me.jpeg"
               alt="Timothy Pidashev"
-              className="rounded-lg object-cover w-full h-full ring-2 ring-yellow-bright hover:ring-orange-bright transition-all duration-300"
+              className="rounded-lg object-cover w-full h-full ring-2 ring-yellow-bright hover:ring-orange-bright transition-colors duration-300"
             />
           </div>
           <div className="text-center sm:text-left space-y-4 sm:space-y-6" style={anim(150)}>
-            <h2 className="text-xl sm:text-5xl font-bold text-yellow-bright">
+            <h2 className="text-3xl sm:text-3xl lg:text-5xl font-bold text-yellow-bright">
               Timothy Pidashev
             </h2>
-            <div className="text-sm sm:text-xl text-foreground/70 space-y-2 sm:space-y-3">
-              <p className="flex items-center justify-center font-bold sm:justify-start gap-2" style={anim(300)}>
+            <div className="text-base sm:text-lg lg:text-xl text-foreground/70 space-y-2 sm:space-y-3">
+              <p className="flex items-center justify-center sm:justify-start font-bold gap-2" style={anim(300)}>
                 <span className="text-blue">Software Systems Engineer</span>
               </p>
-              <p className="flex items-center justify-center font-bold sm:justify-start gap-2" style={anim(450)}>
+              <p className="flex items-center justify-center sm:justify-start font-bold gap-2" style={anim(450)}>
                 <span className="text-green">Open Source Enthusiast</span>
               </p>
-              <p className="flex items-center justify-center font-bold sm:justify-start gap-2" style={anim(600)}>
+              <p className="flex items-center justify-center sm:justify-start font-bold gap-2" style={anim(600)}>
                 <span className="text-yellow">Coffee Connoisseur</span>
               </p>
             </div>

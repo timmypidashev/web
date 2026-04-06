@@ -74,7 +74,7 @@ export default function ThemeSwitcher() {
   return (
     <>
       <div
-        className="fixed bottom-4 right-4 z-[101] pointer-events-auto hidden md:block"
+        className="fixed bottom-4 right-4 z-[101] pointer-events-auto hidden lg:block"
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => setHovering(false)}
         onClick={handleClick}

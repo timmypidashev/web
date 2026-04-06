@@ -1,71 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import {
   FileDown,
   Github,
   Linkedin,
   Globe
 } from "lucide-react";
-
-// --- Typewriter hook ---
-
-function useTypewriter(text: string, trigger: boolean, speed = 12) {
-  const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    if (!trigger) return;
-
-    let i = 0;
-    setDisplayed("");
-    setDone(false);
-
-    const interval = setInterval(() => {
-      i++;
-      setDisplayed(text.slice(0, i));
-      if (i >= text.length) {
-        setDone(true);
-        clearInterval(interval);
-      }
-    }, speed);
-
-    return () => clearInterval(interval);
-  }, [trigger, text, speed]);
-
-  return { displayed, done };
-}
-
-// --- Visibility hook ---
-
-function useScrollVisible(threshold = 0.1) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
-      requestAnimationFrame(() => setVisible(true));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [threshold]);
-
-  return { ref, visible };
-}
+import { useTypewriter, useScrollVisible } from "@/components/typed-text";
 
 // --- Section fade-in ---
 
@@ -75,11 +15,12 @@ function Section({ children, delay = 0 }: { children: React.ReactNode; delay?: n
   return (
     <div
       ref={ref}
-      className="transition-all duration-700 ease-out"
+      className="transition-[opacity,transform] duration-700 ease-out"
       style={{
         transitionDelay: `${delay}ms`,
+        willChange: "transform, opacity",
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(24px)",
+        transform: visible ? "translate3d(0,0,0)" : "translate3d(0,24px,0)",
       }}
     >
       {children}
@@ -91,7 +32,7 @@ function Section({ children, delay = 0 }: { children: React.ReactNode; delay?: n
 
 function TypedSection({
   heading,
-  headingClass = "text-3xl font-bold text-yellow-bright",
+  headingClass = "text-2xl md:text-3xl font-bold text-yellow-bright",
   children,
 }: {
   heading: string;
@@ -108,10 +49,11 @@ function TypedSection({
         {visible && !done && <span className="animate-pulse text-foreground/40">|</span>}
       </h3>
       <div
-        className="transition-all duration-500 ease-out"
+        className="transition-[opacity,transform] duration-500 ease-out"
         style={{
+          willChange: "transform, opacity",
           opacity: done ? 1 : 0,
-          transform: done ? "translateY(0)" : "translateY(12px)",
+          transform: done ? "translate3d(0,0,0)" : "translate3d(0,12px,0)",
         }}
       >
         {children}
@@ -128,11 +70,12 @@ function SkillTags({ skills, trigger }: { skills: string[]; trigger: boolean }) 
       {skills.map((skill, i) => (
         <span
           key={i}
-          className="border border-foreground/20 px-4 py-2 rounded-lg hover:border-foreground/40 transition-all duration-500 ease-out"
+          className="border border-foreground/20 px-4 py-2 rounded-lg hover:border-foreground/40 transition-[opacity,transform] duration-500 ease-out"
           style={{
             transitionDelay: `${i * 60}ms`,
+            willChange: "transform, opacity",
             opacity: trigger ? 1 : 0,
-            transform: trigger ? "translateY(0) scale(1)" : "translateY(12px) scale(0.95)",
+            transform: trigger ? "translate3d(0,0,0) scale(1)" : "translate3d(0,12px,0) scale(0.95)",
           }}
         >
           {skill}
@@ -212,19 +155,19 @@ const Resume = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 md:px-8 pt-24 pb-16">
+    <div className="max-w-4xl mx-auto px-4 md:px-8 pt-16 md:pt-24 pb-16">
       <div className="space-y-16">
         {/* Header */}
         <header className="text-center space-y-6">
           <Section>
-            <h1 className="text-6xl font-bold text-aqua-bright">{resumeData.name}</h1>
+            <h1 className="text-3xl md:text-6xl font-bold text-aqua-bright">{resumeData.name}</h1>
           </Section>
           <Section delay={150}>
-            <h2 className="text-3xl text-foreground/80">{resumeData.title}</h2>
+            <h2 className="text-xl md:text-3xl text-foreground/80">{resumeData.title}</h2>
           </Section>
           <Section delay={300}>
-            <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 text-foreground/60 text-lg">
-              <a href={`mailto:${resumeData.contact.email}`} className="hover:text-foreground transition-colors duration-200">
+            <div className="flex flex-col md:flex-row justify-center gap-2 md:gap-6 text-foreground/60 text-sm md:text-lg">
+              <a href={`mailto:${resumeData.contact.email}`} className="hover:text-foreground transition-colors duration-200 break-all md:break-normal">
                 {resumeData.contact.email}
               </a>
               <span className="hidden md:inline">•</span>
@@ -236,7 +179,7 @@ const Resume = () => {
             </div>
           </Section>
           <Section delay={450}>
-            <div className="flex justify-center items-center gap-6 text-lg">
+            <div className="flex justify-center items-center gap-4 md:gap-6 text-base md:text-lg">
               <a href={`https://${resumeData.contact.github}`}
                  target="_blank"
                  className="text-blue-bright hover:text-blue transition-colors duration-200 flex items-center gap-2"
@@ -264,7 +207,7 @@ const Resume = () => {
 
         {/* Summary */}
         <TypedSection heading="Professional Summary">
-          <p className="text-xl leading-relaxed">{resumeData.summary}</p>
+          <p className="text-base md:text-xl leading-relaxed">{resumeData.summary}</p>
         </TypedSection>
 
         {/* Experience */}
@@ -275,14 +218,14 @@ const Resume = () => {
                 <div className="space-y-4">
                   <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
                     <div>
-                      <h4 className="text-2xl font-semibold text-green-bright">{exp.title}</h4>
-                      <div className="text-foreground/60 text-lg">{exp.company} - {exp.location}</div>
+                      <h4 className="text-xl md:text-2xl font-semibold text-green-bright">{exp.title}</h4>
+                      <div className="text-foreground/60 text-base md:text-lg">{exp.company} - {exp.location}</div>
                     </div>
-                    <div className="text-foreground/60 text-lg font-medium">{exp.period}</div>
+                    <div className="text-foreground/60 text-sm md:text-lg font-medium">{exp.period}</div>
                   </div>
                   <ul className="list-disc pl-6 space-y-3">
                     {exp.achievements.map((a, i) => (
-                      <li key={i} className="text-lg leading-relaxed">{a}</li>
+                      <li key={i} className="text-base md:text-lg leading-relaxed">{a}</li>
                     ))}
                   </ul>
                 </div>
@@ -300,7 +243,7 @@ const Resume = () => {
                   <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
                     <div>
                       <div className="flex items-center gap-3">
-                        <h4 className="text-2xl font-semibold text-green-bright">{project.title}</h4>
+                        <h4 className="text-xl md:text-2xl font-semibold text-green-bright">{project.title}</h4>
                         {project.url && (
                           <a
                             href={project.url}
@@ -312,58 +255,32 @@ const Resume = () => {
                           </a>
                         )}
                       </div>
-                      <div className="text-foreground/60 text-lg">{project.type}</div>
+                      <div className="text-foreground/60 text-base md:text-lg">{project.type}</div>
                     </div>
-                    <div className="text-foreground/60 text-lg font-medium">Since {project.startDate}</div>
+                    <div className="text-foreground/60 text-sm md:text-lg font-medium">Since {project.startDate}</div>
                   </div>
                   <div className="space-y-4">
                     {project.responsibilities && (
                       <div>
-                        <h5 className="text-lg text-aqua font-semibold mb-2">Responsibilities</h5>
+                        <h5 className="text-base md:text-lg text-aqua font-semibold mb-2">Responsibilities</h5>
                         <ul className="list-disc pl-6 space-y-3">
                           {project.responsibilities.map((r, i) => (
-                            <li key={i} className="text-lg leading-relaxed">{r}</li>
+                            <li key={i} className="text-base md:text-lg leading-relaxed">{r}</li>
                           ))}
                         </ul>
                       </div>
                     )}
                     {project.achievements && (
                       <div>
-                        <h5 className="text-lg text-aqua font-semibold mb-2">Key Achievements</h5>
+                        <h5 className="text-base md:text-lg text-aqua font-semibold mb-2">Key Achievements</h5>
                         <ul className="list-disc pl-6 space-y-3">
                           {project.achievements.map((a, i) => (
-                            <li key={i} className="text-lg leading-relaxed">{a}</li>
+                            <li key={i} className="text-base md:text-lg leading-relaxed">{a}</li>
                           ))}
                         </ul>
                       </div>
                     )}
                   </div>
-                </div>
-              </Section>
-            ))}
-          </div>
-        </TypedSection>
-
-        {/* Education */}
-        <TypedSection heading="Education">
-          <div className="space-y-8">
-            {resumeData.education.map((edu, index) => (
-              <Section key={index}>
-                <div className="space-y-4">
-                  <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
-                    <div>
-                      <h4 className="text-2xl font-semibold text-green-bright">{edu.degree}</h4>
-                      <div className="text-foreground/60 text-lg">{edu.school} - {edu.location}</div>
-                    </div>
-                    <div className="text-foreground/60 text-lg font-medium">{edu.period}</div>
-                  </div>
-                  {edu.achievements.length > 0 && (
-                    <ul className="list-disc pl-6 space-y-3">
-                      {edu.achievements.map((a, i) => (
-                        <li key={i} className="text-lg leading-relaxed">{a}</li>
-                      ))}
-                    </ul>
-                  )}
                 </div>
               </Section>
             ))}
@@ -385,24 +302,25 @@ function SkillsSection() {
 
   return (
     <div ref={ref} className="space-y-8">
-      <h3 className="text-3xl font-bold text-yellow-bright" style={{ minHeight: "1.2em" }}>
+      <h3 className="text-2xl md:text-3xl font-bold text-yellow-bright" style={{ minHeight: "1.2em" }}>
         {visible ? displayed : "\u00A0"}
         {visible && !done && <span className="animate-pulse text-foreground/40">|</span>}
       </h3>
 
       <div
-        className="grid grid-cols-1 md:grid-cols-2 gap-8 transition-all duration-500 ease-out"
+        className="grid grid-cols-1 md:grid-cols-2 gap-8 transition-[opacity,transform] duration-500 ease-out"
         style={{
+          willChange: "transform, opacity",
           opacity: done ? 1 : 0,
-          transform: done ? "translateY(0)" : "translateY(12px)",
+          transform: done ? "translate3d(0,0,0)" : "translate3d(0,12px,0)",
         }}
       >
         <div className="space-y-4">
-          <h4 className="text-2xl font-semibold text-green-bright">Technical Skills</h4>
+          <h4 className="text-xl md:text-2xl font-semibold text-green-bright">Technical Skills</h4>
           <SkillTags skills={resumeData.skills.technical} trigger={done} />
         </div>
         <div className="space-y-4">
-          <h4 className="text-2xl font-semibold text-green-bright">Soft Skills</h4>
+          <h4 className="text-xl md:text-2xl font-semibold text-green-bright">Soft Skills</h4>
           <SkillTags skills={resumeData.skills.soft} trigger={done} />
         </div>
       </div>

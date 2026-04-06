@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { prefersReducedMotion } from "@/lib/reduced-motion";
 
 interface AnimateInProps {
   children: React.ReactNode;
@@ -9,13 +10,28 @@ interface AnimateInProps {
 export function AnimateIn({ children, delay = 0, threshold = 0.15 }: AnimateInProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const [skip, setSkip] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
+    if (prefersReducedMotion()) {
+      setSkip(true);
+      setVisible(true);
+      return;
+    }
+
     const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) {
+    const inView = rect.top < window.innerHeight && rect.bottom > 0;
+    const isReload = (performance.getEntriesByType?.("navigation")?.[0] as PerformanceNavigationTiming)?.type === "reload";
+
+    if (inView && isReload) {
+      setSkip(true);
+      setVisible(true);
+      return;
+    }
+    if (inView) {
       requestAnimationFrame(() => setVisible(true));
       return;
     }
@@ -37,11 +53,12 @@ export function AnimateIn({ children, delay = 0, threshold = 0.15 }: AnimateInPr
   return (
     <div
       ref={ref}
-      className="transition-all duration-700 ease-out"
-      style={{
+      className={skip ? "" : "transition-[opacity,transform] duration-700 ease-out"}
+      style={skip ? {} : {
         transitionDelay: `${delay}ms`,
+        willChange: "transform, opacity",
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(24px)",
+        transform: visible ? "translate3d(0,0,0)" : "translate3d(0,24px,0)",
       }}
     >
       {children}

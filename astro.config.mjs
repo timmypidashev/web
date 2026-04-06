@@ -12,6 +12,7 @@ export default defineConfig({
   output: "server",
   adapter: vercel(),
   site: "https://timmypidashev.dev",
+  devToolbar: { enabled: false },
   build: {
     // Enable build-time optimizations
     inlineStylesheets: "auto",

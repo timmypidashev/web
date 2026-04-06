@@ -1,5 +1,6 @@
 import type { CollectionEntry } from "astro:content";
 import { AnimateIn } from "@/components/animate-in";
+import { TypedText } from "@/components/typed-text";
 
 interface ProjectListProps {
   projects: CollectionEntry<"projects">[];
@@ -7,20 +8,22 @@ interface ProjectListProps {
 
 export function ProjectList({ projects }: ProjectListProps) {
   return (
-    <div className="w-full max-w-6xl mx-auto pt-24 sm:pt-32 px-4">
-      <AnimateIn>
-        <h1 className="text-2xl sm:text-3xl font-bold text-blue mb-12 text-center leading-relaxed">
-          Here's what I've been <br className="sm:hidden" />
-          building lately
-        </h1>
-      </AnimateIn>
+    <div className="w-full max-w-6xl mx-auto pt-12 md:pt-24 lg:pt-32 px-4">
+      <div className="mb-12 text-center">
+        <TypedText
+          text="Here's what I've been building lately"
+          as="h1"
+          className="text-2xl sm:text-3xl font-bold text-blue leading-relaxed"
+          speed={20}
+        />
+      </div>
 
       <ul className="space-y-6 md:space-y-10">
         {projects.map((project, i) => (
           <AnimateIn key={project.id} delay={i * 80}>
             <li className="group">
               <a href={`/projects/${project.id}`} className="block">
-                <article className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 p-2 md:p-4 border-b border-foreground/20 last:border-b-0 rounded-lg group-hover:outline group-hover:outline-2 group-hover:outline-blue transition-all duration-200">
+                <article className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 p-2 md:p-4 border-b border-foreground/20 last:border-b-0 rounded-lg group-hover:outline group-hover:outline-2 group-hover:outline-blue transition-[outline-color] duration-200">
                   {/* Image */}
                   <div className="w-full md:w-1/3 aspect-[16/9] overflow-hidden rounded-lg bg-foreground/5 flex-shrink-0">
                     {project.data.image ? (

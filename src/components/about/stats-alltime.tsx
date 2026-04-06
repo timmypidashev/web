@@ -60,21 +60,23 @@ const Stats = () => {
 
     const totalSeconds = stats.total_seconds;
     const duration = 2000;
-    const steps = 60;
-    let currentStep = 0;
+    let start: number | null = null;
+    let rafId: number;
 
-    const timer = setInterval(() => {
-      currentStep += 1;
-      if (currentStep >= steps) {
-        setCount(totalSeconds);
-        clearInterval(timer);
-        return;
+    const step = (timestamp: number) => {
+      if (!start) start = timestamp;
+      const elapsed = timestamp - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      setCount(Math.floor(totalSeconds * eased));
+
+      if (progress < 1) {
+        rafId = requestAnimationFrame(step);
       }
-      const progress = 1 - Math.pow(1 - currentStep / steps, 4);
-      setCount(Math.floor(totalSeconds * progress));
-    }, duration / steps);
+    };
 
-    return () => clearInterval(timer);
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
   }, [isVisible, stats]);
 
   if (error) return null;
@@ -88,25 +90,25 @@ const Stats = () => {
 
   return (
     <div ref={sectionRef} className="flex flex-col items-center justify-center min-h-[50vh] gap-6">
-      <div className={skipAnim ? "text-2xl opacity-80" : `text-2xl opacity-0 ${isVisible ? "animate-fade-in-first" : ""}`}>
+      <div className={skipAnim ? "text-lg md:text-2xl opacity-80" : `text-lg md:text-2xl opacity-0 ${isVisible ? "animate-fade-in-first" : ""}`}>
         I've spent
       </div>
 
       <div className="relative">
-        <div className="text-8xl text-center relative z-10">
+        <div className="text-5xl md:text-8xl text-center relative z-10">
           <span className="font-bold relative">
             <span className={skipAnim ? "bg-gradient-text" : `bg-gradient-text opacity-0 ${isVisible ? "animate-fade-in-second" : ""}`}>
               {formattedHours}
             </span>
           </span>
-          <span className={skipAnim ? "text-4xl opacity-60 ml-4" : `text-4xl opacity-0 ${isVisible ? "animate-slide-in-hours" : ""}`}>
+          <span className={skipAnim ? "text-2xl md:text-4xl opacity-60 ml-4" : `text-2xl md:text-4xl opacity-0 ${isVisible ? "animate-slide-in-hours" : ""}`}>
             hours
           </span>
         </div>
       </div>
 
       <div className="flex flex-col items-center gap-3 text-center">
-        <div className={skipAnim ? "text-xl opacity-80" : `text-xl opacity-0 ${isVisible ? "animate-fade-in-third" : ""}`}>
+        <div className={skipAnim ? "text-base md:text-xl opacity-80" : `text-base md:text-xl opacity-0 ${isVisible ? "animate-fade-in-third" : ""}`}>
           writing code & building apps
         </div>
         <div className={skipAnim ? "flex items-center gap-3 text-lg opacity-60" : `flex items-center gap-3 text-lg opacity-0 ${isVisible ? "animate-fade-in-fourth" : ""}`}>

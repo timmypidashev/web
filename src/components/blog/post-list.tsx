@@ -36,7 +36,7 @@ export const BlogPostList = ({ posts }: BlogPostListProps) => {
                 href={`/blog/${post.id}`}
                 className="block"
               >
-                <article className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 p-2 md:p-4 border-b border-foreground/20 last:border-b-0 rounded-lg group-hover:outline group-hover:outline-2 group-hover:outline-purple transition-all duration-200">
+                <article className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 p-2 md:p-4 border-b border-foreground/20 last:border-b-0 rounded-lg group-hover:outline group-hover:outline-2 group-hover:outline-purple transition-[outline-color] duration-200">
                   {/* Image container with fixed aspect ratio */}
                   <div className="w-full md:w-1/3 aspect-[16/9] overflow-hidden rounded-lg bg-background flex-shrink-0">
                     <img

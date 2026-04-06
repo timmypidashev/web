@@ -131,7 +131,7 @@ const DetailedStats = () => {
         <>
           {/* Header */}
           <h2
-            className={`text-2xl md:text-4xl font-bold text-center text-yellow-bright ${skipAnim ? "" : "transition-all duration-700 ease-out"}`}
+            className={`text-2xl md:text-4xl font-bold text-center text-yellow-bright ${skipAnim ? "" : "transition-[opacity,transform] duration-700 ease-out"}`}
             style={skipAnim ? {} : {
               opacity: visible ? 1 : 0,
               transform: visible ? "translateY(0)" : "translateY(20px)",
@@ -147,7 +147,7 @@ const DetailedStats = () => {
               return (
                 <div
                   key={card.title}
-                  className={`bg-background border border-foreground/10 rounded-lg p-6 ${card.borderHover} ${skipAnim ? "" : "transition-all duration-500 ease-out"}`}
+                  className={`bg-background/50 border border-foreground/10 rounded-lg p-6 ${card.borderHover} ${skipAnim ? "" : "transition-[opacity,transform] duration-500 ease-out"}`}
                   style={skipAnim ? {} : {
                     transitionDelay: `${150 + i * 100}ms`,
                     opacity: visible ? 1 : 0,
@@ -174,7 +174,7 @@ const DetailedStats = () => {
 
           {/* Languages */}
           <div
-            className={`bg-background border border-foreground/10 rounded-lg p-6 hover:border-purple-bright/50 ${skipAnim ? "" : "transition-all duration-700 ease-out"}`}
+            className={`bg-background/50 border border-foreground/10 rounded-lg p-6 hover:border-purple-bright/50 ${skipAnim ? "" : "transition-[opacity,transform] duration-700 ease-out"}`}
             style={skipAnim ? {} : {
               transitionDelay: "550ms",
               opacity: visible ? 1 : 0,
@@ -194,9 +194,11 @@ const DetailedStats = () => {
                       <div
                         className={`h-full ${lang.color} rounded-full`}
                         style={{
-                          width: visible ? `${lang.percent}%` : "0%",
+                          width: `${lang.percent}%`,
                           opacity: 0.85,
-                          transition: skipAnim ? "none" : `width 1s ease-out ${700 + i * 80}ms`,
+                          transform: visible ? "scaleX(1)" : "scaleX(0)",
+                          transformOrigin: "left",
+                          transition: skipAnim ? "none" : `transform 1s ease-out ${700 + i * 80}ms`,
                         }}
                       />
                     </div>
@@ -212,7 +214,7 @@ const DetailedStats = () => {
           {/* Activity Grid */}
           {activity && (
             <div
-              className={skipAnim ? "" : "transition-all duration-700 ease-out"}
+              className={skipAnim ? "" : "transition-[opacity,transform] duration-700 ease-out"}
               style={skipAnim ? {} : {
                 transitionDelay: "750ms",
                 opacity: visible ? 1 : 0,

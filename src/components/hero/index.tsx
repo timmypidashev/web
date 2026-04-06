@@ -72,7 +72,7 @@ export default function Hero() {
 
   return (
     <div className="flex justify-center items-center min-h-screen pointer-events-none">
-      <div className="text-4xl font-bold text-center pointer-events-none [&_a]:pointer-events-auto">
+      <div className="text-2xl md:text-4xl font-bold text-center pointer-events-none [&_a]:pointer-events-auto">
         <Typewriter
           options={typewriterOptions}
           onInit={handleInit}

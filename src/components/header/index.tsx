@@ -92,7 +92,7 @@ export default function Header({ transparent = false }: { transparent?: boolean 
       `}
     >
       <div className={`
-        w-full flex flex-row items-center justify-center
+        w-full hidden lg:flex flex-row items-center justify-center
         pointer-events-none
         ${!isIndexPage ? 'bg-background md:bg-transparent' : ''}
       `}>

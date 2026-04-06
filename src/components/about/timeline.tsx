@@ -87,7 +87,7 @@ function TimelineCard({ item, index }: { item: (typeof timelineItems)[number]; i
             absolute -left-8 sm:left-1/2 w-6 h-6 sm:w-8 sm:h-8 bg-background
             rounded-full border-2 border-yellow-bright sm:-translate-x-1/2
             flex items-center justify-center z-10
-            ${skip ? "" : "transition-all duration-500"}
+            ${skip ? "" : "transition-[opacity,transform] duration-500"}
             ${visible ? "scale-100 opacity-100" : "scale-0 opacity-0"}
           `}
         >
@@ -99,7 +99,7 @@ function TimelineCard({ item, index }: { item: (typeof timelineItems)[number]; i
           className={`
             w-full sm:w-[calc(50%-32px)]
             ${isLeft ? "sm:pr-8 md:pr-12" : "sm:pl-8 md:pl-12"}
-            ${skip ? "" : "transition-all duration-700 ease-out"}
+            ${skip ? "" : "transition-[opacity,transform] duration-700 ease-out"}
             ${visible
               ? "opacity-100 translate-x-0"
               : `opacity-0 ${isLeft ? "sm:translate-x-8" : "sm:-translate-x-8"} translate-y-4 sm:translate-y-0`
@@ -168,8 +168,8 @@ export default function Timeline() {
         <div className="absolute left-4 sm:left-1/2 h-full w-0.5 -translate-x-1/2">
           <div
             ref={lineRef}
-            className="w-full bg-foreground/10 transition-all duration-[1500ms] ease-out origin-top"
-            style={{ height: `${lineHeight}%` }}
+            className="w-full h-full bg-foreground/10 transition-transform duration-[1500ms] ease-out origin-top"
+            style={{ transform: `scaleY(${lineHeight / 100})` }}
           />
         </div>
 

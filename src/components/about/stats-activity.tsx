@@ -1,3 +1,4 @@
+import { useState } from "react";
 
 interface ActivityDay {
   grand_total: { total_seconds: number };
@@ -9,6 +10,7 @@ interface ActivityGridProps {
 }
 
 export const ActivityGrid = ({ data }: ActivityGridProps) => {
+  const [tapped, setTapped] = useState<string | null>(null);
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -46,7 +48,7 @@ export const ActivityGrid = ({ data }: ActivityGridProps) => {
   }
 
   return (
-    <div className="bg-background border border-foreground/10 rounded-lg p-6 hover:border-foreground/20 transition-colors">
+    <div className="bg-background/50 border border-foreground/10 rounded-lg p-6 hover:border-foreground/20 transition-colors">
       <div className="text-lg text-aqua-bright mb-6">Activity</div>
 
       <div className="flex gap-4">
@@ -69,12 +71,13 @@ export const ActivityGrid = ({ data }: ActivityGridProps) => {
                     <div
                       key={dayIndex}
                       className={`w-3 h-3 rounded-sm ${getColorClass(intensity)}
-                        hover:ring-1 hover:ring-foreground/30 transition-all cursor-pointer
+                        hover:ring-1 hover:ring-foreground/30 transition-colors cursor-pointer
                         group relative`}
+                      onClick={() => setTapped(tapped === day.date ? null : day.date)}
                     >
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-2
-                        bg-background border border-foreground/10 rounded-md opacity-0
-                        group-hover:opacity-100 transition-opacity z-10 whitespace-nowrap text-xs">
+                      <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-2
+                        bg-background border border-foreground/10 rounded-md transition-opacity z-10 whitespace-nowrap text-xs
+                        ${tapped === day.date ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
                         {hours.toFixed(1)} hours on {day.date}
                       </div>
                     </div>

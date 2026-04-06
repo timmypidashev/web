@@ -8,6 +8,7 @@ import Background from "@/components/background";
 import ThemeSwitcher from "@/components/theme-switcher";
 import AnimationSwitcher from "@/components/animation-switcher";
 import VercelAnalytics from "@/components/analytics";
+import MobileNav from "@/components/mobile-nav";
 import { THEME_LOADER_SCRIPT, THEME_NAV_SCRIPT } from "@/lib/themes/loader";
 import { ANIMATION_LOADER_SCRIPT, ANIMATION_NAV_SCRIPT } from "@/lib/animations/loader";
 
@@ -55,8 +56,13 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
   </head>
   <body class="bg-background text-foreground min-h-screen flex flex-col">
     <Header client:load />
+    <!-- Mobile: full-screen background -->
+    <div class="lg:hidden">
+      <Background layout="index" client:only="react" transition:persist />
+    </div>
     <main class="flex-1 flex flex-col">
-      <div class="max-w-5xl mx-auto pt-12 px-4 py-8 flex-1">
+      <div class="max-w-5xl mx-auto pt-2 lg:pt-12 px-4 py-4 lg:py-8 pb-20 lg:pb-8 flex-1 relative z-10">
+        <!-- Desktop: sidebar strips -->
         <Background layout="content" position="right" client:only="react" transition:persist />
         <div>
           <slot />
@@ -70,6 +76,7 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
     <ThemeSwitcher client:only="react" transition:persist />
     <AnimationSwitcher client:only="react" transition:persist />
     <VercelAnalytics client:load />
+    <MobileNav client:load />
     <script is:inline set:html={`window.scrollTo(0,0);` + THEME_NAV_SCRIPT} />
     <script is:inline set:html={ANIMATION_NAV_SCRIPT} />
   </body>

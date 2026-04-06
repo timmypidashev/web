@@ -5,6 +5,7 @@ import ContentLayout from "@/layouts/content.astro";
 import { getArticleSchema } from "@/lib/structuredData";
 import { blogWebsite } from "@/lib/structuredData";
 import { Comments } from "@/components/blog/comments";
+import { StreamContent } from "@/components/stream-content";
 import { incrementViews, getViews } from "@/lib/views";
 
 // This is a dynamic route in SSR mode
@@ -110,9 +111,11 @@ const jsonLd = {
           </span>
         ))}
       </div>
-      <div class="prose prose-invert prose-lg max-w-none">
-        <Content />
-      </div>
+      <StreamContent client:load>
+        <div class="prose prose-invert prose-lg max-w-none">
+          <Content />
+        </div>
+      </StreamContent>
     </article>
     <Comments client:idle />
   </div>
