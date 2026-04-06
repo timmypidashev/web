@@ -1,6 +1,15 @@
 module.exports = {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   theme: {
+    screens: {
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
+      // Desktop = wide screen + non-touch pointer. Used for mobile/desktop layout split.
+      desk: { raw: "(min-width: 1024px) and (hover: hover) and (pointer: fine)" },
+    },
     extend: {
       fontFamily: {
         "comic-code": ["Comic Code", "monospace"],

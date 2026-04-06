@@ -333,11 +333,11 @@ const Background: React.FC<BackgroundProps> = ({
   const getContainerClasses = () => {
     if (isIndex) {
       return mobileOnly
-        ? "fixed inset-0 -z-10 lg:hidden"
+        ? "fixed inset-0 -z-10 desk:hidden"
         : "fixed inset-0 -z-10";
     }
 
-    const baseClasses = "fixed top-0 bottom-0 hidden lg:block -z-10";
+    const baseClasses = "fixed top-0 bottom-0 hidden desk:block -z-10";
     return position === "left"
       ? `${baseClasses} left-0`
       : `${baseClasses} right-0`;

@@ -54,7 +54,7 @@ export default function MobileNav({ transparent = false }: { transparent?: boole
   return (
     <>
       <nav
-        className={`fixed bottom-0 left-0 right-0 z-50 lg:hidden transition-transform duration-300 ${
+        className={`fixed bottom-0 left-0 right-0 z-50 desk:hidden transition-transform duration-300 ${
           visible ? "translate-y-0" : "translate-y-full"
         } ${
           transparent

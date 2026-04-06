@@ -41,7 +41,7 @@ export default function AnimationSwitcher() {
 
   return (
     <div
-      className="fixed bottom-4 left-4 z-[101] pointer-events-auto hidden lg:block"
+      className="fixed bottom-4 left-4 z-[101] pointer-events-auto hidden desk:block"
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
       onClick={handleClick}

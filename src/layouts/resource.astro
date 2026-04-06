@@ -40,7 +40,7 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
       handleFocus={false}
     />
     <script is:inline>
-      if (window.innerWidth < 1024) {
+      if (window.innerWidth < 1024 || navigator.maxTouchPoints > 0) {
         document.addEventListener('click', function(e) {
           var a = e.target.closest('a[href]');
           if (a && a.href && !a.target && a.origin === location.origin) {
