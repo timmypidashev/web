@@ -20,8 +20,17 @@ export interface ThemeColors {
 
 export interface Theme {
   id: string;
+  family: string;
+  label: string;
   name: string;
   type: "dark" | "light";
   colors: ThemeColors;
   canvasPalette: [number, number, number][];
+}
+
+export interface ThemeFamily {
+  id: string;
+  name: string;
+  themes: Theme[];
+  default: string;
 }

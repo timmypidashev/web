@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { X, ExternalLink } from "lucide-react";
-import { THEMES } from "@/lib/themes";
+import { FAMILIES, THEMES } from "@/lib/themes";
 import { applyTheme, getStoredThemeId } from "@/lib/themes/engine";
 import { ANIMATION_IDS, ANIMATION_LABELS, type AnimationId } from "@/lib/animations";
 
@@ -11,12 +11,6 @@ const footerLinks = [
   { href: "https://github.com/timmypidashev/web", label: "Source", color: "text-purple" },
 ];
 
-const themeOptions = [
-  { id: "darkbox", label: "classic", color: "text-yellow-bright", activeBg: "bg-yellow-bright/15", activeBorder: "border-yellow-bright/40" },
-  { id: "darkbox-retro", label: "retro", color: "text-orange-bright", activeBg: "bg-orange-bright/15", activeBorder: "border-orange-bright/40" },
-  { id: "darkbox-dim", label: "dim", color: "text-purple-bright", activeBg: "bg-purple-bright/15", activeBorder: "border-purple-bright/40" },
-];
-
 const animOptions = [
   { id: "shuffle", color: "text-red-bright", activeBg: "bg-red-bright/15", activeBorder: "border-red-bright/40" },
   { id: "game-of-life", color: "text-green-bright", activeBg: "bg-green-bright/15", activeBorder: "border-green-bright/40" },
@@ -24,6 +18,17 @@ const animOptions = [
   { id: "confetti", color: "text-yellow-bright", activeBg: "bg-yellow-bright/15", activeBorder: "border-yellow-bright/40" },
   { id: "asciiquarium", color: "text-aqua-bright", activeBg: "bg-aqua-bright/15", activeBorder: "border-aqua-bright/40" },
   { id: "pipes", color: "text-blue-bright", activeBg: "bg-blue-bright/15", activeBorder: "border-blue-bright/40" },
+];
+
+// Cycle through accent colors for variant buttons
+const variantColors = [
+  { color: "text-yellow-bright", activeBg: "bg-yellow-bright/15", activeBorder: "border-yellow-bright/40" },
+  { color: "text-orange-bright", activeBg: "bg-orange-bright/15", activeBorder: "border-orange-bright/40" },
+  { color: "text-purple-bright", activeBg: "bg-purple-bright/15", activeBorder: "border-purple-bright/40" },
+  { color: "text-blue-bright", activeBg: "bg-blue-bright/15", activeBorder: "border-blue-bright/40" },
+  { color: "text-green-bright", activeBg: "bg-green-bright/15", activeBorder: "border-green-bright/40" },
+  { color: "text-red-bright", activeBg: "bg-red-bright/15", activeBorder: "border-red-bright/40" },
+  { color: "text-aqua-bright", activeBg: "bg-aqua-bright/15", activeBorder: "border-aqua-bright/40" },
 ];
 
 export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -37,7 +42,6 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
   const handleTheme = (id: string) => {
     applyTheme(id);
     setCurrentTheme(id);
-    onClose();
   };
 
   const handleAnim = (id: string) => {
@@ -47,6 +51,8 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
     setCurrentAnim(id);
     onClose();
   };
+
+  const currentFamily = THEMES[currentTheme]?.family ?? FAMILIES[0].id;
 
   return (
     <>
@@ -63,7 +69,7 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
         className={`fixed left-0 right-0 bottom-0 z-[70] bg-background border-t border-foreground/10 rounded-t-2xl transition-transform duration-300 ease-out ${
           open ? "translate-y-0" : "translate-y-full"
         }`}
-        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)", maxHeight: "80vh", overflowY: "auto" }}
       >
         <div className="flex items-center justify-between px-5 pt-4 pb-2">
           <span className="text-foreground/80 font-bold text-lg">Settings</span>
@@ -76,20 +82,42 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
           {/* Theme */}
           <div>
             <div className="text-foreground/50 text-xs uppercase tracking-wider mb-2">Theme</div>
-            <div className="flex gap-2">
-              {themeOptions.map((opt) => (
+
+            {/* Family selector */}
+            <div className="flex gap-2 mb-3 overflow-x-auto pb-1">
+              {FAMILIES.map((family) => (
                 <button
-                  key={opt.id}
-                  onClick={() => handleTheme(opt.id)}
-                  className={`flex-1 py-2.5 rounded-lg text-sm font-medium border transition-colors duration-200 ${
-                    currentTheme === opt.id
-                      ? `${opt.activeBg} ${opt.color} ${opt.activeBorder}`
-                      : "bg-foreground/5 text-foreground/40 border-transparent hover:text-foreground/60"
+                  key={family.id}
+                  onClick={() => handleTheme(family.default)}
+                  className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors duration-200 ${
+                    currentFamily === family.id
+                      ? "bg-foreground/10 text-foreground/80 border-foreground/20"
+                      : "bg-foreground/5 text-foreground/30 border-transparent hover:text-foreground/50"
                   }`}
                 >
-                  {opt.label}
+                  {family.name}
                 </button>
               ))}
+            </div>
+
+            {/* Variant selector for current family */}
+            <div className="flex gap-2">
+              {FAMILIES.find((f) => f.id === currentFamily)?.themes.map((theme, i) => {
+                const style = variantColors[i % variantColors.length];
+                return (
+                  <button
+                    key={theme.id}
+                    onClick={() => handleTheme(theme.id)}
+                    className={`flex-1 py-2.5 rounded-lg text-sm font-medium border transition-colors duration-200 ${
+                      currentTheme === theme.id
+                        ? `${style.activeBg} ${style.color} ${style.activeBorder}`
+                        : "bg-foreground/5 text-foreground/40 border-transparent hover:text-foreground/60"
+                    }`}
+                  >
+                    {theme.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 

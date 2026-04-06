@@ -1,4 +1,4 @@
-import { THEMES, DEFAULT_THEME_ID } from "@/lib/themes";
+import { THEMES, FAMILIES, DEFAULT_THEME_ID } from "@/lib/themes";
 import { CSS_PROPS } from "@/lib/themes/props";
 import type { Theme } from "@/lib/themes/types";
 
@@ -11,6 +11,26 @@ export function saveTheme(id: string): void {
   localStorage.setItem("theme", id);
 }
 
+/** Cycle to the next theme family, jumping to its default variant. */
+export function getNextFamily(currentId: string): Theme {
+  const current = THEMES[currentId];
+  const familyId = current?.family ?? FAMILIES[0].id;
+  const idx = FAMILIES.findIndex((f) => f.id === familyId);
+  const next = FAMILIES[(idx + 1) % FAMILIES.length];
+  return THEMES[next.default];
+}
+
+/** Cycle to the next variant within the current family. */
+export function getNextVariant(currentId: string): Theme {
+  const current = THEMES[currentId];
+  if (!current) return Object.values(THEMES)[0];
+  const family = FAMILIES.find((f) => f.id === current.family);
+  if (!family) return current;
+  const idx = family.themes.findIndex((t) => t.id === currentId);
+  return family.themes[(idx + 1) % family.themes.length];
+}
+
+// Keep for backward compat (cycles all themes linearly)
 export function getNextTheme(currentId: string): Theme {
   const list = Object.values(THEMES);
   const idx = list.findIndex((t) => t.id === currentId);
@@ -26,7 +46,6 @@ export function previewTheme(id: string): void {
   for (const [key, prop] of CSS_PROPS) {
     root.style.setProperty(prop, theme.colors[key]);
   }
-
 
   document.dispatchEvent(new CustomEvent("theme-changed", { detail: { id } }));
 }
