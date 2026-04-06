@@ -74,8 +74,8 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
         });
         document.addEventListener('astro:after-swap', function() {
           var m = getMask();
-          // Wait for React to hydrate before revealing
-          setTimeout(function() { m.classList.remove('active'); }, 50);
+          // Wait longer for canvas + overlays to hydrate on index page
+          setTimeout(function() { m.classList.remove('active'); }, 150);
         });
         // Mark SPA navigations so AnimateIn can detect them
         document.addEventListener('astro:after-swap', function() {

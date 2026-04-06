@@ -12,8 +12,9 @@ export default function Intro() {
     const rect = el.getBoundingClientRect();
     const inView = rect.top < window.innerHeight && rect.bottom > 0;
     const isReload = performance.getEntriesByType?.("navigation")?.[0]?.type === "reload";
+    const isSpaNav = !!(window as any).__astroNavigation;
 
-    if (inView && isReload) {
+    if (inView && (isReload || isSpaNav)) {
       setVisible(true);
       return;
     }
