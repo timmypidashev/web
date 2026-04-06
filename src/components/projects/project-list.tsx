@@ -1,6 +1,5 @@
 import type { CollectionEntry } from "astro:content";
 import { AnimateIn } from "@/components/animate-in";
-import { TypedText } from "@/components/typed-text";
 
 interface ProjectListProps {
   projects: CollectionEntry<"projects">[];
@@ -9,14 +8,11 @@ interface ProjectListProps {
 export function ProjectList({ projects }: ProjectListProps) {
   return (
     <div className="w-full max-w-6xl mx-auto pt-12 md:pt-24 lg:pt-32 px-4">
-      <div className="mb-12 text-center">
-        <TypedText
-          text="Here's what I've been building lately"
-          as="h1"
-          className="text-2xl sm:text-3xl font-bold text-blue leading-relaxed"
-          speed={20}
-        />
-      </div>
+      <AnimateIn>
+        <h1 className="text-2xl sm:text-3xl font-bold text-blue mb-12 text-center leading-relaxed">
+          Here's what I've been building lately
+        </h1>
+      </AnimateIn>
 
       <ul className="space-y-6 md:space-y-10">
         {projects.map((project, i) => (

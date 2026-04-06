@@ -1,5 +1,4 @@
 import { AnimateIn } from "@/components/animate-in";
-import { TypedText } from "@/components/typed-text";
 import { RssIcon, TagIcon, TrendingUpIcon } from "lucide-react";
 
 type BlogPost = {
@@ -32,14 +31,11 @@ const TaggedPosts = ({ tag, posts }: TaggedPostsProps) => {
   return (
     <div className="w-full max-w-6xl mx-auto">
       <div className="w-full px-4 pt-12 md:pt-24">
-        <div className="mb-3 text-center px-4">
-          <TypedText
-            text={`#${tag}`}
-            as="h1"
-            className="text-2xl sm:text-3xl font-bold text-purple leading-relaxed"
-            speed={20}
-          />
-        </div>
+        <AnimateIn>
+          <h1 className="text-2xl sm:text-3xl font-bold text-purple mb-3 text-center px-4 leading-relaxed">
+            #{tag}
+          </h1>
+        </AnimateIn>
         <AnimateIn delay={100}>
           <div className="flex flex-wrap justify-center gap-4 mb-12 text-sm sm:text-base">
             <a

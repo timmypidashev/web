@@ -9,29 +9,34 @@ function typeInHeading(el: HTMLElement): Promise<void> {
     const textLength = text.length;
     if (textLength === 0) { resolve(); return; }
 
-    // Preserve height
-    const rect = el.getBoundingClientRect();
-    el.style.minHeight = `${rect.height}px`;
-
-    // Speed scales with length
     const speed = Math.max(8, Math.min(25, 600 / textLength));
-
-    // Store original HTML, clear visible text but keep element structure
     const originalHTML = el.innerHTML;
-    el.textContent = "";
+
+    // Wrap each character in a span with opacity:0
+    // The full text stays in the DOM so layout/wrapping is correct from the start
+    el.innerHTML = "";
+    const chars: HTMLSpanElement[] = [];
+    for (const char of text) {
+      const span = document.createElement("span");
+      span.textContent = char;
+      span.style.opacity = "0";
+      chars.push(span);
+      el.appendChild(span);
+    }
+
     el.style.opacity = "1";
     el.style.transform = "translate3d(0,0,0)";
 
     let i = 0;
     const step = () => {
-      if (i >= text.length) {
+      if (i >= chars.length) {
+        // Restore original HTML to clean up spans
         el.innerHTML = originalHTML;
-        el.style.minHeight = "";
         resolve();
         return;
       }
+      chars[i].style.opacity = "1";
       i++;
-      el.textContent = text.slice(0, i);
       setTimeout(step, speed);
     };
     step();

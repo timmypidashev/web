@@ -59,7 +59,7 @@ export default function MobileNav({ transparent = false }: { transparent?: boole
         } ${
           transparent
             ? "bg-transparent"
-            : "bg-background/30 backdrop-blur-sm"
+            : "bg-background border-t border-foreground/10"
         }`}
         style={{
           paddingBottom: "env(safe-area-inset-bottom, 0px)",

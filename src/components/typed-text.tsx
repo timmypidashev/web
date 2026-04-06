@@ -79,17 +79,64 @@ export function TypedText({
   speed = 12,
   cursor = true,
 }: TypedTextProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const tagRef = useRef<HTMLElement>(null);
   const { ref, visible } = useScrollVisible();
-  const { displayed, done } = useTypewriter(text, visible, speed);
+  const [done, setDone] = useState(false);
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    if (!visible || started) return;
+    setStarted(true);
+
+    if (prefersReducedMotion()) {
+      setDone(true);
+      return;
+    }
+
+    const el = tagRef.current;
+    if (!el) return;
+
+    // Wrap each character in an invisible span — layout stays correct
+    el.textContent = "";
+    const chars: HTMLSpanElement[] = [];
+    for (const char of text) {
+      const span = document.createElement("span");
+      span.textContent = char;
+      span.style.opacity = "0";
+      chars.push(span);
+      el.appendChild(span);
+    }
+
+    const textLength = text.length;
+    const charSpeed = Math.max(8, Math.min(speed, 600 / textLength));
+
+    let i = 0;
+    const step = () => {
+      if (i >= chars.length) {
+        el.textContent = text;
+        setDone(true);
+        return;
+      }
+      chars[i].style.opacity = "1";
+      i++;
+      setTimeout(step, charSpeed);
+    };
+    step();
+  }, [visible, started, text, speed]);
 
   return (
     <div ref={ref}>
-      <Tag className={className} style={{ minHeight: "1.2em" }}>
-        {visible ? displayed : "\u00A0"}
-        {cursor && visible && !done && (
-          <span className="animate-pulse text-foreground/40">|</span>
-        )}
+      <Tag
+        ref={tagRef as any}
+        className={className}
+        style={{ minHeight: "1.2em" }}
+      >
+        {!started ? "\u00A0" : done ? text : null}
       </Tag>
+      {cursor && started && !done && (
+        <span className="animate-pulse text-foreground/40">|</span>
+      )}
     </div>
   );
 }
