@@ -40,28 +40,51 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
       handleFocus={false}
     />
     <style>
-      ::view-transition-new(:root) {
-        animation: none;
-      }
+      ::view-transition-new(:root),
       ::view-transition-old(:root) {
         animation: none;
+      }
+      #nav-mask {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: rgb(var(--color-background));
+        pointer-events: none;
+        opacity: 0;
+        transition: none;
+      }
+      #nav-mask.active {
+        opacity: 1;
       }
     </style>
     <script is:inline set:html={THEME_LOADER_SCRIPT} />
     <script is:inline set:html={ANIMATION_LOADER_SCRIPT} />
-  
-<script>
-  document.addEventListener('astro:before-swap', (e) => {
-    // Instantly hide old page to prevent flash
-    document.documentElement.style.opacity = '0';
-  });
-  document.addEventListener('astro:after-swap', () => {
-    // Show new page immediately
-    document.documentElement.style.opacity = '1';
-  });
-</script>
+    <script is:inline>
+      (function() {
+        function getMask() {
+          var m = document.getElementById('nav-mask');
+          if (!m) {
+            m = document.createElement('div');
+            m.id = 'nav-mask';
+            document.documentElement.appendChild(m);
+          }
+          return m;
+        }
+        document.addEventListener('astro:before-preparation', function() {
+          getMask().classList.add('active');
+        });
+        document.addEventListener('astro:after-swap', function() {
+          var m = getMask();
+          setTimeout(function() { m.classList.remove('active'); }, 50);
+        });
+        document.addEventListener('astro:after-swap', function() {
+          window.__astroNavigation = true;
+        });
+      })();
+    </script>
   </head>
   <body class="bg-background text-foreground min-h-screen flex flex-col">
+    <div id="nav-mask"></div>
     <Header client:load />
     <main class="flex-1 flex flex-col">
       <div class="max-w-5xl mx-auto pt-2 lg:pt-12 px-4 py-4 lg:py-8 pb-20 lg:pb-8 flex-1 relative z-10">

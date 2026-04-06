@@ -25,8 +25,9 @@ export function AnimateIn({ children, delay = 0, threshold = 0.15 }: AnimateInPr
     const rect = el.getBoundingClientRect();
     const inView = rect.top < window.innerHeight && rect.bottom > 0;
     const isReload = (performance.getEntriesByType?.("navigation")?.[0] as PerformanceNavigationTiming)?.type === "reload";
+    const isSpaNav = !!(window as any).__astroNavigation;
 
-    if (inView && isReload) {
+    if (inView && (isReload || isSpaNav)) {
       setSkip(true);
       setVisible(true);
       return;
