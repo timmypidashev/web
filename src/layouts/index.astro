@@ -38,53 +38,10 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
     <link rel="icon" type="image/jpeg" href="/me.jpeg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <ClientRouter />
-    <style>
-      ::view-transition-new(:root),
-      ::view-transition-old(:root) {
-        animation: none;
-      }
-      #nav-mask {
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        background: rgb(var(--color-background));
-        pointer-events: none;
-        opacity: 0;
-        transition: none;
-      }
-      #nav-mask.active {
-        opacity: 1;
-      }
-    </style>
     <script is:inline set:html={THEME_LOADER_SCRIPT} />
     <script is:inline set:html={ANIMATION_LOADER_SCRIPT} />
-    <script is:inline>
-      (function() {
-        function getMask() {
-          var m = document.getElementById('nav-mask');
-          if (!m) {
-            m = document.createElement('div');
-            m.id = 'nav-mask';
-            document.documentElement.appendChild(m);
-          }
-          return m;
-        }
-        document.addEventListener('astro:before-preparation', function() {
-          getMask().classList.add('active');
-        });
-        document.addEventListener('astro:after-swap', function() {
-          var m = getMask();
-          setTimeout(function() { m.classList.remove('active'); }, 50);
-        });
-        // Mark SPA navigations so AnimateIn can detect them
-        document.addEventListener('astro:after-swap', function() {
-          window.__astroNavigation = true;
-        });
-      })();
-    </script>
 	</head>
   <body class="bg-background text-foreground overflow-hidden h-screen">
-    <div id="nav-mask"></div>
     <Header client:load transparent />
     <main>
       <Background layout="index" client:only="react" transition:persist />

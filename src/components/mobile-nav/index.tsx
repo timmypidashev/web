@@ -74,6 +74,7 @@ export default function MobileNav({ transparent = false }: { transparent?: boole
               <a
                 key={tab.href}
                 href={tab.href}
+                data-astro-reload
                 className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-1 ${
                   active ? tab.color : "text-foreground/40"
                 }`}
