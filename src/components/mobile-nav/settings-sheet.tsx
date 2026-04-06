@@ -5,10 +5,10 @@ import { applyTheme, getStoredThemeId } from "@/lib/themes/engine";
 import { ANIMATION_IDS, ANIMATION_LABELS, type AnimationId } from "@/lib/animations";
 
 const footerLinks = [
-  { href: "mailto:contact@timmypidashev.dev", label: "Contact", color: "text-green" },
-  { href: "https://github.com/timmypidashev", label: "Github", color: "text-yellow" },
-  { href: "https://www.linkedin.com/in/timothy-pidashev-4353812b8", label: "LinkedIn", color: "text-blue" },
-  { href: "https://github.com/timmypidashev/web", label: "Source", color: "text-purple" },
+  { href: "mailto:contact@timmypidashev.dev", label: "Contact", color: "text-green", activeBg: "bg-green/15", activeBorder: "border-green/40" },
+  { href: "https://github.com/timmypidashev", label: "Github", color: "text-yellow", activeBg: "bg-yellow/15", activeBorder: "border-yellow/40" },
+  { href: "https://www.linkedin.com/in/timothy-pidashev-4353812b8", label: "LinkedIn", color: "text-blue", activeBg: "bg-blue/15", activeBorder: "border-blue/40" },
+  { href: "https://github.com/timmypidashev/web", label: "Source", color: "text-purple", activeBg: "bg-purple/15", activeBorder: "border-purple/40" },
 ];
 
 const animOptions = [
@@ -144,14 +144,14 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
           {/* Links */}
           <div>
             <div className="text-foreground/50 text-xs uppercase tracking-wider mb-2">Links</div>
-            <div className="flex flex-wrap justify-center gap-3">
+            <div className="grid grid-cols-2 gap-2">
               {footerLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`${link.color} inline-flex items-center gap-1 text-sm`}
+                  className={`${link.activeBg} ${link.color} ${link.activeBorder} py-2.5 rounded-lg text-sm font-medium border text-center inline-flex items-center justify-center gap-1.5`}
                 >
                   {link.label}
                   <ExternalLink size={12} className="opacity-50" />
