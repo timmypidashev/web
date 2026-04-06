@@ -44,11 +44,7 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
         animation: none;
       }
       ::view-transition-old(:root) {
-        animation: 90ms ease-out both fade-out;
-      }
-      @keyframes fade-out {
-        from { opacity: 1; }
-        to { opacity: 0; }
+        animation: none;
       }
     </style>
     <script is:inline set:html={THEME_LOADER_SCRIPT} />

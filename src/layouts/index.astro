@@ -43,7 +43,7 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
 	</head>
   <body class="bg-background text-foreground overflow-hidden h-screen">
     <Header client:load transparent />
-    <main transition:animate="fade">
+    <main>
       <Background layout="index" client:only="react" transition:persist />
       <slot />
     </main>
