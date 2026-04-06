@@ -10,6 +10,7 @@ import { tokyonight } from "./families/tokyonight";
 import { solarized } from "./families/solarized";
 import { onedark } from "./families/onedark";
 import { monokai } from "./families/monokai";
+import { github } from "./families/github";
 
 export const DEFAULT_THEME_ID = "darkbox-retro";
 
@@ -25,6 +26,7 @@ export const FAMILIES: ThemeFamily[] = [
   solarized,
   onedark,
   monokai,
+  github,
 ];
 
 // Flat lookup — backward compatible with all existing consumers

@@ -17,6 +17,7 @@ export const GET: APIRoute = ({ url }) => {
   }
 
   const c = theme.colors;
+  const isLight = theme.type === "light";
   const fg = rgbToHex(c.foreground);
   const fgMuted = rgbToRgba(c.foreground, 0.6);
   const fgSubtle = rgbToRgba(c.foreground, 0.4);
@@ -31,8 +32,8 @@ export const GET: APIRoute = ({ url }) => {
   const surfaceAlpha = rgbToRgba(c.surface, 0.3);
   const surfaceBorder = rgbToRgba(c.surface, 0.5);
   const surfaceHover = rgbToRgba(c.surface, 0.6);
-  const bgTransparent = "rgba(0, 0, 0, 0.5)";
-  const bgSubtle = "rgba(0, 0, 0, 0.3)";
+  const bgTransparent = isLight ? rgbToRgba(c.foreground, 0.06) : rgbToRgba(c.foreground, 0.08);
+  const bgSubtle = isLight ? rgbToRgba(c.foreground, 0.04) : rgbToRgba(c.foreground, 0.05);
 
   const css = `
 main {
@@ -130,7 +131,7 @@ main {
 }
 
 main .pagination-loader-container {
-  background-image: url(https://github.com/images/modules/pulls/progressive-disclosure-line-dark.svg);
+  background-image: url(https://github.com/images/modules/pulls/progressive-disclosure-line${isLight ? "" : "-dark"}.svg);
 }
 
 .gsc-reactions-count { display: none; }
@@ -155,7 +156,7 @@ main .pagination-loader-container {
 .gsc-homepage-bg { background-color: transparent; }
 
 main .gsc-loading-image {
-  background-image: url(https://github.githubassets.com/images/mona-loading-dimmed.gif);
+  background-image: url(https://github.githubassets.com/images/mona-loading-${isLight ? "default" : "dimmed"}.gif);
 }
 
 .gsc-comment {
