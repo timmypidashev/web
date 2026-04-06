@@ -29,8 +29,9 @@ const Stats = () => {
     const inView = rect.top < window.innerHeight && rect.bottom > 0;
     const isReload = performance.getEntriesByType?.("navigation")?.[0]?.type === "reload";
     const isSpaNav = !!(window as any).__astroNavigation;
+    const mobile = window.innerWidth < 1024;
 
-    if (inView && (isReload || isSpaNav)) {
+    if (inView && (mobile || isReload || isSpaNav)) {
       setSkipAnim(true);
       setIsVisible(true);
       return;

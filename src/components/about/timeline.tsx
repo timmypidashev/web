@@ -53,7 +53,9 @@ function TimelineCard({ item, index }: { item: (typeof timelineItems)[number]; i
     const isReload = performance.getEntriesByType?.("navigation")?.[0]?.type === "reload";
     const isSpaNav = !!(window as any).__astroNavigation;
 
-    if (inView && (isReload || isSpaNav)) {
+    const mobile = window.innerWidth < 1024;
+
+    if (inView && (mobile || isReload || isSpaNav)) {
       setSkip(true);
       setVisible(true);
       return;

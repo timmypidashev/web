@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { prefersReducedMotion } from "@/lib/reduced-motion";
 
+function isMobile(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.innerWidth < 1024;
+}
+
 interface AnimateInProps {
   children: React.ReactNode;
   delay?: number;
@@ -27,7 +32,9 @@ export function AnimateIn({ children, delay = 0, threshold = 0.15 }: AnimateInPr
     const isReload = (performance.getEntriesByType?.("navigation")?.[0] as PerformanceNavigationTiming)?.type === "reload";
     const isSpaNav = !!(window as any).__astroNavigation;
 
-    if (inView && (isReload || isSpaNav)) {
+    // On mobile: skip animation for anything already in view (prevents flicker on navigation)
+    // On desktop: only skip on reload or SPA nav
+    if (inView && (isMobile() || isReload || isSpaNav)) {
       setSkip(true);
       setVisible(true);
       return;
