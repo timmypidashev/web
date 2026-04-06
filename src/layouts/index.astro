@@ -41,7 +41,7 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
     <script is:inline set:html={THEME_LOADER_SCRIPT} />
     <script is:inline set:html={ANIMATION_LOADER_SCRIPT} />
 	</head>
-  <body class="bg-background text-foreground">
+  <body class="bg-background text-foreground overflow-hidden h-screen">
     <Header client:load transparent />
     <main transition:animate="fade">
       <Background layout="index" client:only="react" transition:persist />

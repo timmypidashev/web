@@ -56,13 +56,22 @@ export function StreamContent({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    container.classList.remove("stream-hidden");
-
+    // Set inline opacity:0 on every block BEFORE removing the CSS class
+    // This prevents the flash of visible content between class removal and style application
     blocks.forEach((el) => {
       el.style.opacity = "0";
       el.style.transform = "translate3d(0,16px,0)";
-      el.style.transition = "opacity 0.6s ease-out, transform 0.6s ease-out";
-      el.style.willChange = "transform, opacity";
+    });
+
+    // Now safe to remove the CSS class — inline styles keep everything hidden
+    container.classList.remove("stream-hidden");
+
+    // Add transition properties in the next frame so the initial state is set first
+    requestAnimationFrame(() => {
+      blocks.forEach((el) => {
+        el.style.transition = "opacity 0.6s ease-out, transform 0.6s ease-out";
+        el.style.willChange = "transform, opacity";
+      });
     });
 
     const observer = new IntersectionObserver(

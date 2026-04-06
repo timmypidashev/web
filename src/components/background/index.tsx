@@ -77,11 +77,13 @@ function readBgFromCSS(): string {
 interface BackgroundProps {
   layout?: "index" | "sidebar" | "content";
   position?: "left" | "right";
+  mobileOnly?: boolean;
 }
 
 const Background: React.FC<BackgroundProps> = ({
   layout = "index",
   position = "left",
+  mobileOnly = false,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const engineRef = useRef<AnimationEngine | null>(null);
@@ -330,7 +332,9 @@ const Background: React.FC<BackgroundProps> = ({
 
   const getContainerClasses = () => {
     if (isIndex) {
-      return "fixed inset-0 -z-10";
+      return mobileOnly
+        ? "fixed inset-0 -z-10 lg:hidden"
+        : "fixed inset-0 -z-10";
     }
 
     const baseClasses = "fixed top-0 bottom-0 hidden lg:block -z-10";
