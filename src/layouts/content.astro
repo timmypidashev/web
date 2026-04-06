@@ -49,6 +49,17 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
     </style>
     <script is:inline set:html={THEME_LOADER_SCRIPT} />
     <script is:inline set:html={ANIMATION_LOADER_SCRIPT} />
+  
+<script>
+  document.addEventListener('astro:before-swap', (e) => {
+    // Instantly hide old page to prevent flash
+    document.documentElement.style.opacity = '0';
+  });
+  document.addEventListener('astro:after-swap', () => {
+    // Show new page immediately
+    document.documentElement.style.opacity = '1';
+  });
+</script>
   </head>
   <body class="bg-background text-foreground min-h-screen flex flex-col">
     <Header client:load />

@@ -38,9 +38,28 @@ const ogImage = "https://timmypidashev.dev/og-image.jpg";
     <link rel="icon" type="image/jpeg" href="/me.jpeg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <ClientRouter />
+    <style>
+      ::view-transition-new(:root) {
+        animation: none;
+      }
+      ::view-transition-old(:root) {
+        animation: none;
+      }
+    </style>
     <script is:inline set:html={THEME_LOADER_SCRIPT} />
     <script is:inline set:html={ANIMATION_LOADER_SCRIPT} />
-	</head>
+	
+<script>
+  document.addEventListener('astro:before-swap', (e) => {
+    // Instantly hide old page to prevent flash
+    document.documentElement.style.opacity = '0';
+  });
+  document.addEventListener('astro:after-swap', () => {
+    // Show new page immediately
+    document.documentElement.style.opacity = '1';
+  });
+</script>
+  </head>
   <body class="bg-background text-foreground overflow-hidden h-screen">
     <Header client:load transparent />
     <main>
