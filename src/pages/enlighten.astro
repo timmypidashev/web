@@ -1,0 +1,17 @@
+---
+export const prerender = false;
+import "@/style/globals.css"
+import Void from "@/components/hero/void";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>...</title>
+  </head>
+  <body class="bg-black text-white overflow-hidden h-screen m-0">
+    <Void client:only="react" />
+  </body>
+</html>

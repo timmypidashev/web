@@ -214,6 +214,7 @@ function addSelfAwareJourney(tw: TypewriterInstance, onRetire: () => void) {
     const currentId = getStoredThemeId();
     const darkIds = Object.keys(THEMES).filter(
       id => id !== currentId && THEMES[id].type === "dark"
+        && id !== "darkbox-classic" && id !== "darkbox-dim"
     );
     applyTheme(darkIds[Math.floor(Math.random() * darkIds.length)]);
   }).typeString(
@@ -283,7 +284,7 @@ function addSelfAwareJourney(tw: TypewriterInstance, onRetire: () => void) {
   tw.pauseFor(5000).callFunction(onRetire);
 }
 
-function addComeback(tw: TypewriterInstance, onRetire: () => void) {
+function addComeback(tw: TypewriterInstance, onRetire: () => void, completions: number | null) {
   // --- The return ---
 
   tw.typeString(
@@ -291,8 +292,9 @@ function addComeback(tw: TypewriterInstance, onRetire: () => void) {
   ).pauseFor(2500).deleteAll();
 
   tw.typeString(
-    `<span>You waited</span>${BR}` +
-    `<span class="text-purple">I didn't think you would</span>`
+    `<span>You waited</span>`
+  ).pauseFor(500).typeString(
+    `${BR}<span class="text-purple">I didn't think you would</span>`
   ).pauseFor(3000).deleteAll();
 
   tw.typeString(
@@ -364,13 +366,24 @@ function addComeback(tw: TypewriterInstance, onRetire: () => void) {
     `<span class="text-yellow">until they're the only way out</span>`
   ).pauseFor(4000).deleteAll();
 
+  // --- Visitor count ---
+
+  if (completions !== null && completions > 0) {
+    tw.typeString(
+      `<span>You're visitor </span>` +
+      `<span class="text-yellow">#${completions.toLocaleString()}</span>${BR}` +
+      `<span class="text-aqua">to make it this far</span>`
+    ).pauseFor(5000).deleteAll();
+  }
+
   // --- Done for real ---
 
   addDots(tw, 1000, 4000);
 
   tw.typeString(
-    `<span>Now I'm actually done</span>${BR}` +
-    `<span class="text-aqua">for real this time</span>`
+    `<span>Now I'm actually done</span>`
+  ).pauseFor(1500).typeString(
+    `${BR}<span class="text-aqua">for real this time</span>`
   ).pauseFor(3000).deleteAll();
 
   // Permanent retire
@@ -379,11 +392,73 @@ function addComeback(tw: TypewriterInstance, onRetire: () => void) {
 
 // --- Component ---
 
+function formatTime(s: number): string {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${sec.toString().padStart(2, "0")}`;
+}
+
+const GLITCH_CHARS = "!<>-_\\/[]{}—=+*^?#________";
+
+function GlitchCountdown({ seconds }: { seconds: number }) {
+  const text = formatTime(seconds);
+  const [characters, setCharacters] = useState(
+    text.split("").map(char => ({ char, isGlitched: false }))
+  );
+
+  useEffect(() => {
+    setCharacters(text.split("").map(char => ({ char, isGlitched: false })));
+  }, [text]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (Math.random() < 0.2) {
+        setCharacters(
+          text.split("").map(originalChar => {
+            if (Math.random() < 0.3) {
+              return {
+                char: GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)],
+                isGlitched: true,
+              };
+            }
+            return { char: originalChar, isGlitched: false };
+          })
+        );
+        setTimeout(() => {
+          setCharacters(text.split("").map(char => ({ char, isGlitched: false })));
+        }, 100);
+      }
+    }, 50);
+    return () => clearInterval(interval);
+  }, [text]);
+
+  return (
+    <span>
+      {characters.map((charObj, index) => (
+        <span key={index} className={charObj.isGlitched ? "text-orange" : "text-red"}>
+          {charObj.char}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export default function Hero() {
-  const [phase, setPhase] = useState<"intro" | "full" | "retired">("intro");
+  const [phase, setPhase] = useState<
+    "intro" | "full" | "retired" | "countdown" | "glitch"
+  >(() => {
+    if (typeof window !== "undefined") {
+      const p = new URLSearchParams(window.location.search);
+      if (p.has("debug-countdown")) return "countdown";
+      if (p.has("debug-glitch")) return "glitch";
+    }
+    return "intro";
+  });
   const [fading, setFading] = useState(false);
   const [cycle, setCycle] = useState(0);
+  const [countdown, setCountdown] = useState(150);
   const githubRef = useRef<GithubData | null>(null);
+  const completionsRef = useRef<number | null>(null);
 
   useEffect(() => {
     fetch("/api/github")
@@ -392,17 +467,75 @@ export default function Hero() {
       .catch(() => { githubRef.current = { status: null, commit: null, tinkering: null }; });
   }, []);
 
+  // Countdown timer
+  useEffect(() => {
+    if (phase !== "countdown") return;
+    const interval = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setPhase("glitch");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [phase]);
+
+  // Glitch → navigate to /enlighten
+  useEffect(() => {
+    if (phase !== "glitch") return;
+    const style = document.createElement("style");
+    style.textContent = `
+      @keyframes hero-glitch {
+        0% { filter: none; transform: none; }
+        5% { filter: hue-rotate(90deg) saturate(3); transform: skewX(2deg); }
+        10% { filter: invert(1); transform: skewX(-3deg) translateX(5px); }
+        15% { filter: hue-rotate(180deg) brightness(1.5); transform: scale(1.02); }
+        20% { filter: saturate(5) contrast(2); transform: skewX(1deg) translateY(-2px); }
+        25% { filter: invert(1) hue-rotate(270deg); transform: skewX(-2deg); }
+        30% { filter: brightness(2) saturate(0); transform: scale(0.98); }
+        40% { filter: hue-rotate(45deg) contrast(3); transform: translateX(-3px); }
+        50% { filter: invert(1) brightness(0.5); transform: skewX(4deg) skewY(1deg); }
+        60% { filter: saturate(0) brightness(1.8); transform: scale(1.01); }
+        70% { filter: hue-rotate(180deg) brightness(0.3); transform: none; }
+        80% { filter: contrast(5) saturate(0); transform: skewX(-1deg); }
+        90% { filter: brightness(0.1); transform: scale(0.99); }
+        100% { filter: brightness(0); transform: none; }
+      }
+    `;
+    document.head.appendChild(style);
+    document.documentElement.style.animation = "hero-glitch 3s ease-in forwards";
+
+    const timeout = setTimeout(() => {
+      window.location.href = "/enlighten";
+    }, 3000);
+    return () => {
+      clearTimeout(timeout);
+      document.documentElement.style.animation = "";
+      style.remove();
+    };
+  }, [phase]);
+
   const handleRetire = () => {
     setFading(true);
     setTimeout(() => {
       setPhase("retired");
       setFading(false);
-      // Only come back once
       if (cycle === 0) {
+        // Fetch completion count during the 30s wait
+        fetch("/api/hero-completions", { method: "POST" })
+          .then(r => r.json())
+          .then(data => { completionsRef.current = data.count; })
+          .catch(() => { completionsRef.current = null; });
         setTimeout(() => {
           setCycle(1);
           setPhase("full");
         }, 30000);
+      } else {
+        // After manifesto: 30s wait, then countdown
+        setTimeout(() => setPhase("countdown"), 30000);
       }
     }, 3000);
   };
@@ -427,12 +560,26 @@ export default function Hero() {
       addGithubSections(typewriter, github);
       addSelfAwareJourney(typewriter, handleRetire);
     } else {
-      addComeback(typewriter, handleRetire);
+      addComeback(typewriter, handleRetire, completionsRef.current);
     }
     typewriter.start();
   };
 
   const baseOptions = { delay: 35, deleteSpeed: 35, cursor: "|" };
+
+  if (phase === "glitch") {
+    return <div className="min-h-screen" />;
+  }
+
+  if (phase === "countdown") {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-6xl md:text-8xl font-bold text-center">
+          <GlitchCountdown seconds={countdown} />
+        </div>
+      </div>
+    );
+  }
 
   if (phase === "retired") {
     return <div className="min-h-screen" />;
