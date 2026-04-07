@@ -32,9 +32,19 @@ export default function ThemeSwitcher() {
       syncLabels(id);
     };
 
+    const handleExternalChange = (e: Event) => {
+      const id = (e as CustomEvent).detail?.id;
+      if (id && id !== committedRef.current) {
+        committedRef.current = id;
+        syncLabels(id);
+      }
+    };
+
     document.addEventListener("astro:after-swap", handleSwap);
+    document.addEventListener("theme-changed", handleExternalChange);
     return () => {
       document.removeEventListener("astro:after-swap", handleSwap);
+      document.removeEventListener("theme-changed", handleExternalChange);
     };
   }, []);
 
