@@ -450,14 +450,7 @@ function GlitchCountdown({ seconds }: { seconds: number }) {
 export default function Hero() {
   const [phase, setPhase] = useState<
     "intro" | "full" | "retired" | "countdown" | "glitch"
-  >(() => {
-    if (typeof window !== "undefined") {
-      const p = new URLSearchParams(window.location.search);
-      if (p.has("debug-countdown")) return "countdown";
-      if (p.has("debug-glitch")) return "glitch";
-    }
-    return "intro";
-  });
+  >("intro");
   const [fading, setFading] = useState(false);
   const [cycle, setCycle] = useState(0);
   const [countdown, setCountdown] = useState(150);
