@@ -370,16 +370,6 @@ function addComeback(tw: TypewriterInstance, onRetire: () => void, completions: 
     `<span class="text-yellow">until they're the only way out</span>`
   ).pauseFor(4000).deleteAll();
 
-  // --- Visitor count ---
-
-  if (completions !== null && completions > 0) {
-    tw.typeString(
-      `<span>You're visitor </span>` +
-      `<span class="text-yellow">#${completions.toLocaleString()}</span>${BR}` +
-      `<span class="text-aqua">to make it this far</span>`
-    ).pauseFor(5000).deleteAll();
-  }
-
   // --- Done for real ---
 
   addDots(tw, 1000, 4000);

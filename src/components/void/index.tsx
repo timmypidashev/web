@@ -3,6 +3,8 @@ import { Canvas } from "@react-three/fiber";
 import VoidTypewriter from "./typewriter";
 import VoidWater from "./scenes/void-water";
 
+// Canvas glitch: transforms + filters (physical shake + color corruption)
+// Text glitch: filters only (color corruption, no position shift)
 const GLITCH_CSS = `
   .void-glitch-subtle {
     animation: void-glitch-subtle 2s ease-in-out infinite;
@@ -12,6 +14,15 @@ const GLITCH_CSS = `
   }
   .void-glitch-dissolve {
     animation: void-glitch-dissolve 2s ease-in forwards;
+  }
+  .void-text-glitch-subtle {
+    animation: void-text-glitch-subtle 2s ease-in-out infinite;
+  }
+  .void-text-glitch-intense {
+    animation: void-text-glitch-intense 1.2s ease-in-out infinite;
+  }
+  .void-text-glitch-dissolve {
+    animation: void-text-glitch-dissolve 2s ease-in forwards;
   }
 
   @keyframes void-glitch-subtle {
@@ -28,6 +39,15 @@ const GLITCH_CSS = `
     72% { transform: none; filter: none; }
     85% { transform: translateX(-1px) skewY(0.1deg); }
     87% { transform: none; }
+  }
+  @keyframes void-text-glitch-subtle {
+    0%, 100% { filter: none; }
+    3% { filter: hue-rotate(15deg); }
+    6% { filter: none; }
+    30% { filter: saturate(1.5); }
+    32% { filter: none; }
+    70% { filter: hue-rotate(-10deg); }
+    72% { filter: none; }
   }
 
   @keyframes void-glitch-intense {
@@ -48,6 +68,21 @@ const GLITCH_CSS = `
     85% { transform: skewX(-1deg) translateX(2px) translateY(-1px); filter: saturate(5); }
     88% { transform: none; filter: none; }
   }
+  @keyframes void-text-glitch-intense {
+    0%, 100% { filter: none; }
+    2% { filter: hue-rotate(60deg) saturate(3); }
+    5% { filter: none; }
+    12% { filter: hue-rotate(-90deg); }
+    15% { filter: none; }
+    25% { filter: saturate(4); }
+    28% { filter: none; }
+    40% { filter: hue-rotate(120deg) saturate(2); }
+    42% { filter: none; }
+    70% { filter: hue-rotate(-45deg) saturate(3); }
+    73% { filter: none; }
+    85% { filter: saturate(5); }
+    88% { filter: none; }
+  }
 
   @keyframes void-glitch-dissolve {
     0% { transform: none; filter: none; opacity: 1; }
@@ -65,6 +100,18 @@ const GLITCH_CSS = `
     80% { transform: translateX(-2px); opacity: 0.1; }
     100% { transform: none; filter: none; opacity: 0; }
   }
+  @keyframes void-text-glitch-dissolve {
+    0% { filter: none; opacity: 1; }
+    3% { filter: hue-rotate(90deg) saturate(4); }
+    10% { filter: hue-rotate(-120deg) saturate(3); opacity: 0.9; }
+    20% { filter: hue-rotate(180deg) saturate(5); opacity: 0.8; }
+    30% { filter: saturate(6) hue-rotate(60deg); opacity: 0.7; }
+    40% { filter: hue-rotate(-90deg); opacity: 0.55; }
+    50% { filter: saturate(3); opacity: 0.4; }
+    60% { filter: hue-rotate(150deg); opacity: 0.3; }
+    80% { filter: none; opacity: 0.1; }
+    100% { filter: none; opacity: 0; }
+  }
 `;
 
 function getCorruption(segment: number): number {
@@ -73,7 +120,7 @@ function getCorruption(segment: number): number {
   if (segment === 9) return 0.08;
   if (segment === 10) return 0.1;
   if (segment === 11) return 0.13;
-  if (segment === 12) return 0.1;   // "anyway" — dips
+  if (segment === 12) return 0.1;
   if (segment === 13) return 0.3;
   if (segment === 14) return 0.6;
   if (segment === 15) return 0.75;
@@ -81,11 +128,18 @@ function getCorruption(segment: number): number {
   return 1.0;
 }
 
-function getGlitchClass(segment: number, dissolving: boolean): string {
+function getCanvasGlitch(segment: number, dissolving: boolean): string {
   if (dissolving) return "void-glitch-dissolve";
   if (segment < 8) return "";
   if (segment <= 14) return "void-glitch-subtle";
   return "void-glitch-intense";
+}
+
+function getTextGlitch(segment: number, dissolving: boolean): string {
+  if (dissolving) return "void-text-glitch-dissolve";
+  if (segment < 8) return "";
+  if (segment <= 14) return "void-text-glitch-subtle";
+  return "void-text-glitch-intense";
 }
 
 interface VoidExperienceProps {
@@ -97,16 +151,28 @@ export default function VoidExperience({ token }: VoidExperienceProps) {
   const [visitCount, setVisitCount] = useState<number | null>(null);
   const [dissolving, setDissolving] = useState(false);
 
-  // Inject CSS once
+  // Inject CSS + hide cursor + force fullscreen feel on mobile
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = GLITCH_CSS;
     document.head.appendChild(style);
-    // Hide cursor during void experience
     document.body.style.cursor = "none";
+
+    // Push mobile tab bar off-screen by making the page taller than viewport
+    const meta = document.querySelector('meta[name="viewport"]');
+    const origContent = meta?.getAttribute("content") || "";
+    meta?.setAttribute("content", "width=device-width, initial-scale=1, interactive-widget=resizes-content");
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    // Scroll down slightly to trigger mobile browsers hiding the tab bar
+    window.scrollTo(0, 1);
+
     return () => {
       style.remove();
       document.body.style.cursor = "";
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+      if (meta) meta.setAttribute("content", origContent);
     };
   }, []);
 
@@ -144,12 +210,11 @@ export default function VoidExperience({ token }: VoidExperienceProps) {
   }, []);
 
   const corruption = getCorruption(activeSegment);
-  const glitchClass = getGlitchClass(activeSegment, dissolving);
 
   return (
-    <div className="fixed inset-0 bg-black">
-      {/* 3D Canvas — filter applied directly to this element, not a parent */}
-      <div className={`fixed inset-0 z-[10] ${glitchClass}`}>
+    <div className="fixed inset-0 bg-black" style={{ height: "100dvh" }}>
+      {/* 3D Canvas — full glitch (transforms + filters) */}
+      <div className={`fixed inset-0 z-[10] ${getCanvasGlitch(activeSegment, dissolving)}`}>
         <Canvas
           camera={{ position: [0, 0, 8], fov: 60 }}
           dpr={[1, 1.5]}
@@ -160,9 +225,9 @@ export default function VoidExperience({ token }: VoidExperienceProps) {
         </Canvas>
       </div>
 
-      {/* Typewriter — same glitch class applied directly */}
+      {/* Typewriter — filter-only glitch (no transform shift) */}
       {visitCount !== null && (
-        <div className={glitchClass}>
+        <div className={getTextGlitch(activeSegment, dissolving)}>
           <VoidTypewriter
             startSegment={0}
             onPhaseComplete={handlePhaseComplete}
