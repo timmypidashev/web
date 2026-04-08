@@ -351,8 +351,6 @@ const Background: React.FC<BackgroundProps> = ({
         style={{ cursor: "default" }}
       />
       <div className="absolute inset-0 bg-background/30 backdrop-blur-sm pointer-events-none" />
-      <div className="crt-scanlines absolute inset-0 pointer-events-none" />
-      <div className="crt-bloom absolute inset-0 pointer-events-none" />
     </div>
   );
 };

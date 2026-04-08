@@ -1,0 +1,177 @@
+import { useState, useCallback, useEffect, useRef } from "react";
+import { Canvas } from "@react-three/fiber";
+import VoidTypewriter from "./typewriter";
+import VoidWater from "./scenes/void-water";
+
+const GLITCH_CSS = `
+  .void-glitch-subtle {
+    animation: void-glitch-subtle 2s ease-in-out infinite;
+  }
+  .void-glitch-intense {
+    animation: void-glitch-intense 1.2s ease-in-out infinite;
+  }
+  .void-glitch-dissolve {
+    animation: void-glitch-dissolve 2s ease-in forwards;
+  }
+
+  @keyframes void-glitch-subtle {
+    0%, 100% { transform: none; filter: none; }
+    3% { transform: skewX(0.5deg); filter: hue-rotate(15deg); }
+    6% { transform: none; filter: none; }
+    15% { transform: translateX(1px) skewX(-0.2deg); }
+    17% { transform: none; }
+    30% { transform: skewX(-0.3deg) translateY(0.5px); filter: saturate(1.5); }
+    32% { transform: none; filter: none; }
+    50% { transform: translateY(-1px); }
+    52% { transform: none; }
+    70% { transform: skewX(0.2deg) translateX(-0.5px); filter: hue-rotate(-10deg); }
+    72% { transform: none; filter: none; }
+    85% { transform: translateX(-1px) skewY(0.1deg); }
+    87% { transform: none; }
+  }
+
+  @keyframes void-glitch-intense {
+    0%, 100% { transform: none; filter: none; }
+    2% { transform: skewX(2deg) translateX(2px); filter: hue-rotate(60deg) saturate(3); }
+    5% { transform: skewX(-1.5deg) translateY(-1px); filter: none; }
+    8% { transform: none; }
+    12% { transform: translateY(-3px) skewX(0.5deg); filter: hue-rotate(-90deg); }
+    15% { transform: none; filter: none; }
+    25% { transform: skewX(1.5deg) scale(1.005) translateX(-2px); filter: saturate(4); }
+    28% { transform: none; filter: none; }
+    40% { transform: skewX(-2deg) translateY(2px); filter: hue-rotate(120deg) saturate(2); }
+    42% { transform: none; filter: none; }
+    55% { transform: translateX(-3px) skewY(0.3deg); }
+    58% { transform: none; }
+    70% { transform: scale(1.01) skewX(1deg); filter: hue-rotate(-45deg) saturate(3); }
+    73% { transform: none; filter: none; }
+    85% { transform: skewX(-1deg) translateX(2px) translateY(-1px); filter: saturate(5); }
+    88% { transform: none; filter: none; }
+  }
+
+  @keyframes void-glitch-dissolve {
+    0% { transform: none; filter: none; opacity: 1; }
+    3% { transform: skewX(3deg) translateX(4px); filter: hue-rotate(90deg) saturate(4); }
+    6% { transform: skewX(-2deg) translateY(-3px); opacity: 0.95; }
+    10% { filter: hue-rotate(-120deg) saturate(3); opacity: 0.9; }
+    15% { transform: translateX(-5px) skewX(2deg); filter: none; opacity: 0.85; }
+    20% { transform: skewX(-3deg) scale(1.02); filter: hue-rotate(180deg) saturate(5); opacity: 0.8; }
+    25% { transform: translateY(4px) skewX(1deg); opacity: 0.75; }
+    30% { filter: saturate(6) hue-rotate(60deg); opacity: 0.7; }
+    40% { transform: skewX(2deg) translateX(-3px); filter: hue-rotate(-90deg); opacity: 0.55; }
+    50% { transform: skewX(-4deg) translateY(2px); filter: saturate(3); opacity: 0.4; }
+    60% { filter: hue-rotate(150deg); opacity: 0.3; }
+    70% { transform: scale(1.03) skewX(2deg); opacity: 0.2; }
+    80% { transform: translateX(-2px); opacity: 0.1; }
+    100% { transform: none; filter: none; opacity: 0; }
+  }
+`;
+
+function getCorruption(segment: number): number {
+  if (segment < 8) return 0;
+  if (segment === 8) return 0.05;
+  if (segment === 9) return 0.08;
+  if (segment === 10) return 0.1;
+  if (segment === 11) return 0.13;
+  if (segment === 12) return 0.1;   // "anyway" — dips
+  if (segment === 13) return 0.3;
+  if (segment === 14) return 0.6;
+  if (segment === 15) return 0.75;
+  if (segment === 16) return 0.9;
+  return 1.0;
+}
+
+function getGlitchClass(segment: number, dissolving: boolean): string {
+  if (dissolving) return "void-glitch-dissolve";
+  if (segment < 8) return "";
+  if (segment <= 14) return "void-glitch-subtle";
+  return "void-glitch-intense";
+}
+
+interface VoidExperienceProps {
+  token: string;
+}
+
+export default function VoidExperience({ token }: VoidExperienceProps) {
+  const [activeSegment, setActiveSegment] = useState(0);
+  const [visitCount, setVisitCount] = useState<number | null>(null);
+  const [dissolving, setDissolving] = useState(false);
+
+  // Inject CSS once
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = GLITCH_CSS;
+    document.head.appendChild(style);
+    // Hide cursor during void experience
+    document.body.style.cursor = "none";
+    return () => {
+      style.remove();
+      document.body.style.cursor = "";
+    };
+  }, []);
+
+  // Fetch + increment visit count on mount (with token verification)
+  useEffect(() => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+
+    fetch("/api/void-visits", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+      signal: controller.signal,
+    })
+      .then(r => r.json())
+      .then(data => setVisitCount(data.count ?? 1))
+      .catch(() => setVisitCount(1))
+      .finally(() => clearTimeout(timeout));
+
+    return () => {
+      controller.abort();
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  const handlePhaseComplete = useCallback(() => {
+    setDissolving(true);
+    setTimeout(() => {
+      window.location.href = "/about";
+    }, 2000);
+  }, []);
+
+  const handleSegmentChange = useCallback((index: number) => {
+    setActiveSegment(index);
+  }, []);
+
+  const corruption = getCorruption(activeSegment);
+  const glitchClass = getGlitchClass(activeSegment, dissolving);
+
+  return (
+    <div className="fixed inset-0 bg-black">
+      {/* 3D Canvas — filter applied directly to this element, not a parent */}
+      <div className={`fixed inset-0 z-[10] ${glitchClass}`}>
+        <Canvas
+          camera={{ position: [0, 0, 8], fov: 60 }}
+          dpr={[1, 1.5]}
+          gl={{ antialias: false, alpha: true }}
+          style={{ background: "transparent" }}
+        >
+          <VoidWater segment={activeSegment} corruption={corruption} />
+        </Canvas>
+      </div>
+
+      {/* Typewriter — same glitch class applied directly */}
+      {visitCount !== null && (
+        <div className={glitchClass}>
+          <VoidTypewriter
+            startSegment={0}
+            onPhaseComplete={handlePhaseComplete}
+            onSegmentChange={handleSegmentChange}
+            visitCount={visitCount}
+            corruption={corruption}
+          />
+        </div>
+      )}
+    </div>
+  );
+}

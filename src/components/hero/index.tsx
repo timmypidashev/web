@@ -1,7 +1,11 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense, lazy } from "react";
 import Typewriter from "typewriter-effect";
 import { THEMES } from "@/lib/themes";
 import { applyTheme, getStoredThemeId } from "@/lib/themes/engine";
+
+// Preload void component — starts downloading when countdown begins
+const voidImport = () => import("@/components/void");
+const VoidExperience = lazy(voidImport);
 
 interface GithubData {
   status: { message: string } | null;
@@ -467,9 +471,20 @@ export default function Hero() {
       .catch(() => { githubRef.current = { status: null, commit: null, tinkering: null }; });
   }, []);
 
-  // Countdown timer
+  // Void token + preload during countdown
+  const voidTokenRef = useRef<string | null>(null);
   useEffect(() => {
     if (phase !== "countdown") return;
+
+    // Preload the void component bundle
+    voidImport();
+
+    // Fetch a signed token for the void visit
+    fetch("/api/void-token")
+      .then(r => r.json())
+      .then(data => { voidTokenRef.current = data.token; })
+      .catch(() => { voidTokenRef.current = null; });
+
     const interval = setInterval(() => {
       setCountdown(prev => {
         if (prev <= 1) {
@@ -483,13 +498,20 @@ export default function Hero() {
     return () => clearInterval(interval);
   }, [phase]);
 
-  // Glitch → navigate to /enlighten
+  // Glitch → transition into void
+  const glitchRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (phase !== "glitch") return;
+
+    // Apply glitch to all direct children of the layout wrapper
+    const wrapper = glitchRef.current?.closest("main")?.parentElement || document.body;
     const style = document.createElement("style");
     style.textContent = `
+      .hero-glitch-child {
+        animation: hero-glitch 3s ease-in forwards;
+      }
       @keyframes hero-glitch {
-        0% { filter: none; transform: none; }
+        0% { filter: none; transform: none; opacity: 1; }
         5% { filter: hue-rotate(90deg) saturate(3); transform: skewX(2deg); }
         10% { filter: invert(1); transform: skewX(-3deg) translateX(5px); }
         15% { filter: hue-rotate(180deg) brightness(1.5); transform: scale(1.02); }
@@ -501,19 +523,25 @@ export default function Hero() {
         60% { filter: saturate(0) brightness(1.8); transform: scale(1.01); }
         70% { filter: hue-rotate(180deg) brightness(0.3); transform: none; }
         80% { filter: contrast(5) saturate(0); transform: skewX(-1deg); }
-        90% { filter: brightness(0.1); transform: scale(0.99); }
-        100% { filter: brightness(0); transform: none; }
+        90% { filter: brightness(0.1); transform: scale(0.99); opacity: 0.1; }
+        100% { filter: brightness(0); transform: none; opacity: 0; }
       }
     `;
     document.head.appendChild(style);
-    document.documentElement.style.animation = "hero-glitch 3s ease-in forwards";
 
+    const children = Array.from(wrapper.children) as HTMLElement[];
+    children.forEach(child => child.classList.add("hero-glitch-child"));
+
+    // After glitch animation, transition to void phase
     const timeout = setTimeout(() => {
-      window.location.href = "/enlighten";
+      children.forEach(child => child.classList.remove("hero-glitch-child"));
+      style.remove();
+      setPhase("void");
     }, 3000);
+
     return () => {
       clearTimeout(timeout);
-      document.documentElement.style.animation = "";
+      children.forEach(child => child.classList.remove("hero-glitch-child"));
       style.remove();
     };
   }, [phase]);
@@ -567,8 +595,16 @@ export default function Hero() {
 
   const baseOptions = { delay: 35, deleteSpeed: 35, cursor: "|" };
 
+  if (phase === "void") {
+    return (
+      <Suspense fallback={<div className="fixed inset-0 bg-black" />}>
+        <VoidExperience token={voidTokenRef.current || ""} />
+      </Suspense>
+    );
+  }
+
   if (phase === "glitch") {
-    return <div className="min-h-screen" />;
+    return <div ref={glitchRef} className="min-h-screen" />;
   }
 
   if (phase === "countdown") {
