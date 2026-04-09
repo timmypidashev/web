@@ -151,28 +151,20 @@ export default function VoidExperience({ token }: VoidExperienceProps) {
   const [visitCount, setVisitCount] = useState<number | null>(null);
   const [dissolving, setDissolving] = useState(false);
 
-  // Inject CSS + hide cursor + force fullscreen feel on mobile
+  // Inject CSS + hide cursor + hide layout chrome underneath
   useEffect(() => {
     const style = document.createElement("style");
     style.textContent = GLITCH_CSS;
     document.head.appendChild(style);
     document.body.style.cursor = "none";
-
-    // Push mobile tab bar off-screen by making the page taller than viewport
-    const meta = document.querySelector('meta[name="viewport"]');
-    const origContent = meta?.getAttribute("content") || "";
-    meta?.setAttribute("content", "width=device-width, initial-scale=1, interactive-widget=resizes-content");
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
-    // Scroll down slightly to trigger mobile browsers hiding the tab bar
-    window.scrollTo(0, 1);
 
     return () => {
       style.remove();
       document.body.style.cursor = "";
       document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
-      if (meta) meta.setAttribute("content", origContent);
     };
   }, []);
 
@@ -212,7 +204,7 @@ export default function VoidExperience({ token }: VoidExperienceProps) {
   const corruption = getCorruption(activeSegment);
 
   return (
-    <div className="fixed inset-0 bg-black" style={{ height: "100dvh" }}>
+    <div className="fixed inset-0 bg-black z-[9999]" style={{ height: "100dvh" }}>
       {/* 3D Canvas — full glitch (transforms + filters) */}
       <div className={`fixed inset-0 z-[10] ${getCanvasGlitch(activeSegment, dissolving)}`}>
         <Canvas
@@ -225,17 +217,16 @@ export default function VoidExperience({ token }: VoidExperienceProps) {
         </Canvas>
       </div>
 
-      {/* Typewriter — filter-only glitch (no transform shift) */}
+      {/* Typewriter — glitch class applied to inner text, not the fixed container */}
       {visitCount !== null && (
-        <div className={getTextGlitch(activeSegment, dissolving)}>
-          <VoidTypewriter
-            startSegment={0}
-            onPhaseComplete={handlePhaseComplete}
-            onSegmentChange={handleSegmentChange}
-            visitCount={visitCount}
-            corruption={corruption}
-          />
-        </div>
+        <VoidTypewriter
+          startSegment={0}
+          onPhaseComplete={handlePhaseComplete}
+          onSegmentChange={handleSegmentChange}
+          visitCount={visitCount}
+          corruption={corruption}
+          glitchClass={getTextGlitch(activeSegment, dissolving)}
+        />
       )}
     </div>
   );

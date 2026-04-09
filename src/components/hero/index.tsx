@@ -439,8 +439,15 @@ function GlitchCountdown({ seconds }: { seconds: number }) {
 
 export default function Hero() {
   const [phase, setPhase] = useState<
-    "intro" | "full" | "retired" | "countdown" | "glitch"
-  >("intro");
+    "intro" | "full" | "retired" | "countdown" | "glitch" | "void"
+  >(() => {
+    if (import.meta.env.DEV && typeof window !== "undefined") {
+      const p = new URLSearchParams(window.location.search);
+      if (p.has("debug-glitch")) return "glitch";
+      if (p.has("debug-countdown")) return "countdown";
+    }
+    return "intro";
+  });
   const [fading, setFading] = useState(false);
   const [cycle, setCycle] = useState(0);
   const [countdown, setCountdown] = useState(150);
@@ -482,49 +489,81 @@ export default function Hero() {
   }, [phase]);
 
   // Glitch → transition into void
-  const glitchRef = useRef<HTMLDivElement>(null);
+  // Apply animation directly to each visible element (works on both desktop + mobile)
+  // On mobile, filter/transform on <body> doesn't reach fixed-position children,
+  // so we target the elements themselves
   useEffect(() => {
     if (phase !== "glitch") return;
 
-    // Apply glitch to all direct children of the layout wrapper
-    const wrapper = glitchRef.current?.closest("main")?.parentElement || document.body;
     const style = document.createElement("style");
     style.textContent = `
-      .hero-glitch-child {
-        animation: hero-glitch 3s ease-in forwards;
+      .hero-glitch-shake {
+        animation: hero-glitch-shake 3s ease-in forwards !important;
       }
-      @keyframes hero-glitch {
-        0% { filter: none; transform: none; opacity: 1; }
-        5% { filter: hue-rotate(90deg) saturate(3); transform: skewX(2deg); }
-        10% { filter: invert(1); transform: skewX(-3deg) translateX(5px); }
-        15% { filter: hue-rotate(180deg) brightness(1.5); transform: scale(1.02); }
-        20% { filter: saturate(5) contrast(2); transform: skewX(1deg) translateY(-2px); }
-        25% { filter: invert(1) hue-rotate(270deg); transform: skewX(-2deg); }
-        30% { filter: brightness(2) saturate(0); transform: scale(0.98); }
-        40% { filter: hue-rotate(45deg) contrast(3); transform: translateX(-3px); }
-        50% { filter: invert(1) brightness(0.5); transform: skewX(4deg) skewY(1deg); }
-        60% { filter: saturate(0) brightness(1.8); transform: scale(1.01); }
-        70% { filter: hue-rotate(180deg) brightness(0.3); transform: none; }
-        80% { filter: contrast(5) saturate(0); transform: skewX(-1deg); }
-        90% { filter: brightness(0.1); transform: scale(0.99); opacity: 0.1; }
-        100% { filter: brightness(0); transform: none; opacity: 0; }
+      @keyframes hero-glitch-shake {
+        0% { transform: none; }
+        5% { transform: skewX(2deg); }
+        10% { transform: skewX(-3deg) translateX(5px); }
+        15% { transform: scale(1.02); }
+        20% { transform: skewX(1deg) translateY(-2px); }
+        25% { transform: skewX(-2deg); }
+        30% { transform: scale(0.98); }
+        40% { transform: translateX(-3px); }
+        50% { transform: skewX(4deg) skewY(1deg); }
+        60% { transform: scale(1.01); }
+        70% { transform: none; }
+        80% { transform: skewX(-1deg); }
+        90% { transform: none; }
+        100% { transform: none; }
+      }
+      .hero-glitch-filter {
+        animation: hero-glitch-filter 3s ease-in forwards !important;
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 99999 !important;
+        pointer-events: none !important;
+      }
+      @keyframes hero-glitch-filter {
+        0% { backdrop-filter: none; background: transparent; }
+        5% { backdrop-filter: hue-rotate(90deg) saturate(3); }
+        10% { backdrop-filter: invert(1); }
+        15% { backdrop-filter: hue-rotate(180deg) brightness(1.5); }
+        20% { backdrop-filter: saturate(5) contrast(2); }
+        25% { backdrop-filter: invert(1) hue-rotate(270deg); }
+        30% { backdrop-filter: brightness(2) saturate(0); }
+        40% { backdrop-filter: hue-rotate(45deg) contrast(3); }
+        50% { backdrop-filter: invert(1) brightness(0.5); }
+        60% { backdrop-filter: saturate(0) brightness(1.8); }
+        70% { backdrop-filter: hue-rotate(180deg) brightness(0.3); }
+        80% { backdrop-filter: contrast(5) saturate(0); }
+        90% { backdrop-filter: brightness(0); background: #000; }
+        100% { backdrop-filter: brightness(0); background: #000; }
       }
     `;
     document.head.appendChild(style);
 
-    const children = Array.from(wrapper.children) as HTMLElement[];
-    children.forEach(child => child.classList.add("hero-glitch-child"));
+    // Overlay for backdrop-filter (color distortion — works on all platforms)
+    const overlay = document.createElement("div");
+    overlay.className = "hero-glitch-filter";
+    document.body.appendChild(overlay);
 
-    // After glitch animation, transition to void phase
+    // Shake transforms on all layout elements
+    const targets = document.querySelectorAll<HTMLElement>(
+      "header, main, footer, nav"
+    );
+    targets.forEach(el => el.classList.add("hero-glitch-shake"));
+
     const timeout = setTimeout(() => {
-      children.forEach(child => child.classList.remove("hero-glitch-child"));
+      targets.forEach(el => el.classList.remove("hero-glitch-shake"));
+      overlay.remove();
       style.remove();
       setPhase("void");
     }, 3000);
 
     return () => {
       clearTimeout(timeout);
-      children.forEach(child => child.classList.remove("hero-glitch-child"));
+      targets.forEach(el => el.classList.remove("hero-glitch-shake"));
+      overlay.remove();
       style.remove();
     };
   }, [phase]);
@@ -587,7 +626,7 @@ export default function Hero() {
   }
 
   if (phase === "glitch") {
-    return <div ref={glitchRef} className="min-h-screen" />;
+    return <div className="min-h-screen" />;
   }
 
   if (phase === "countdown") {

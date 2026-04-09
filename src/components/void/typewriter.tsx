@@ -11,6 +11,7 @@ interface VoidTypewriterProps {
   onSegmentChange: (index: number) => void;
   visitCount: number;
   corruption: number;
+  glitchClass: string;
 }
 
 function getTextNodes(node: Node): Text[] {
@@ -25,7 +26,7 @@ function getTextNodes(node: Node): Text[] {
   return nodes;
 }
 
-export default function VoidTypewriter({ startSegment, onPhaseComplete, onSegmentChange, visitCount, corruption }: VoidTypewriterProps) {
+export default function VoidTypewriter({ startSegment, onPhaseComplete, onSegmentChange, visitCount, corruption, glitchClass }: VoidTypewriterProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const corruptionRef = useRef(corruption);
   corruptionRef.current = corruption;
@@ -85,7 +86,7 @@ export default function VoidTypewriter({ startSegment, onPhaseComplete, onSegmen
     <div className="fixed inset-0 z-[50] flex justify-center items-center pointer-events-none">
       <div
         ref={containerRef}
-        className="text-xl md:text-3xl font-bold text-center max-w-[85vw] md:max-w-[70vw] break-words text-white leading-relaxed"
+        className={`text-xl md:text-3xl font-bold text-center max-w-[85vw] md:max-w-[70vw] break-words text-white leading-relaxed ${glitchClass}`}
       >
         <Typewriter
           key={`void-${startSegment}-${visitCount}`}
