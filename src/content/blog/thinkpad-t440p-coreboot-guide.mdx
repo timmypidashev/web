@@ -44,13 +44,19 @@ Install the following programs. These will be needed to compile coreboot and fla
 
 <Commands
   description="Install prerequisite packages"
-  archCommand="sudo pacman -S base-devel curl git gcc-ada ncurses zlib nasm sharutils unzip flashrom"
-  debianCommand="sudo apt install build-essential curl git gnat libncurses-dev zlib1g-dev nasm sharutils unzip flashrom"
-  fedoraCommand="sudo dnf install @development-tools curl git gcc-gnat ncurses-devel zlib-devel nasm sharutils unzip flashrom"
-  gentooCommand="sudo emerge --ask sys-devel/base-devel net-misc/curl dev-vcs/git sys-devel/gcc ncurses dev-libs/zlib dev-lang/nasm app-arch/sharutils app-arch/unzip sys-apps/flashrom"
-  nixCommand="nix-env -i stdenv curl git gcc gnat ncurses zlib nasm sharutils unzip flashrom"
+  archCommand="sudo pacman -S base-devel curl git gcc-ada ncurses zlib nasm sharutils unzip flashrom usbutils chafa libwebp"
+  debianCommand="sudo apt install build-essential curl git gnat libncurses-dev zlib1g-dev nasm sharutils unzip flashrom usbutils chafa webp"
+  fedoraCommand="sudo dnf install @development-tools curl git gcc-gnat ncurses-devel zlib-devel nasm sharutils unzip flashrom usbutils chafa libwebp-tools"
+  gentooCommand="sudo emerge --ask sys-devel/base-devel net-misc/curl dev-vcs/git sys-devel/gcc ncurses dev-libs/zlib dev-lang/nasm app-arch/sharutils app-arch/unzip sys-apps/flashrom sys-apps/usbutils media-gfx/chafa media-libs/libwebp"
+  nixCommand="nix-env -i stdenv curl git gcc gnat ncurses zlib nasm sharutils unzip flashrom usbutils chafa libwebp"
   client:load
 />
+
+`usbutils` provides `lsusb` (used to verify the CH341A). `chafa` and the
+`libwebp` tools are optional — the interactive script uses them to render
+reference images inline in your terminal when supported (and to transcode
+webp images to png if your chafa build doesn't support webp natively).
+Without them the script falls back to printing a URL.
 
 ## Disassembling the Laptop
 1. **Power off your laptop**: Make sure your T440p is completely powered off and unplugged from any power source.
@@ -59,24 +65,39 @@ Install the following programs. These will be needed to compile coreboot and fla
 
 ## Locating the EEPROM Chips
 
-In order to flash the laptop, you will need to have access to two EEPROM chips located next to the sodimm RAM.
+In order to flash the laptop, you will need to have access to two EEPROM chips
+located next to the SODIMM RAM. They are different sizes and hold different
+firmware — read them in the order shown below.
 
-![EEPROM Chips Location](/blog/thinkpad-t440p-coreboot-guide/eeprom_chips_location.png)
+The **4MB (top)** chip — smaller, farther from the CPU:
+
+![4MB EEPROM chip location](/blog/thinkpad-t440p-coreboot-guide/eeprom_chip_4mb.webp)
+
+The **8MB (bottom)** chip — larger, closer to the CPU, holds the Intel ME firmware:
+
+![8MB EEPROM chip location](/blog/thinkpad-t440p-coreboot-guide/eeprom_chip_8mb.webp)
 
 ## Assembling the SPI Flasher
 
 Place the SPI flasher ribbon cable into the correct slot and make sure its the 3.3v variant
 
-![SPI Flasher Assembly](/blog/thinkpad-t440p-coreboot-guide/spi_flasher_assembly.png)
+![SPI Flasher Assembly](/blog/thinkpad-t440p-coreboot-guide/spi_flasher_assembly.webp)
 
-After the flasher is ready, connect it to your machine and ensure its ready to use:
+After the flasher is ready, plug it into a USB port on your machine (leave the clip
+unattached for now) and confirm the kernel sees it:
 
-<Command 
-  description="Ensure the CH341A flasher is being detected"
-  command="flashrom --programmer ch341a_spi"
+<Command
+  description="Verify CH341A is on the USB bus"
+  command="lsusb | grep 1a86:5512"
 />
 
-Flashrom should report that programmer initialization was a success.
+A matching line (e.g. `Bus 001 Device 00X: ID 1a86:5512 QinHeng Electronics`)
+confirms the programmer is plugged in and the host recognises it.
+
+> Do **not** run `flashrom --programmer ch341a_spi` at this stage — with no
+> chip clipped on, flashrom will report "No EEPROM/flash device found" and
+> exit non-zero. That's expected, not a failure of the programmer. The chip
+> probe happens in the next section, paired with the actual read.
 
 ## Extracting Original BIOS
 
@@ -89,11 +110,14 @@ the T440p will be done.
   client:load
 />
 
-Next, extract the original rom from both EEPROM chips. This is 
-done by attaching the programmer to the correct chip and running
-the subsequent commands. It may take longer than expected, and 
-ensuring the bios was properly extracted is important before proceeding
-further.
+Next, extract the original ROM from both EEPROM chips. Do the **4MB (top)
+chip first** — it's the smaller of the two, so reads finish faster and any
+setup issues (clip alignment, pin 1, voltage) surface quickly. Then move
+the clip to the **8MB (bottom) chip**.
+
+Each chip is read twice so the two reads can be diffed to catch flaky
+contact. The reads can take a while (tens of seconds to a couple of
+minutes per pass) — that's normal.
 
 <CommandSequence 
   commands={[
