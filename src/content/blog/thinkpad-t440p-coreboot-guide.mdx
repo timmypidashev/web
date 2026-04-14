@@ -119,7 +119,7 @@ Each chip is read twice so the two reads can be diffed to catch flaky
 contact. The reads can take a while (tens of seconds to a couple of
 minutes per pass) — that's normal.
 
-<CommandSequence 
+<CommandSequence
   commands={[
     "sudo flashrom --programmer ch341a_spi -r 4mb_backup1.bin",
     "sudo flashrom --programmer ch341a_spi -r 4mb_backup2.bin",
@@ -138,6 +138,13 @@ minutes per pass) — that's normal.
   description="Backup and verify 8MB chip"
   client:load
 />
+
+> **If flashrom errors with "Multiple flash chip definitions match":**
+> Your chip's silicon ID matches several part variants (common for Winbond
+> W25Q* parts). Re-run the command with `-c <chipname>` to disambiguate, e.g.
+> `sudo flashrom --programmer ch341a_spi -c W25Q32JV -r 4mb_backup1.bin`.
+> Use the same `-c` value for every subsequent read/write on that chip.
+> The newest variant in the list is usually a safe default.
 
 If the diff checks pass, combine both files into one ROM.
 
