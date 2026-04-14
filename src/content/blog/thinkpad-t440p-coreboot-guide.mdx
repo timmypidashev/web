@@ -119,7 +119,7 @@ If the diff checks pass, combine both files into one ROM.
 
 <Command
   description="Combine 4MB & 8MB into one ROM"
-  command="cat 8mb_backup_1.bin 4mb_backup1.bin > t440p-original.rom"
+  command="cat 8mb_backup1.bin 4mb_backup1.bin > t440p-original.rom"
   client:load
 />
 
@@ -140,7 +140,7 @@ a new bios image.
   client:load
 />
 
-We will need to build `idftool`, which will be used to export all necessary blobs
+We will need to build `ifdtool`, which will be used to export all necessary blobs
 from our original bios, and `cbfstool`, which will be used to extract __mrc.bin__(a blob 
 from a haswell chromebook peppy image).
 
@@ -258,9 +258,14 @@ Then open the configuration menu:
 Key settings to configure:
 
 - **Mainboard** &rarr; Mainboard vendor: **Lenovo** &rarr; Mainboard model: **ThinkPad T440p**
-- **Chipset** &rarr; Add Intel descriptor.bin, ME firmware, and GbE configuration (set paths to your blobs)
-- **Chipset** &rarr; Add haswell MRC file (set path to mrc.bin)
-- **Payload** &rarr; Choose your preferred payload (GRUB2, SeaBIOS, or edk2)
+  (`CONFIG_BOARD_LENOVO_THINKPAD_T440P=y`)
+- **Chipset** &rarr; Add Intel descriptor.bin (`CONFIG_HAVE_IFD_BIN`), ME firmware (`CONFIG_HAVE_ME_BIN`),
+  and GbE configuration (`CONFIG_HAVE_GBE_BIN`) — set paths to your extracted blobs.
+- **Chipset** &rarr; Add Haswell MRC file (`CONFIG_HAVE_MRC` / `CONFIG_MRC_FILE`) — set path to `mrc.bin`.
+- **Payload** &rarr; Choose your preferred payload: GRUB2 (`CONFIG_PAYLOAD_GRUB2`), SeaBIOS
+  (`CONFIG_PAYLOAD_SEABIOS`), or Tianocore/edk2 (`CONFIG_PAYLOAD_TIANOCORE`).
+- **Devices** &rarr; (optional, GT730M only) Enable `CONFIG_VGA_BIOS_DGPU` and set
+  `CONFIG_VGA_BIOS_DGPU_FILE` to your extracted GT730M VBIOS (PCI ID `10de,1292`).
 
 ## Building and Flashing 
 
@@ -344,7 +349,7 @@ Reboot to apply `iomem=relaxed`
 
 <Command
   description="Flash the original bios"
-  command="sudo flashrom -p internal:laptop=force_I_want_a_brick -r ~/t440p-coreboot/t440p-original.rom"
+  command="sudo flashrom -p internal:laptop=force_I_want_a_brick -w ~/t440p-coreboot/t440p-original.rom"
 />
 
 And that about wraps it up! If you liked the guide, leave a reaction or comment any changes or fixes
